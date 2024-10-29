@@ -1,10 +1,48 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-    <title>My GitHub Page</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Stok Barang</title>
 </head>
 <body>
-    <h1>Hello, World!</h1>
-    <p>This is my first GitHub page!</p>
+    <h1>Data Stok Barang</h1>
+    <table border="1" id="data-table">
+        <thead>
+            <tr>
+                <th>Nama Barang</th>
+                <th>Kategori</th>
+                <th>Jumlah</th>
+                <th>Harga</th>
+                <!-- Tambahkan kolom lain sesuai kebutuhan -->
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        async function fetchData() {
+            const url = 'https://sheets.googleapis.com/v4/spreadsheets/1zuHHOCcq2NeVHamsscSNITmMv4lk3Yz1oRu4Apdla1I/values/stokbarang?key=YOUR_API_KEY';
+            const response = await fetch(url);
+            const data = await response.json();
+            const rows = data.values;
+
+            const tableBody = document.querySelector('#data-table tbody');
+
+            // Mulai dari indeks 1 untuk melewati header
+            rows.slice(1).forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row[0]}</td>
+                    <td>${row[1]}</td>
+                    <td>${row[2]}</td>
+                    <td>${row[3]}</td>
+                `;
+                tableBody.appendChild(tr);
+            });
+        }
+
+        fetchData();
+    </script>
 </body>
 </html>
