@@ -52,8 +52,8 @@
     <header class="flex justify-between items-center p-6">
         <div class="text-xl font-bold">GUDANG LT.5</div>
         <nav class="space-x-8 desktop-menu">
-            <a href="home.html" class="text-black nav-link p-2">Home</a>
-            <a href="stok-barang.html" class="text-blue-600 nav-link p-2">Stok Barang</a>
+            <a href="home.html" class="text-blue-600 nav-link p-2">Home</a>
+            <a href="stok-barang.html" class="text-black nav-link p-2">Stok Barang</a>
             <a href="stok-masuk.html" class="text-black nav-link p-2">Stok Masuk</a>
             <a href="stok-keluar.html" class="text-black nav-link p-2">Stok Keluar</a>
             <a href="riwayat.html" class="text-black nav-link p-2">Riwayat</a>
@@ -155,6 +155,7 @@
         clearButton.addEventListener('click', () => {
             searchBox.value = '';
             renderTable(tableData);
+            renderPagination();
         });
 
         dropdownButton.addEventListener('click', () => {
@@ -206,20 +207,27 @@
             const totalPages = Math.ceil(tableData.length / itemsPerPage);
 
             for (let i = 1; i <= totalPages; i++) {
-                const button = document.createElement('button');
-                button.textContent = i;
-                button.classList.add('p-2', 'border', 'border-gray-300', 'rounded');
-                if (i === currentPage) {
-                    button.classList.add('bg-blue-500', 'text-white');
-                } else {
-                    button.classList.add('bg-white', 'text-black');
+                if (i <= 4 || i === totalPages) {
+                    const button = document.createElement('button');
+                    button.textContent = i;
+                    button.classList.add('p-2', 'border', 'border-gray-300', 'rounded');
+                    if (i === currentPage) {
+                        button.classList.add('bg-blue-500', 'text-white');
+                    } else {
+                        button.classList.add('bg-white', 'text-black');
+                    }
+                    button.addEventListener('click', () => {
+                        currentPage = i;
+                        renderTable(tableData);
+                        renderPagination();
+                    });
+                    pagination.appendChild(button);
+                } else if (i === 5) {
+                    const ellipsis = document.createElement('span');
+                    ellipsis.textContent = '...';
+                    ellipsis.classList.add('p-2');
+                    pagination.appendChild(ellipsis);
                 }
-                button.addEventListener('click', () => {
-                    currentPage = i;
-                    renderTable(tableData);
-                    renderPagination();
-                });
-                pagination.appendChild(button);
             }
         }
 
