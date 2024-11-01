@@ -63,7 +63,9 @@
             <img src="https://cdn.prod.website-files.com/5b13df51d0d5fe8211f203da/5b13f32811a9ded47d358b1d_arrow-blue-long.svg" alt="Blue arrow pointing down" class="w-32 h-32 arrow cursor-pointer" onclick="scrollToBottom()">
         </div>
     </main>
-    <script>
+    <footer class="w-full text-center py-4 border-t mt-8">
+        Copyright &copy; <span id="currentYear"></span> @ Johan Gilbeth
+    </footer>    <script>
         window.addEventListener('scroll', function() {
             const square = document.querySelector('.square');
             const scrollY = window.scrollY;
@@ -78,6 +80,9 @@
                 behavior: 'smooth'
             });
         }
+    
+        // Set current year in footer
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
     </script>
 </body>
 </html>
