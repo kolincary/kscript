@@ -81,8 +81,11 @@
     </div>
     <hr class="border-t-2 border-black">
     <main class="flex flex-col items-start justify-start h-screen relative pl-20 pr-20">
-        <div class="mt-16 mb-4 w-full max-w-md">
+        <div class="mt-16 mb-4 w-full max-w-md flex items-center">
             <input type="text" id="searchBox" placeholder="Search by Kode Barang or Nama Produk" class="w-full p-2 border border-gray-300 rounded">
+            <button id="clearButton" class="ml-2 p-2 text-gray-500">
+                <i class="fas fa-times" style="color: rgb(37 99 235 / var(--tw-text-opacity));"></i>
+            </button>
         </div>
         <div class="overflow-x-auto w-full">
             <table class="min-w-full bg-white">
@@ -117,12 +120,18 @@
 
         const tableBody = document.getElementById('tableBody');
         const searchBox = document.getElementById('searchBox');
+        const clearButton = document.getElementById('clearButton');
         const menuButton = document.getElementById('menuButton');
         const mobileNav = document.getElementById('mobileNav');
         const currentYear = document.getElementById('currentYear');
 
         menuButton.addEventListener('click', () => {
             mobileNav.classList.toggle('hidden');
+        });
+
+        clearButton.addEventListener('click', () => {
+            searchBox.value = '';
+            renderTable(tableData);
         });
 
         async function fetchData() {
