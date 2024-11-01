@@ -46,14 +46,17 @@
                 display: block;
             }
         }
+        .border-gray-300 {
+            width: 80px;
+        }
     </style>
 </head>
 <body class="bg-white text-black">
     <header class="flex justify-between items-center p-6">
         <div class="text-xl font-bold">GUDANG LT.5</div>
         <nav class="space-x-8 desktop-menu">
-            <a href="home.html" class="text-blue-600 nav-link p-2">Home</a>
-            <a href="stok-barang.html" class="text-black nav-link p-2">Stok Barang</a>
+            <a href="home.html" class="text-black nav-link p-2">Home</a>
+            <a href="stok-barang.html" class="text-blue-600 nav-link p-2">Stok Barang</a>
             <a href="stok-masuk.html" class="text-black nav-link p-2">Stok Masuk</a>
             <a href="stok-keluar.html" class="text-black nav-link p-2">Stok Keluar</a>
             <a href="riwayat.html" class="text-black nav-link p-2">Riwayat</a>
@@ -113,7 +116,7 @@
                 <button id="dropdownButton" class="p-2 border border-gray-300 rounded">
                     Show <span id="itemsPerPage">10</span> items <i class="fas fa-caret-down"></i>
                 </button>
-                <div id="dropdownMenu" class="hidden absolute bg-white border border-gray-300 rounded mt-2">
+                <div id="dropdownMenu" class="hidden absolute bg-white border border-gray-300 rounded mb-2 bottom-full">
                     <button class="block w-full text-left p-2 hover:bg-gray-100" data-value="10">10</button>
                     <button class="block w-full text-left p-2 hover:bg-gray-100" data-value="50">50</button>
                     <button class="block w-full text-left p-2 hover:bg-gray-100" data-value="100">100</button>
@@ -147,6 +150,7 @@
         let itemsPerPage = 10;
         let currentPage = 1;
         let tableData = [];
+        let filteredData = [];
 
         menuButton.addEventListener('click', () => {
             mobileNav.classList.toggle('hidden');
@@ -154,7 +158,8 @@
 
         clearButton.addEventListener('click', () => {
             searchBox.value = '';
-            renderTable(tableData);
+            filteredData = tableData;
+            renderTable(filteredData);
             renderPagination();
         });
 
@@ -167,7 +172,7 @@
                 itemsPerPage = parseInt(event.target.getAttribute('data-value'));
                 itemsPerPageSpan.textContent = itemsPerPage;
                 dropdownMenu.classList.add('hidden');
-                renderTable(tableData);
+                renderTable(filteredData);
                 renderPagination();
             }
         });
@@ -187,16 +192,16 @@
             paginatedData.forEach((item, index) => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td class="col-no p-4">${item[0]}</td>
-                    <td class="col-kode-barang p-4">${item[1]}</td>
-                    <td class="col-nama-produk p-4">${item[2]}</td>
-                    <td class="col-packing p-4">${item[3]}</td>
-                    <td class="col-rak p-4">${item[4]}</td>
-                    <td class="col-stok-tersedia p-4">${item[5]}</td>
-                    <td class="col-utama p-4">${item[6]}</td>
-                    <td class="col-ecer p-4">${item[7]}</td>
-                    <td class="col-blok-i p-4">${item[8]}</td>
-                    <td class="col-lantai-4 p-4">${item[9]}</td>
+                    <td class="col-no p-4">${item[0] || ''}</td>
+                    <td class="col-kode-barang p-4">${item[1] || ''}</td>
+                    <td class="col-nama-produk p-4">${item[2] || ''}</td>
+                    <td class="col-packing p-4">${item[3] || ''}</td>
+                    <td class="col-rak p-4">${item[4] || ''}</td>
+                    <td class="col-stok-tersedia p-4">${item[5] || 0}</td>
+                    <td class="col-utama p-4">${item[6] || 0}</td>
+                    <td class="col-ecer p-4">${item[7] || 0}</td>
+                    <td class="col-blok-i p-4">${item[8] || 0}</td>
+                    <td class="col-lantai-4 p-4">${item[9] || 0}</td>
                 `;
                 tableBody.appendChild(row);
             });
@@ -204,46 +209,88 @@
 
         function renderPagination() {
             pagination.innerHTML = '';
-            const totalPages = Math.ceil(tableData.length / itemsPerPage);
+            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
-            for (let i = 1; i <= totalPages; i++) {
-                if (i <= 4 || i === totalPages) {
-                    const button = document.createElement('button');
-                    button.textContent = i;
-                    button.classList.add('p-2', 'border', 'border-gray-300', 'rounded');
-                    if (i === currentPage) {
-                        button.classList.add('bg-blue-500', 'text-white');
-                    } else {
-                        button.classList.add('bg-white', 'text-black');
-                    }
-                    button.addEventListener('click', () => {
-                        currentPage = i;
-                        renderTable(tableData);
-                        renderPagination();
-                    });
-                    pagination.appendChild(button);
-                } else if (i === 5) {
-                    const ellipsis = document.createElement('span');
-                    ellipsis.textContent = '...';
-                    ellipsis.classList.add('p-2');
-                    pagination.appendChild(ellipsis);
+            if (totalPages <= 1) return;
+
+            const createButton = (page) => {
+                const button = document.createElement('button');
+                button.textContent = page;
+                button.classList.add('p-2', 'border', 'border-gray-300', 'rounded');
+                if (page === currentPage) {
+                    button.classList.add('bg-blue-500', 'text-white');
+                } else {
+                    button.classList.add('bg-white', 'text-black');
                 }
+                button.addEventListener('click', () => {
+                    currentPage = page;
+                    renderTable(filteredData);
+                    renderPagination();
+                });
+                return button;
+            };
+
+            const createArrowButton = (direction) => {
+                const button = document.createElement('button');
+                button.innerHTML = direction === 'left' ? '&larr;' : '&rarr;';
+                button.classList.add('p-2', 'border', 'border-gray-300', 'rounded');
+                button.addEventListener('click', () => {
+                    if (direction === 'left' && currentPage > 1) {
+                        currentPage--;
+                    } else if (direction === 'right' && currentPage < totalPages) {
+                        currentPage++;
+                    }
+                    renderTable(filteredData);
+                    renderPagination();
+                });
+                return button;
+            };
+
+            pagination.appendChild(createArrowButton('left'));
+            pagination.appendChild(createButton(1));
+
+            if (currentPage > 4) {
+                const ellipsis = document.createElement('span');
+                ellipsis.textContent = '...';
+                ellipsis.classList.add('p-2');
+                pagination.appendChild(ellipsis);
             }
+
+            const startPage = Math.max(2, currentPage - 1);
+            const endPage = Math.min(totalPages - 1, currentPage + 1);
+
+            for (let i = startPage; i <= endPage; i++) {
+                pagination.appendChild(createButton(i));
+            }
+
+            if (currentPage < totalPages - 3) {
+                const ellipsis = document.createElement('span');
+                ellipsis.textContent = '...';
+                ellipsis.classList.add('p-2');
+                pagination.appendChild(ellipsis);
+            }
+
+            if (totalPages > 1) {
+                pagination.appendChild(createButton(totalPages));
+            }
+            pagination.appendChild(createArrowButton('right'));
         }
 
         searchBox.addEventListener('input', function() {
             const query = searchBox.value.toLowerCase();
-            const filteredData = tableData.filter(item => 
+            filteredData = tableData.filter(item => 
                 item[1].toLowerCase().includes(query) || 
                 item[2].toLowerCase().includes(query)
             );
+            currentPage = 1; // Reset to first page on search
             renderTable(filteredData);
             renderPagination();
         });
 
         async function init() {
             tableData = await fetchData();
-            renderTable(tableData);
+            filteredData = tableData;
+            renderTable(filteredData);
             renderPagination();
         }
 
