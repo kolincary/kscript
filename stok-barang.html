@@ -35,12 +35,23 @@
         .col-ecer { width: 10%; }
         .col-blok-i { width: 10%; }
         .col-lantai-4 { width: 10%; }
+        .mobile-menu {
+            display: none;
+        }
+        @media (max-width: 768px) {
+            .desktop-menu {
+                display: none;
+            }
+            .mobile-menu {
+                display: block;
+            }
+        }
     </style>
 </head>
 <body class="bg-white text-black">
     <header class="flex justify-between items-center p-6">
         <div class="text-xl font-bold">GUDANG LT.5</div>
-        <nav class="space-x-8">
+        <nav class="space-x-8 desktop-menu">
             <a href="home.html" class="text-blue-600 nav-link p-2">Home</a>
             <a href="stok-barang.html" class="text-black nav-link p-2">Stok Barang</a>
             <a href="stok-masuk.html" class="text-black nav-link p-2">Stok Masuk</a>
@@ -51,10 +62,26 @@
             <a href="data-so.html" class="text-black nav-link p-2">Data S.O</a>
             <a href="contact.html" class="text-black nav-link p-2">Contact</a>
         </nav>
+        <div class="mobile-menu">
+            <button id="menuButton" class="text-black">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </div>
     </header>
+    <div id="mobileNav" class="hidden flex flex-col space-y-4 p-6">
+        <a href="home.html" class="text-blue-600 nav-link p-2">Home</a>
+        <a href="stok-barang.html" class="text-black nav-link p-2">Stok Barang</a>
+        <a href="stok-masuk.html" class="text-black nav-link p-2">Stok Masuk</a>
+        <a href="stok-keluar.html" class="text-black nav-link p-2">Stok Keluar</a>
+        <a href="riwayat.html" class="text-black nav-link p-2">Riwayat</a>
+        <a href="semua-rak.html" class="text-black nav-link p-2">Semua Rak</a>
+        <a href="input-sku.html" class="text-black nav-link p-2">Input SKU</a>
+        <a href="data-so.html" class="text-black nav-link p-2">Data S.O</a>
+        <a href="contact.html" class="text-black nav-link p-2">Contact</a>
+    </div>
     <hr class="border-t-2 border-black">
     <main class="flex flex-col items-start justify-center h-screen relative pl-20 pr-20">
-        <div class="mt-8 mb-4 w-full max-w-md">
+        <div class="mt-16 mb-4 w-full max-w-md">
             <input type="text" id="searchBox" placeholder="Search by Kode Barang or Nama Produk" class="w-full p-2 border border-gray-300 rounded">
         </div>
         <div class="overflow-x-auto w-full">
@@ -79,6 +106,9 @@
             </table>
         </div>
     </main>
+    <footer class="w-full text-center py-4 border-t mt-8">
+        Copyright &copy; <span id="currentYear"></span> @ Johan Gilbeth
+    </footer>
     <script>
         const apiKey = 'AIzaSyCb9GeLx7UcqkvXj3Oy3F6e1B9XAvMLE4A';
         const spreadsheetId = '1zuHHOCcq2NeVHamsscSNITmMv4lk3Yz1oRu4Apdla1I';
@@ -87,6 +117,13 @@
 
         const tableBody = document.getElementById('tableBody');
         const searchBox = document.getElementById('searchBox');
+        const menuButton = document.getElementById('menuButton');
+        const mobileNav = document.getElementById('mobileNav');
+        const currentYear = document.getElementById('currentYear');
+
+        menuButton.addEventListener('click', () => {
+            mobileNav.classList.toggle('hidden');
+        });
 
         async function fetchData() {
             const response = await fetch(url);
@@ -132,6 +169,9 @@
 
         // Initial render
         init();
+
+        // Set current year
+        currentYear.textContent = new Date().getFullYear();
     </script>
 </body>
 </html>
