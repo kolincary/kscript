@@ -21,21 +21,33 @@
             display: block;
             position: absolute;
         }
+        .arrow {
+            transition: transform 0.3s ease;
+        }
+        .arrow:hover {
+            transform: translateY(10px);
+        }
+        .nav-link {
+            transition: background-color 0.3s ease;
+        }
+        .nav-link:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 <body class="bg-white text-black">
     <header class="flex justify-between items-center p-6">
         <div class="text-xl font-bold">GUDANG LT.5</div>
         <nav class="space-x-8">
-            <a href="#" class="text-blue-600">Home</a>
-            <a href="#" class="text-black">Stok Barang</a>
-            <a href="#" class="text-black">Stok Masuk</a>
-            <a href="#" class="text-black">Stok Keluar</a>
-            <a href="#" class="text-black">Riwayat</a>
-            <a href="#" class="text-black">Semua Rak</a>
-            <a href="#" class="text-black">Input SKU</a>
-            <a href="#" class="text-black">Data S.O</a>
-            <a href="#" class="text-black">Contact</a>
+            <a href="#" class="text-blue-600 nav-link p-2">Home</a>
+            <a href="#" class="text-black nav-link p-2">Stok Barang</a>
+            <a href="#" class="text-black nav-link p-2">Stok Masuk</a>
+            <a href="#" class="text-black nav-link p-2">Stok Keluar</a>
+            <a href="#" class="text-black nav-link p-2">Riwayat</a>
+            <a href="#" class="text-black nav-link p-2">Semua Rak</a>
+            <a href="#" class="text-black nav-link p-2">Input SKU</a>
+            <a href="#" class="text-black nav-link p-2">Data S.O</a>
+            <a href="#" class="text-black nav-link p-2">Contact</a>
         </nav>
     </header>
     <hr class="border-t-2 border-black">
@@ -48,7 +60,7 @@
             <p>We’re <span class="text-black">ok.</span></p>
         </div>
         <div class="mt-16 z-10">
-            <img src="https://cdn.prod.website-files.com/5b13df51d0d5fe8211f203da/5b13f32811a9ded47d358b1d_arrow-blue-long.svg" alt="Blue arrow pointing down" class="w-16 h-16">
+            <img src="https://cdn.prod.website-files.com/5b13df51d0d5fe8211f203da/5b13f32811a9ded47d358b1d_arrow-blue-long.svg" alt="Blue arrow pointing down" class="w-32 h-32 arrow cursor-pointer" onclick="scrollToBottom()">
         </div>
     </main>
     <script>
@@ -59,6 +71,13 @@
             const translateY = Math.min(scrollY / 2, 200);
             square.style.transform = `translate3d(0%, ${translateY}px, 0px) scale3d(${scale}, ${scale}, 1)`;
         });
+
+        function scrollToBottom() {
+            window.scrollTo({
+                top: document.body.scrollHeight,
+                behavior: 'smooth'
+            });
+        }
     </script>
 </body>
 </html>
