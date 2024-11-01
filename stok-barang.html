@@ -10,17 +10,6 @@
         body {
             font-family: 'Roboto', sans-serif;
         }
-        .square {
-            will-change: transform;
-            transform: translate3d(0%, 0px, 0px) scale3d(1, 1, 1);
-            transform-style: preserve-3d;
-            transition: transform 0.3s ease;
-            width: 2600px;
-            left: 23%;
-            max-width: none;
-            display: block;
-            position: absolute;
-        }
         .arrow {
             transition: transform 0.3s ease;
         }
@@ -33,13 +22,26 @@
         .nav-link:hover {
             background-color: rgba(0, 0, 0, 0.1);
         }
+        .table-header {
+            background-color: #f3f4f6;
+        }
+        .col-no { width: 5%; }
+        .col-kode-barang { width: 10%; }
+        .col-nama-produk { width: 20%; }
+        .col-packing { width: 10%; }
+        .col-rak { width: 10%; }
+        .col-stok-tersedia { width: 10%; }
+        .col-utama { width: 10%; }
+        .col-ecer { width: 10%; }
+        .col-blok-i { width: 10%; }
+        .col-lantai-4 { width: 10%; }
     </style>
 </head>
 <body class="bg-white text-black">
     <header class="flex justify-between items-center p-6">
         <div class="text-xl font-bold">GUDANG LT.5</div>
         <nav class="space-x-8">
-            <a href="index.html" class="text-blue-600 nav-link p-2">Home</a>
+            <a href="home.html" class="text-blue-600 nav-link p-2">Home</a>
             <a href="stok-barang.html" class="text-black nav-link p-2">Stok Barang</a>
             <a href="stok-masuk.html" class="text-black nav-link p-2">Stok Masuk</a>
             <a href="stok-keluar.html" class="text-black nav-link p-2">Stok Keluar</a>
@@ -51,33 +53,85 @@
         </nav>
     </header>
     <hr class="border-t-2 border-black">
-    <div class="relative">
-        <img src="https://cdn.prod.website-files.com/5b13df51d0d5fe8211f203da/5b13f381541a8480ba1420db_square.svg" alt="Yellow and red background" class="square absolute top-20">
-    </div>
-    <main class="flex flex-col items-start justify-center h-screen relative pl-20">
-        <div class="text-9xl font-bold leading-none z-10">
-            <p>Hey.</p>
-            <p>We’re <span class="text-black">ok 2.</span></p>
+    <main class="flex flex-col items-start justify-center h-screen relative pl-20 pr-20">
+        <div class="mb-4 w-full max-w-md">
+            <input type="text" id="searchBox" placeholder="Search by Kode Barang or Nama Produk" class="w-full p-2 border border-gray-300 rounded">
         </div>
-        <div class="mt-16 z-10">
-            <img src="https://cdn.prod.website-files.com/5b13df51d0d5fe8211f203da/5b13f32811a9ded47d358b1d_arrow-blue-long.svg" alt="Blue arrow pointing down" class="w-32 h-32 arrow cursor-pointer" onclick="scrollToBottom()">
+        <div class="overflow-x-auto w-full">
+            <table class="min-w-full bg-white">
+                <thead class="table-header">
+                    <tr>
+                        <th class="col-no p-4 text-left">No</th>
+                        <th class="col-kode-barang p-4 text-left">Kode Barang</th>
+                        <th class="col-nama-produk p-4 text-left">Nama Produk</th>
+                        <th class="col-packing p-4 text-left">Packing</th>
+                        <th class="col-rak p-4 text-left">Rak</th>
+                        <th class="col-stok-tersedia p-4 text-left">Stok Tersedia</th>
+                        <th class="col-utama p-4 text-left">Utama</th>
+                        <th class="col-ecer p-4 text-left">Ecer</th>
+                        <th class="col-blok-i p-4 text-left">Blok I</th>
+                        <th class="col-lantai-4 p-4 text-left">Lantai 4</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Data will be populated here -->
+                </tbody>
+            </table>
         </div>
     </main>
     <script>
-        window.addEventListener('scroll', function() {
-            const square = document.querySelector('.square');
-            const scrollY = window.scrollY;
-            const scale = Math.max(1 - scrollY / 2000, 0.5);
-            const translateY = Math.min(scrollY / 2, 200);
-            square.style.transform = `translate3d(0%, ${translateY}px, 0px) scale3d(${scale}, ${scale}, 1)`;
-        });
+        const apiKey = 'AIzaSyCb9GeLx7UcqkvXj3Oy3F6e1B9XAvMLE4A';
+        const spreadsheetId = '1zuHHOCcq2NeVHamsscSNITmMv4lk3Yz1oRu4Apdla1I';
+        const range = 'stokbarang!A2:J';
+        const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`;
 
-        function scrollToBottom() {
-            window.scrollTo({
-                top: document.body.scrollHeight,
-                behavior: 'smooth'
+        const tableBody = document.getElementById('tableBody');
+        const searchBox = document.getElementById('searchBox');
+
+        async function fetchData() {
+            const response = await fetch(url);
+            const data = await response.json();
+            return data.values;
+        }
+
+        function renderTable(data) {
+            tableBody.innerHTML = '';
+            data.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="col-no p-4">${item[0]}</td>
+                    <td class="col-kode-barang p-4">${item[1]}</td>
+                    <td class="col-nama-produk p-4">${item[2]}</td>
+                    <td class="col-packing p-4">${item[3]}</td>
+                    <td class="col-rak p-4">${item[4]}</td>
+                    <td class="col-stok-tersedia p-4">${item[5]}</td>
+                    <td class="col-utama p-4">${item[6]}</td>
+                    <td class="col-ecer p-4">${item[7]}</td>
+                    <td class="col-blok-i p-4">${item[8]}</td>
+                    <td class="col-lantai-4 p-4">${item[9]}</td>
+                `;
+                tableBody.appendChild(row);
             });
         }
+
+        searchBox.addEventListener('input', function() {
+            const query = searchBox.value.toLowerCase();
+            const filteredData = tableData.filter(item => 
+                item[1].toLowerCase().includes(query) || 
+                item[2].toLowerCase().includes(query)
+            );
+            renderTable(filteredData);
+        });
+
+        let tableData = [];
+
+        async function init() {
+            tableData = await fetchData();
+            renderTable(tableData);
+        }
+
+        // Initial render
+        init();
     </script>
 </body>
 </html>
