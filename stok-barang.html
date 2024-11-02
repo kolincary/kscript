@@ -26,16 +26,13 @@
             background-color: #005cef;
             color: white;
         }
-        .col-no { width: 5%; }
-        .col-kode-barang { width: 10%; }
-        .col-nama-produk { width: 25%; }
-        .col-packing { width: 10%; }
+        .col-nama-produk { width: 20%; }
+        .col-jumlah { width: 10%; }
+        .col-type { width: 10%; }
         .col-rak { width: 10%; }
+        .col-packing { width: 20%; }
         .col-stok-tersedia { width: 10%; }
-        .col-utama { width: 10%; }
-        .col-ecer { width: 10%; }
-        .col-blok-i { width: 10%; }
-        .col-lantai-4 { width: 10%; }
+        .col-aksi { width: 7%; }
         .mobile-menu {
             display: none;
         }
@@ -46,6 +43,29 @@
             .mobile-menu {
                 display: block;
             }
+        }
+        .button {
+            width: 150px; /* Set a fixed width for the buttons */
+        }
+        .dropdown {
+            position: relative;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            border: 1px solid #ccc;
+            z-index: 1;
+            max-height: 150px;
+            overflow-y: auto;
+            width: 100%;
+        }
+        .dropdown-content div {
+            padding: 8px;
+            cursor: pointer;
+        }
+        .dropdown-content div:hover {
+            background-color: #f1f1f1;
         }
     </style>
 </head>
@@ -81,222 +101,152 @@
         <a href="contact.html" class="text-black nav-link p-2">Contact</a>
     </div>
     <hr class="border-t-2 border-black">
-    <main class="flex flex-col items-start justify-start h-screen relative pl-20 pr-20">
-        <div class="mt-16 mb-4 w-full max-w-md flex items-center">
-            <input type="text" id="searchBox" placeholder="Search by Kode Barang or Nama Produk" class="w-full p-2 border border-gray-300 rounded" autocomplete="off">
-            <button id="clearButton" class="ml-2 p-2 text-gray-500">
-                <i class="fas fa-times" style="color: rgb(37 99 235 / var(--tw-text-opacity));"></i>
-            </button>
+    <main class="flex flex-col items-start justify-start h-screen relative pl-20 pr-20 mt-8">
+        <div class="w-full max-w-md mb-4">
+            <label for="tanggal" class="block text-sm font-medium text-gray-700">Tanggal</label>
+            <input type="text" id="tanggal" class="w-full p-2 border border-gray-300 rounded mb-4" placeholder="dd-mm-yyyy" onfocus="(this.type='date')" onblur="(this.type='text')">
+            
+            <label for="waktu" class="block text-sm font-medium text-gray-700">Waktu</label>
+            <input type="time" id="waktu" class="w-full p-2 border border-gray-300 rounded mb-4">
+            
+            <label for="gudang" class="block text-sm font-medium text-gray-700">Gudang</label>
+            <select id="gudang" class="w-full p-2 border border-gray-300 rounded mb-4">
+                <option value="Gudang 1">Gudang 1</option>
+                <option value="Gudang 2">Gudang 2</option>
+                <option value="Gudang 3">Gudang 3</option>
+            </select>
+        </div>
+        <div class="flex space-x-4 mb-4 items-center w-full">
+            <button id="addRowButton" class="button p-2 bg-blue-500 text-white rounded">Tambah Baris</button>
+            <button id="addTenRowsButton" class="button p-2 bg-blue-500 text-white rounded">Tambah 10 Baris</button>
+            <button id="submitButton" class="button p-2 bg-green-500 text-white rounded">Kirim</button>
+            <div class="flex-grow"></div>
+            <span id="rowCount" class="text-sm font-medium text-gray-700">Row: 0</span>
         </div>
         <div class="overflow-x-auto w-full">
             <table class="min-w-full bg-white">
                 <thead class="table-header">
                     <tr>
-                        <th class="col-no p-4 text-left">No</th>
-                        <th class="col-kode-barang p-4 text-left">Kode Barang</th>
                         <th class="col-nama-produk p-4 text-left">Nama Produk</th>
-                        <th class="col-packing p-4 text-left">Packing</th>
+                        <th class="col-jumlah p-4 text-left">Jumlah</th>
+                        <th class="col-type p-4 text-left">Type</th>
                         <th class="col-rak p-4 text-left">Rak</th>
+                        <th class="col-packing p-4 text-left">Packing</th>
                         <th class="col-stok-tersedia p-4 text-left">Stok Tersedia</th>
-                        <th class="col-utama p-4 text-left">Utama</th>
-                        <th class="col-ecer p-4 text-left">Ecer</th>
-                        <th class="col-blok-i p-4 text-left">Blok I</th>
-                        <th class="col-lantai-4 p-4 text-left">Lantai 4</th>
+                        <th class="col-aksi p-4 text-left">Aksi</th>
                     </tr>
                 </thead>
-                <tbody id="tableBody">
-                    <!-- Data will be populated here -->
+                <tbody id="inputTableBody">
+                    <!-- Input rows will be added here -->
                 </tbody>
             </table>
         </div>
-        <div class="flex justify-between items-center w-full mt-4">
-            <div class="relative">
-                <button id="dropdownButton" class="p-2 border border-gray-300 rounded">
-                    Show <span id="itemsPerPage">10</span> items <i class="fas fa-caret-down"></i>
-                </button>
-                <div id="dropdownMenu" class="hidden absolute bg-white border border-gray-300 rounded mb-2 bottom-full">
-                    <button class="block w-full text-left p-2 hover:bg-gray-100" data-value="10">10</button>
-                    <button class="block w-full text-left p-2 hover:bg-gray-100" data-value="50">50</button>
-                    <button class="block w-full text-left p-2 hover:bg-gray-100" data-value="100">100</button>
-                </div>
-            </div>
-            <div id="pagination" class="flex space-x-2">
-                <!-- Pagination buttons will be populated here -->
-            </div>
-        </div>
     </main>
     <footer class="w-full text-center py-4 border-t mt-8">
-        Copyright &copy; <span id="currentYear"></span> Johan Gilbeth
+        Copyright &copy; <span id="currentYear"></span> @ Johan Gilbeth
     </footer>
     <script>
         const apiKey = 'AIzaSyCb9GeLx7UcqkvXj3Oy3F6e1B9XAvMLE4A';
         const spreadsheetId = '1zuHHOCcq2NeVHamsscSNITmMv4lk3Yz1oRu4Apdla1I';
-        const range = 'stokbarang!A2:J';
+        const range = 'databarang!A2:A';
         const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`;
 
-        const tableBody = document.getElementById('tableBody');
-        const searchBox = document.getElementById('searchBox');
-        const clearButton = document.getElementById('clearButton');
-        const menuButton = document.getElementById('menuButton');
-        const mobileNav = document.getElementById('mobileNav');
         const currentYear = document.getElementById('currentYear');
-        const dropdownButton = document.getElementById('dropdownButton');
-        const dropdownMenu = document.getElementById('dropdownMenu');
-        const itemsPerPageSpan = document.getElementById('itemsPerPage');
-        const pagination = document.getElementById('pagination');
+        const addRowButton = document.getElementById('addRowButton');
+        const addTenRowsButton = document.getElementById('addTenRowsButton');
+        const inputTableBody = document.getElementById('inputTableBody');
+        const rowCount = document.getElementById('rowCount');
+        const tanggalInput = document.getElementById('tanggal');
+        const waktuInput = document.getElementById('waktu');
 
-        let itemsPerPage = 10;
-        let currentPage = 1;
-        let tableData = [];
-        let filteredData = [];
+        let productOptions = [];
 
-        menuButton.addEventListener('click', () => {
-            mobileNav.classList.toggle('hidden');
+        currentYear.textContent = new Date().getFullYear();
+
+        addRowButton.addEventListener('click', () => {
+            addRows(1);
         });
 
-        clearButton.addEventListener('click', () => {
-            searchBox.value = '';
-            filteredData = tableData;
-            renderTable(filteredData);
-            renderPagination();
+        addTenRowsButton.addEventListener('click', () => {
+            addRows(10);
         });
 
-        dropdownButton.addEventListener('click', () => {
-            dropdownMenu.classList.toggle('hidden');
-        });
-
-        dropdownMenu.addEventListener('click', (event) => {
-            if (event.target.tagName === 'BUTTON') {
-                itemsPerPage = parseInt(event.target.getAttribute('data-value'));
-                itemsPerPageSpan.textContent = itemsPerPage;
-                dropdownMenu.classList.add('hidden');
-                renderTable(filteredData);
-                renderPagination();
-            }
-        });
-
-        async function fetchData() {
+        async function fetchProductOptions() {
             const response = await fetch(url);
             const data = await response.json();
-            return data.values;
+            return data.values.flat();
         }
 
-        function renderTable(data) {
-            tableBody.innerHTML = '';
-            const start = (currentPage - 1) * itemsPerPage;
-            const end = start + itemsPerPage;
-            const paginatedData = data.slice(start, end);
+        async function initProductOptions() {
+            productOptions = await fetchProductOptions();
+        }
 
-            paginatedData.forEach((item, index) => {
+        function addRows(count) {
+            for (let i = 0; i < count; i++) {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td class="col-no p-4">${item[0] || ''}</td>
-                    <td class="col-kode-barang p-4">${item[1] || ''}</td>
-                    <td class="col-nama-produk p-4">${item[2] || ''}</td>
-                    <td class="col-packing p-4">${item[3] || ''}</td>
-                    <td class="col-rak p-4">${item[4] || ''}</td>
-                    <td class="col-stok-tersedia p-4">${item[5] || 0}</td>
-                    <td class="col-utama p-4">${item[6] || 0}</td>
-                    <td class="col-ecer p-4">${item[7] || 0}</td>
-                    <td class="col-blok-i p-4">${item[8] || 0}</td>
-                    <td class="col-lantai-4 p-4">${item[9] || 0}</td>
+                    <td class="col-nama-produk p-4">
+                        <div class="dropdown">
+                            <input type="text" class="w-full p-2 border border-gray-300 rounded product-input">
+                            <div class="dropdown-content"></div>
+                        </div>
+                    </td>
+                    <td class="col-jumlah p-4"><input type="number" class="w-full p-2 border border-gray-300 rounded"></td>
+                    <td class="col-type p-4"><input type="text" class="w-full p-2 border border-gray-300 rounded"></td>
+                    <td class="col-rak p-4"><input type="text" class="w-full p-2 border border-gray-300 rounded"></td>
+                    <td class="col-packing p-4"><input type="text" class="w-full p-2 border border-gray-300 rounded"></td>
+                    <td class="col-stok-tersedia p-4"><input type="number" class="w-full p-2 border border-gray-300 rounded"></td>
+                    <td class="col-aksi p-4"><button class="p-2 bg-red-500 text-white rounded removeRowButton">Hapus</button></td>
                 `;
-                tableBody.appendChild(row);
-            });
-        }
+                inputTableBody.appendChild(row);
 
-        function renderPagination() {
-            pagination.innerHTML = '';
-            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+                const productInput = row.querySelector('.product-input');
+                const dropdownContent = row.querySelector('.dropdown-content');
 
-            if (totalPages <= 1) return;
-
-            const createButton = (page) => {
-                const button = document.createElement('button');
-                button.textContent = page;
-                button.classList.add('p-2', 'border', 'border-gray-300', 'rounded');
-                if (page === currentPage) {
-                    button.classList.add('bg-blue-500', 'text-white');
-                } else {
-                    button.classList.add('bg-white', 'text-black');
-                }
-                button.addEventListener('click', () => {
-                    currentPage = page;
-                    renderTable(filteredData);
-                    renderPagination();
+                productInput.addEventListener('input', () => {
+                    const query = productInput.value.toLowerCase();
+                    dropdownContent.innerHTML = '';
+                    const filteredOptions = productOptions.filter(option => option.toLowerCase().includes(query));
+                    filteredOptions.forEach(option => {
+                        const div = document.createElement('div');
+                        div.textContent = option;
+                        div.addEventListener('click', () => {
+                            productInput.value = option;
+                            dropdownContent.innerHTML = '';
+                        });
+                        dropdownContent.appendChild(div);
+                    });
+                    dropdownContent.style.display = filteredOptions.length ? 'block' : 'none';
                 });
-                return button;
-            };
 
-            const createArrowButton = (direction) => {
-                const button = document.createElement('button');
-                button.innerHTML = direction === 'left' ? '&larr;' : '&rarr;';
-                button.classList.add('p-2', 'border', 'border-gray-300', 'rounded');
-                button.addEventListener('click', () => {
-                    if (direction === 'left' && currentPage > 1) {
-                        currentPage--;
-                    } else if (direction === 'right' && currentPage < totalPages) {
-                        currentPage++;
-                    }
-                    renderTable(filteredData);
-                    renderPagination();
+                row.querySelector('.removeRowButton').addEventListener('click', () => {
+                    row.remove();
+                    updateRowCount();
                 });
-                return button;
-            };
-
-            pagination.appendChild(createArrowButton('left'));
-            pagination.appendChild(createButton(1));
-
-            if (currentPage > 4) {
-                const ellipsis = document.createElement('span');
-                ellipsis.textContent = '...';
-                ellipsis.classList.add('p-2');
-                pagination.appendChild(ellipsis);
             }
-
-            const startPage = Math.max(2, currentPage - 1);
-            const endPage = Math.min(totalPages - 1, currentPage + 1);
-
-            for (let i = startPage; i <= endPage; i++) {
-                pagination.appendChild(createButton(i));
-            }
-
-            if (currentPage < totalPages - 3) {
-                const ellipsis = document.createElement('span');
-                ellipsis.textContent = '...';
-                ellipsis.classList.add('p-2');
-                pagination.appendChild(ellipsis);
-            }
-
-            if (totalPages > 1) {
-                pagination.appendChild(createButton(totalPages));
-            }
-            pagination.appendChild(createArrowButton('right'));
+            updateRowCount();
         }
 
-        searchBox.addEventListener('input', function() {
-            const query = searchBox.value.toLowerCase();
-            filteredData = tableData.filter(item => 
-                item[1].toLowerCase().includes(query) || 
-                item[2].toLowerCase().includes(query)
-            );
-            currentPage = 1; // Reset to first page on search
-            renderTable(filteredData);
-            renderPagination();
-        });
-
-        async function init() {
-            tableData = await fetchData();
-            filteredData = tableData;
-            renderTable(filteredData);
-            renderPagination();
+        function updateRowCount() {
+            const rowCountValue = inputTableBody.querySelectorAll('tr').length;
+            rowCount.textContent = `Row: ${rowCountValue}`;
         }
 
-        // Initial render
-        init();
+        function setCurrentDateTime() {
+            const today = new Date();
+            const day = String(today.getDate()).padStart(2, '0');
+            const month = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+            const year = today.getFullYear();
+            const hours = String(today.getHours()).padStart(2, '0');
+            const minutes = String(today.getMinutes()).padStart(2, '0');
+            tanggalInput.value = `${day}-${month}-${year}`;
+            waktuInput.value = `${hours}:${minutes}`;
+        }
 
-        // Set current year
-        currentYear.textContent = new Date().getFullYear();
+        // Set the current date and time on page load
+        setCurrentDateTime();
+        // Initialize product options
+        initProductOptions();
     </script>
 </body>
 </html>
