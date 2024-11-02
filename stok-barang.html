@@ -39,14 +39,45 @@
         .mobile-menu {
             display: none;
         }
-@@ -47,6 +44,29 @@
+        @media (max-width: 768px) {
+            .desktop-menu {
+                display: none;
+            }
+            .mobile-menu {
                 display: block;
             }
         }
     </style>
 </head>
 <body class="bg-white text-black">
-@@ -81,222 +101,152 @@
+    <header class="flex justify-between items-center p-6">
+        <div class="text-xl font-bold">GUDANG LT.5</div>
+        <nav class="space-x-8 desktop-menu">
+            <a href="home.html" class="text-black nav-link p-2">Home</a>
+            <a href="stok-barang.html" class="text-blue-600 nav-link p-2">Stok Barang</a>
+            <a href="stok-masuk.html" class="text-black nav-link p-2">Stok Masuk</a>
+            <a href="stok-keluar.html" class="text-black nav-link p-2">Stok Keluar</a>
+            <a href="riwayat.html" class="text-black nav-link p-2">Riwayat</a>
+            <a href="semua-rak.html" class="text-black nav-link p-2">Semua Rak</a>
+            <a href="input-sku.html" class="text-black nav-link p-2">Input SKU</a>
+            <a href="data-so.html" class="text-black nav-link p-2">Data S.O</a>
+            <a href="contact.html" class="text-black nav-link p-2">Contact</a>
+        </nav>
+        <div class="mobile-menu">
+            <button id="menuButton" class="text-black">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </div>
+    </header>
+    <div id="mobileNav" class="hidden flex flex-col space-y-4 p-6">
+        <a href="home.html" class="text-black nav-link p-2">Home</a>
+        <a href="stok-barang.html" class="text-blue-600 nav-link p-2">Stok Barang</a>
+        <a href="stok-masuk.html" class="text-black nav-link p-2">Stok Masuk</a>
+        <a href="stok-keluar.html" class="text-black nav-link p-2">Stok Keluar</a>
+        <a href="riwayat.html" class="text-black nav-link p-2">Riwayat</a>
+        <a href="semua-rak.html" class="text-black nav-link p-2">Semua Rak</a>
+        <a href="input-sku.html" class="text-black nav-link p-2">Input SKU</a>
+        <a href="data-so.html" class="text-black nav-link p-2">Data S.O</a>
         <a href="contact.html" class="text-black nav-link p-2">Contact</a>
     </div>
     <hr class="border-t-2 border-black">
