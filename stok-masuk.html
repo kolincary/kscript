@@ -10,17 +10,6 @@
         body {
             font-family: 'Roboto', sans-serif;
         }
-        .square {
-            will-change: transform;
-            transform: translate3d(0%, 0px, 0px) scale3d(1, 1, 1);
-            transform-style: preserve-3d;
-            transition: transform 0.3s ease;
-            width: 2600px;
-            left: 23%;
-            max-width: none;
-            display: block;
-            position: absolute;
-        }
         .arrow {
             transition: transform 0.3s ease;
         }
@@ -33,14 +22,36 @@
         .nav-link:hover {
             background-color: rgba(0, 0, 0, 0.1);
         }
+        .table-header {
+            background-color: #005cef;
+            color: white;
+        }
+        .col-nama-produk { width: 20%; }
+        .col-jumlah { width: 10%; }
+        .col-type { width: 10%; }
+        .col-rak { width: 10%; }
+        .col-packing { width: 20%; }
+        .col-stok-tersedia { width: 10%; }
+        .col-aksi { width: 7%; }
+        .mobile-menu {
+            display: none;
+        }
+        @media (max-width: 768px) {
+            .desktop-menu {
+                display: none;
+            }
+            .mobile-menu {
+                display: block;
+            }
+        }
     </style>
 </head>
 <body class="bg-white text-black">
     <header class="flex justify-between items-center p-6">
         <div class="text-xl font-bold">GUDANG LT.5</div>
-        <nav class="space-x-8">
-            <a href="home.html" class="text-blue-600 nav-link p-2">Home</a>
-            <a href="stok-barang.html" class="text-black nav-link p-2">Stok Barang</a>
+        <nav class="space-x-8 desktop-menu">
+            <a href="home.html" class="text-black nav-link p-2">Home</a>
+            <a href="stok-barang.html" class="text-blue-600 nav-link p-2">Stok Barang</a>
             <a href="stok-masuk.html" class="text-black nav-link p-2">Stok Masuk</a>
             <a href="stok-keluar.html" class="text-black nav-link p-2">Stok Keluar</a>
             <a href="riwayat.html" class="text-black nav-link p-2">Riwayat</a>
@@ -49,34 +60,98 @@
             <a href="data-so.html" class="text-black nav-link p-2">Data S.O</a>
             <a href="contact.html" class="text-black nav-link p-2">Contact</a>
         </nav>
-    </header>
-    <hr class="border-t-2 border-black">
-    <div class="relative">
-        <img src="https://cdn.prod.website-files.com/5b13df51d0d5fe8211f203da/5b13f381541a8480ba1420db_square.svg" alt="Yellow and red background" class="square absolute top-20">
-    </div>
-    <main class="flex flex-col items-start justify-center h-screen relative pl-20">
-        <div class="text-9xl font-bold leading-none z-10">
-            <p>Hey.</p>
-            <p>We’re <span class="text-black">ok 3.</span></p>
+        <div class="mobile-menu">
+            <button id="menuButton" class="text-black">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
         </div>
-        <div class="mt-16 z-10">
-            <img src="https://cdn.prod.website-files.com/5b13df51d0d5fe8211f203da/5b13f32811a9ded47d358b1d_arrow-blue-long.svg" alt="Blue arrow pointing down" class="w-32 h-32 arrow cursor-pointer" onclick="scrollToBottom()">
+    </header>
+    <div id="mobileNav" class="hidden flex flex-col space-y-4 p-6">
+        <a href="home.html" class="text-black nav-link p-2">Home</a>
+        <a href="stok-barang.html" class="text-blue-600 nav-link p-2">Stok Barang</a>
+        <a href="stok-masuk.html" class="text-black nav-link p-2">Stok Masuk</a>
+        <a href="stok-keluar.html" class="text-black nav-link p-2">Stok Keluar</a>
+        <a href="riwayat.html" class="text-black nav-link p-2">Riwayat</a>
+        <a href="semua-rak.html" class="text-black nav-link p-2">Semua Rak</a>
+        <a href="input-sku.html" class="text-black nav-link p-2">Input SKU</a>
+        <a href="data-so.html" class="text-black nav-link p-2">Data S.O</a>
+        <a href="contact.html" class="text-black nav-link p-2">Contact</a>
+    </div>
+    <hr class="border-t-2 border-black">
+    <main class="flex flex-col items-start justify-start h-screen relative pl-20 pr-20 mt-8">
+        <div class="w-full max-w-md mb-4">
+            <label for="tanggal" class="block text-sm font-medium text-gray-700">Tanggal</label>
+            <input type="date" id="tanggal" class="w-full p-2 border border-gray-300 rounded mb-4">
+            
+            <label for="waktu" class="block text-sm font-medium text-gray-700">Waktu</label>
+            <input type="time" id="waktu" class="w-full p-2 border border-gray-300 rounded mb-4">
+            
+            <label for="gudang" class="block text-sm font-medium text-gray-700">Gudang</label>
+            <select id="gudang" class="w-full p-2 border border-gray-300 rounded mb-4">
+                <option value="Gudang 1">Gudang 1</option>
+                <option value="Gudang 2">Gudang 2</option>
+                <option value="Gudang 3">Gudang 3</option>
+            </select>
+        </div>
+        <div class="flex space-x-4 mb-4 items-center w-full">
+            <button id="addRowButton" class="p-2 bg-blue-500 text-white rounded">Tambah Baris</button>
+            <button id="submitButton" class="p-2 bg-green-500 text-white rounded">Kirim</button>
+            <span id="rowCount" class="text-sm font-medium text-gray-700 ml-auto">Row: 0</span>
+        </div>
+        <div class="overflow-x-auto w-full">
+            <table class="min-w-full bg-white">
+                <thead class="table-header">
+                    <tr>
+                        <th class="col-nama-produk p-4 text-left">Nama Produk</th>
+                        <th class="col-jumlah p-4 text-left">Jumlah</th>
+                        <th class="col-type p-4 text-left">Type</th>
+                        <th class="col-rak p-4 text-left">Rak</th>
+                        <th class="col-packing p-4 text-left">Packing</th>
+                        <th class="col-stok-tersedia p-4 text-left">Stok Tersedia</th>
+                        <th class="col-aksi p-4 text-left">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="inputTableBody">
+                    <!-- Input rows will be added here -->
+                </tbody>
+            </table>
         </div>
     </main>
+    <footer class="w-full text-center py-4 border-t mt-8">
+        Copyright &copy; <span id="currentYear"></span> @ Johan Gilbeth
+    </footer>
     <script>
-        window.addEventListener('scroll', function() {
-            const square = document.querySelector('.square');
-            const scrollY = window.scrollY;
-            const scale = Math.max(1 - scrollY / 2000, 0.5);
-            const translateY = Math.min(scrollY / 2, 200);
-            square.style.transform = `translate3d(0%, ${translateY}px, 0px) scale3d(${scale}, ${scale}, 1)`;
+        const currentYear = document.getElementById('currentYear');
+        const addRowButton = document.getElementById('addRowButton');
+        const inputTableBody = document.getElementById('inputTableBody');
+        const rowCount = document.getElementById('rowCount');
+
+        currentYear.textContent = new Date().getFullYear();
+
+        addRowButton.addEventListener('click', () => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td class="col-nama-produk p-4"><input type="text" class="w-full p-2 border border-gray-300 rounded"></td>
+                <td class="col-jumlah p-4"><input type="number" class="w-full p-2 border border-gray-300 rounded"></td>
+                <td class="col-type p-4"><input type="text" class="w-full p-2 border border-gray-300 rounded"></td>
+                <td class="col-rak p-4"><input type="text" class="w-full p-2 border border-gray-300 rounded"></td>
+                <td class="col-packing p-4"><input type="text" class="w-full p-2 border border-gray-300 rounded"></td>
+                <td class="col-stok-tersedia p-4"><input type="number" class="w-full p-2 border border-gray-300 rounded"></td>
+                <td class="col-aksi p-4"><button class="p-2 bg-red-500 text-white rounded removeRowButton">Hapus</button></td>
+            `;
+            inputTableBody.appendChild(row);
+
+            row.querySelector('.removeRowButton').addEventListener('click', () => {
+                row.remove();
+                updateRowCount();
+            });
+
+            updateRowCount();
         });
 
-        function scrollToBottom() {
-            window.scrollTo({
-                top: document.body.scrollHeight,
-                behavior: 'smooth'
-            });
+        function updateRowCount() {
+            const rowCountValue = inputTableBody.querySelectorAll('tr').length;
+            rowCount.textContent = `Row: ${rowCountValue}`;
         }
     </script>
 </body>
