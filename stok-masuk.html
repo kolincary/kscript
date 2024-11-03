@@ -134,19 +134,19 @@
             <span id="rowCount" class="text-sm font-medium text-gray-700">Row: 0</span>
         </div>
         <div class="w-full">
-            <table class="min-w-full bg-white">
-                <thead class="table-header">
-                    <tr>
-                        <th class="col-nama-produk p-4 text-left">Nama Produk</th>
-                        <th class="col-jumlah p-4 text-left">Jumlah</th>
-                        <th class="col-type p-4 text-left">Type</th>
-                        <th class="col-rak p-4 text-left">Rak</th>
-                        <th class="col-packing p-4 text-left">Packing</th>
-                        <th class="col-stok-tersedia p-4 text-left">Stok Tersedia</th>
-                        <th class="col-aksi p-4 text-left">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody id="inputTableBody">
+    <table class="min-w-full bg-white">
+        <thead class="table-header">
+            <tr>
+                <th class="col-nama-produk p-4 text-left">Nama Produk</th>
+                <th class="col-jumlah p-4 text-left">Jumlah</th>
+                <th class="col-type p-4 text-left">Type</th>
+                <th class="col-rak p-4 text-left">Rak</th>
+                <th class="col-packing p-4 text-left">Packing</th>
+                <th class="col-stok-tersedia p-4 text-left">Stok Tersedia</th>
+                <th class="col-aksi p-4 text-left">Aksi</th>
+            </tr>
+        </thead>
+        <tbody id="inputTableBody">
                     <!-- Input rows will be added here -->
                 </tbody>
             </table>
@@ -156,10 +156,12 @@
         Copyright &copy; <span id="currentYear"></span> @ Johan Gilbeth
     </footer>
     <script>
-        const apiKey = 'AIzaSyCb9GeLx7UcqkvXj3Oy3F6e1B9XAvMLE4A';
-        const spreadsheetId = '1hJVqPsSUdo5wyJ7yVO_Fs-UkHrsQDIhvX4EMejgbAXc';
-        const range = 'datapacking!A:D';
-        const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`;
+const apiKey = 'AIzaSyCb9GeLx7UcqkvXj3Oy3F6e1B9XAvMLE4A';
+const spreadsheetId = '1hJVqPsSUdo5wyJ7yVO_Fs-UkHrsQDIhvX4EMejgbAXc';
+const packingRange = 'datapacking!A:D';
+const stokRange = 'datastok!A:D'; // Ganti dengan nama sheet dan range yang sesuai
+const packingUrl = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${packingRange}?key=${apiKey}`;
+const stokUrl = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${stokRange}?key=${apiKey}`;
 
         const currentYear = document.getElementById('currentYear');
         const addRowButton = document.getElementById('addRowButton');
@@ -168,8 +170,6 @@
         const rowCount = document.getElementById('rowCount');
         const tanggalInput = document.getElementById('tanggal');
         const waktuInput = document.getElementById('waktu');
-	const stokRange = 'datastok!A:B'; // Ganti dengan nama sheet dan range yang sesuai
-	const stokUrl = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${stokRange}?key=${apiKey}`;
 
 
         let productOptions = [];
@@ -187,18 +187,28 @@
             addRows(10);
         });
 
-        async function fetchPackingData() {
-            const response = await fetch(url);
-            const data = await response.json();
-            return data.values;
-        }
+async function fetchPackingData() {
+    const response = await fetch(packingUrl);
+    const data = await response.json();
+    return data.values;
+}
 
-        async function initPackingData() {
-            packingData = await fetchPackingData();
-        }
+async function fetchStokData() {
+    const response = await fetch(stokUrl);
+    const data = await response.json();
+    console.log('Stok Data:', data.values); // Tambahkan log ini
+    return data.values;
+}
 
+async function initPackingData() {
+    packingData = await fetchPackingData();
+}
+
+async function initStokData() {
+    stokData = await fetchStokData();
+}
 	async function fetchRakData() {
-    const response = await fetch(url);
+    const response = await fetch(packingUrl); // Ganti url dengan packingUrl
     const data = await response.json();
     rakData = data.values.map(row => row[0]); // Ambil data dari kolom A
 }
@@ -206,19 +216,6 @@
 async function initRakData() {
     await fetchRakData();
 }
-
-async function fetchStokData() {
-    const response = await fetch(stokUrl);
-    const data = await response.json();
-    return data.values;
-}
-
-async function initStokData() {
-    stokData = await fetchStokData();
-    console.log('Stok Data:', stokData); // Tambahkan log untuk memeriksa data stok
-}
-
-initStokData();
 
 function addRows(count) {
     for (let i = 0; i < count; i++) {
@@ -257,10 +254,10 @@ function addRows(count) {
 
         // Menambahkan event listener untuk input produk
         productInput.addEventListener('input', () => {
-    const query = productInput.value.toLowerCase();
+    const query = productInput.value.trim().toLowerCase();
     productDropdownContent.innerHTML = '';
     const filteredOptions = packingData.filter(([namaProduk]) => namaProduk.toLowerCase().includes(query));
-    
+
     filteredOptions.forEach(([namaProduk, packing]) => {
         const div = document.createElement('div');
         div.textContent = namaProduk;
@@ -269,33 +266,39 @@ function addRows(count) {
             packingInput.value = packing; // Set packing value when product is selected
             
             // Update stok tersedia
-            const stokRow = stokData.find(([stokNama]) => stokNama === namaProduk);
-            console.log('Selected Product:', namaProduk); // Log produk yang dipilih
-            console.log('Stok Row:', stokRow); // Log data stok yang ditemukan
+            updateStokTersedia(namaProduk, row);
             
-            if (stokRow) {
-                const stokTersedia = stokRow[1]; // Ambil nilai stok dari kolom B
-                const stokInput = row.querySelector('.col-stok-tersedia input');
-                stokInput.value = stokTersedia; // Set nilai stok ke input
-            } else {
-                const stokInput = row.querySelector('.col-stok-tersedia input');
-                stokInput.value = 0; // Jika tidak ditemukan, set ke 0
-            }
-
             productDropdownContent.innerHTML = ''; // Clear dropdown
             productDropdownContent.style.display = 'none'; // Hide dropdown after selection
         });
         productDropdownContent.appendChild(div);
     });
-    
-    productDropdownContent.style.display = filteredOptions.length ? 'block' : 'none';
 
-    // Highlight the first item if there are options
-    if (filteredOptions.length > 0) {
-        const firstItem = productDropdownContent.firstChild;
-        firstItem.classList.add('highlighted');
-    }
+    productDropdownContent.style.display = filteredOptions.length ? 'block' : 'none';
 });
+
+// Tambahkan event listener untuk menangani perubahan input
+productInput.addEventListener('change', () => {
+    const namaProduk = productInput.value.trim();
+    updateStokTersedia(namaProduk, row);
+});
+
+// Fungsi untuk memperbarui stok tersedia
+function updateStokTersedia(namaProduk, row) {
+    const stokRow = stokData.find(([stokNama]) => stokNama.trim().toLowerCase() === namaProduk.trim().toLowerCase());
+    const stokInput = row.querySelector('.col-stok-tersedia input');
+    
+    if (stokRow) {
+        const stokTersedia = stokRow[1]; // Ambil nilai stok dari kolom yang benar
+        stokInput.value = stokTersedia; // Set nilai stok ke input
+    } else {
+        stokInput.value = 0; // Jika tidak ditemukan, set ke 0
+    }
+}
+
+// Panggil fungsi untuk menginisialisasi data saat halaman dimuat
+initPackingData();
+initStokData();
 
         // Menambahkan event listener keydown
         productInput.addEventListener('keydown', (e) => handleProductInputKeyDown(e, productInput, packingInput, row));
