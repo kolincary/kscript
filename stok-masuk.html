@@ -74,6 +74,9 @@
         th, td {
             border: 1px solid #ddd;
         }
+        .invalid {
+            border-color: red;
+        }
     </style>
 </head>
 <body class="bg-white text-black">
@@ -286,6 +289,12 @@
                     rakDropdownContent.style.display = filteredOptions.length ? 'block' : 'none';
                 });
 
+                rakInput.addEventListener('blur', () => {
+                    if (rakInput.value.trim() === '') {
+                        rakDropdownContent.style.display = 'none';
+                    }
+                });
+
                 productInput.addEventListener('keydown', (e) => {
                     handleKeyDown(e, productInput, productDropdownContent, row, 'product-input');
                 });
@@ -330,28 +339,18 @@
                 items.forEach(item => item.classList.remove('highlighted'));
                 items[index].classList.add('highlighted');
                 items[index].scrollIntoView({ block: 'nearest' });
-            } else if (e.key === 'Enter') {
+            } else if (e.key === 'Enter' || e.key === 'Tab') {
                 e.preventDefault();
                 if (index >= 0 && dropdownContent) {
                     input.value = items[index].textContent;
                     dropdownContent.innerHTML = '';
+                } else {
+                    input.classList.add('invalid');
+                    return;
                 }
                 const nextRow = row.nextElementSibling;
                 if (nextRow) {
                     const nextInput = nextRow.querySelector(`.${className}`);
-                    if (nextInput) {
-                        nextInput.focus();
-                    }
-                }
-            } else if (e.key === 'Tab') {
-                e.preventDefault();
-                if (index >= 0 && dropdownContent) {
-                    input.value = items[index].textContent;
-                    dropdownContent.innerHTML = '';
-                }
-                const nextCell = input.closest('td').nextElementSibling;
-                if (nextCell) {
-                    const nextInput = nextCell.querySelector('input');
                     if (nextInput) {
                         nextInput.focus();
                     }
@@ -379,6 +378,16 @@
         setCurrentDateTime();
         // Initialize product and rak options
         initOptions();
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (event) => {
+            const isClickInside = event.target.closest('.rak-input') || event.target.closest('.rak-dropdown-content');
+            if (!isClickInside) {
+                document.querySelectorAll('.rak-dropdown-content').forEach(dropdown => {
+                    dropdown.style.display = 'none';
+                });
+            }
+        });
     </script>
 </body>
 </html>
