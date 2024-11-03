@@ -158,6 +158,11 @@
         const range = 'databarang!A2:A';
         const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`;
 
+        const rakApiKey = 'AIzaSyCb9GeLx7UcqkvXj3Oy3F6e1B9XAvMLE4A';
+        const rakSpreadsheetId = '1hJVqPsSUdo5wyJ7yVO_Fs-UkHrsQDIhvX4EMejgbAXc';
+        const rakRange = 'datagudang!A2:A';
+        const rakUrl = `https://sheets.googleapis.com/v4/spreadsheets/${rakSpreadsheetId}/values/${rakRange}?key=${rakApiKey}`;
+
         const currentYear = document.getElementById('currentYear');
         const addRowButton = document.getElementById('addRowButton');
         const addTenRowsButton = document.getElementById('addTenRowsButton');
@@ -167,6 +172,7 @@
         const waktuInput = document.getElementById('waktu');
 
         let productOptions = [];
+        let rakOptions = [];
 
         currentYear.textContent = new Date().getFullYear();
 
@@ -184,8 +190,15 @@
             return data.values.flat();
         }
 
-        async function initProductOptions() {
+        async function fetchRakOptions() {
+            const response = await fetch(rakUrl);
+            const data = await response.json();
+            return data.values.flat();
+        }
+
+        async function initOptions() {
             productOptions = await fetchProductOptions();
+            rakOptions = await fetchRakOptions();
         }
 
         function addRows(count) {
@@ -195,12 +208,17 @@
                     <td class="col-nama-produk p-4">
                         <div class="dropdown">
                             <input type="text" class="w-full p-2 border border-gray-300 rounded product-input">
-                            <div class="dropdown-content"></div>
+                            <div class="dropdown-content product-dropdown-content"></div>
                         </div>
                     </td>
                     <td class="col-jumlah p-4"><input type="number" class="w-full p-2 border border-gray-300 rounded jumlah-input"></td>
-                    <td class="col-type p-4"><input type="text" class="w-full p-2 border border-gray-300 rounded"></td>
-                    <td class="col-rak p-4"><input type="text" class="w-full p-2 border border-gray-300 rounded rak-input"></td>
+                    <td class="col-type p-4"><input type="text" class="w-full p-2 border border-gray-300 rounded bg-gray-100" value="IN" readonly></td>
+                    <td class="col-rak p-4">
+                        <div class="dropdown">
+                            <input type="text" class="w-full p-2 border border-gray-300 rounded rak-input">
+                            <div class="dropdown-content rak-dropdown-content"></div>
+                        </div>
+                    </td>
                     <td class="col-packing p-4"><input type="text" class="w-full p-2 border border-gray-300 rounded"></td>
                     <td class="col-stok-tersedia p-4"><input type="number" class="w-full p-2 border border-gray-300 rounded"></td>
                     <td class="col-aksi p-4"><button class="p-2 bg-red-500 text-white rounded removeRowButton">Hapus</button></td>
@@ -210,11 +228,12 @@
                 const productInput = row.querySelector('.product-input');
                 const jumlahInput = row.querySelector('.jumlah-input');
                 const rakInput = row.querySelector('.rak-input');
-                const dropdownContent = row.querySelector('.dropdown-content');
+                const productDropdownContent = row.querySelector('.product-dropdown-content');
+                const rakDropdownContent = row.querySelector('.rak-dropdown-content');
 
                 productInput.addEventListener('input', () => {
                     const query = productInput.value.toLowerCase();
-                    dropdownContent.innerHTML = '';
+                    productDropdownContent.innerHTML = '';
                     const filteredOptions = productOptions.filter(option => option.toLowerCase().includes(query));
                     filteredOptions.forEach((option, index) => {
                         const div = document.createElement('div');
@@ -224,15 +243,51 @@
                         }
                         div.addEventListener('click', () => {
                             productInput.value = option;
-                            dropdownContent.innerHTML = '';
+                            productDropdownContent.innerHTML = '';
                         });
-                        dropdownContent.appendChild(div);
+                        productDropdownContent.appendChild(div);
                     });
-                    dropdownContent.style.display = filteredOptions.length ? 'block' : 'none';
+                    productDropdownContent.style.display = filteredOptions.length ? 'block' : 'none';
+                });
+
+                rakInput.addEventListener('focus', () => {
+                    rakDropdownContent.innerHTML = '';
+                    rakOptions.forEach((option, index) => {
+                        const div = document.createElement('div');
+                        div.textContent = option;
+                        if (index === 0) {
+                            div.classList.add('highlighted');
+                        }
+                        div.addEventListener('click', () => {
+                            rakInput.value = option;
+                            rakDropdownContent.innerHTML = '';
+                        });
+                        rakDropdownContent.appendChild(div);
+                    });
+                    rakDropdownContent.style.display = 'block';
+                });
+
+                rakInput.addEventListener('input', () => {
+                    const query = rakInput.value.toLowerCase();
+                    rakDropdownContent.innerHTML = '';
+                    const filteredOptions = rakOptions.filter(option => option.toLowerCase().includes(query));
+                    filteredOptions.forEach((option, index) => {
+                        const div = document.createElement('div');
+                        div.textContent = option;
+                        if (index === 0) {
+                            div.classList.add('highlighted');
+                        }
+                        div.addEventListener('click', () => {
+                            rakInput.value = option;
+                            rakDropdownContent.innerHTML = '';
+                        });
+                        rakDropdownContent.appendChild(div);
+                    });
+                    rakDropdownContent.style.display = filteredOptions.length ? 'block' : 'none';
                 });
 
                 productInput.addEventListener('keydown', (e) => {
-                    handleKeyDown(e, productInput, dropdownContent, row, 'product-input');
+                    handleKeyDown(e, productInput, productDropdownContent, row, 'product-input');
                 });
 
                 jumlahInput.addEventListener('keydown', (e) => {
@@ -240,7 +295,7 @@
                 });
 
                 rakInput.addEventListener('keydown', (e) => {
-                    handleKeyDown(e, rakInput, null, row, 'rak-input');
+                    handleKeyDown(e, rakInput, rakDropdownContent, row, 'rak-input');
                 });
 
                 row.querySelector('.removeRowButton').addEventListener('click', () => {
@@ -322,8 +377,8 @@
 
         // Set the current date and time on page load
         setCurrentDateTime();
-        // Initialize product options
-        initProductOptions();
+        // Initialize product and rak options
+        initOptions();
     </script>
 </body>
 </html>
