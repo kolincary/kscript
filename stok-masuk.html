@@ -275,6 +275,12 @@ function addRows(count) {
     });
 
     productDropdownContent.style.display = filteredOptions.length ? 'block' : 'none';
+
+    // Highlight the first option if available
+    if (filteredOptions.length > 0) {
+        const firstOption = productDropdownContent.firstChild;
+        firstOption.classList.add('highlighted');
+    }
 });
 
 // Tambahkan event listener untuk menangani perubahan input
