@@ -64,8 +64,15 @@
             padding: 8px;
             cursor: pointer;
         }
-        .dropdown-content div:hover {
+        .dropdown-content div:hover, .dropdown-content .highlighted {
             background-color: #f1f1f1;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #ddd;
         }
     </style>
 </head>
@@ -191,9 +198,9 @@
                             <div class="dropdown-content"></div>
                         </div>
                     </td>
-                    <td class="col-jumlah p-4"><input type="number" class="w-full p-2 border border-gray-300 rounded"></td>
+                    <td class="col-jumlah p-4"><input type="number" class="w-full p-2 border border-gray-300 rounded jumlah-input"></td>
                     <td class="col-type p-4"><input type="text" class="w-full p-2 border border-gray-300 rounded"></td>
-                    <td class="col-rak p-4"><input type="text" class="w-full p-2 border border-gray-300 rounded"></td>
+                    <td class="col-rak p-4"><input type="text" class="w-full p-2 border border-gray-300 rounded rak-input"></td>
                     <td class="col-packing p-4"><input type="text" class="w-full p-2 border border-gray-300 rounded"></td>
                     <td class="col-stok-tersedia p-4"><input type="number" class="w-full p-2 border border-gray-300 rounded"></td>
                     <td class="col-aksi p-4"><button class="p-2 bg-red-500 text-white rounded removeRowButton">Hapus</button></td>
@@ -201,15 +208,20 @@
                 inputTableBody.appendChild(row);
 
                 const productInput = row.querySelector('.product-input');
+                const jumlahInput = row.querySelector('.jumlah-input');
+                const rakInput = row.querySelector('.rak-input');
                 const dropdownContent = row.querySelector('.dropdown-content');
 
                 productInput.addEventListener('input', () => {
                     const query = productInput.value.toLowerCase();
                     dropdownContent.innerHTML = '';
                     const filteredOptions = productOptions.filter(option => option.toLowerCase().includes(query));
-                    filteredOptions.forEach(option => {
+                    filteredOptions.forEach((option, index) => {
                         const div = document.createElement('div');
                         div.textContent = option;
+                        if (index === 0) {
+                            div.classList.add('highlighted');
+                        }
                         div.addEventListener('click', () => {
                             productInput.value = option;
                             dropdownContent.innerHTML = '';
@@ -219,12 +231,77 @@
                     dropdownContent.style.display = filteredOptions.length ? 'block' : 'none';
                 });
 
+                productInput.addEventListener('keydown', (e) => {
+                    handleKeyDown(e, productInput, dropdownContent, row, 'product-input');
+                });
+
+                jumlahInput.addEventListener('keydown', (e) => {
+                    handleKeyDown(e, jumlahInput, null, row, 'jumlah-input');
+                });
+
+                rakInput.addEventListener('keydown', (e) => {
+                    handleKeyDown(e, rakInput, null, row, 'rak-input');
+                });
+
                 row.querySelector('.removeRowButton').addEventListener('click', () => {
                     row.remove();
                     updateRowCount();
                 });
             }
             updateRowCount();
+        }
+
+        function handleKeyDown(e, input, dropdownContent, row, className) {
+            const items = dropdownContent ? dropdownContent.querySelectorAll('div') : [];
+            let index = Array.from(items).findIndex(item => item.classList.contains('highlighted'));
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (index < items.length - 1) {
+                    index++;
+                } else {
+                    index = 0;
+                }
+                items.forEach(item => item.classList.remove('highlighted'));
+                items[index].classList.add('highlighted');
+                items[index].scrollIntoView({ block: 'nearest' });
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (index > 0) {
+                    index--;
+                } else {
+                    index = items.length - 1;
+                }
+                items.forEach(item => item.classList.remove('highlighted'));
+                items[index].classList.add('highlighted');
+                items[index].scrollIntoView({ block: 'nearest' });
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                if (index >= 0 && dropdownContent) {
+                    input.value = items[index].textContent;
+                    dropdownContent.innerHTML = '';
+                }
+                const nextRow = row.nextElementSibling;
+                if (nextRow) {
+                    const nextInput = nextRow.querySelector(`.${className}`);
+                    if (nextInput) {
+                        nextInput.focus();
+                    }
+                }
+            } else if (e.key === 'Tab') {
+                e.preventDefault();
+                if (index >= 0 && dropdownContent) {
+                    input.value = items[index].textContent;
+                    dropdownContent.innerHTML = '';
+                }
+                const nextCell = input.closest('td').nextElementSibling;
+                if (nextCell) {
+                    const nextInput = nextCell.querySelector('input');
+                    if (nextInput) {
+                        nextInput.focus();
+                    }
+                }
+            }
         }
 
         function updateRowCount() {
