@@ -1,1 +1,44 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Data</title>
+</head>
+<body>
+    <form id="dataForm">
+        <input type="text" id="data1" placeholder="Data 1" required>
+        <input type="text" id="data2" placeholder="Data 2" required>
+        <input type="text" id="data3" placeholder="Data 3" required>
+        <button type="submit">Kirim Data</button>
+    </form>
 
+    <script>
+        document.getElementById('dataForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Mencegah pengiriman form standar
+            
+            const data = {
+                data1: document.getElementById('data1').value,
+                data2: document.getElementById('data2').value,
+                data3: document.getElementById('data3').value
+            };
+
+            // Ganti URL dengan URL Web App Anda
+            fetch('https://script.google.com/macros/s/AKfycbyJf_lLLnom2JIbekvDLkF6TTAwKdIiMXTQRGWIav_NTu9mriAVIe9P6ImyzSVGj13yUw/exec', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.text())
+            .then(result => {
+                alert(result); // Tampilkan pesan sukses
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
