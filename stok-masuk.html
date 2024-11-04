@@ -435,69 +435,70 @@ async function sendDataToGoogleSheets(data) {
     }
 }
 
-// Fungsi untuk mengumpulkan data dari tabel dan mengirimnya
-async function collectDataAndSend() {
-    const rows = Array.from(inputTableBody.querySelectorAll('tr'));
-    const dataToSend = rows.map(row => {
-        const namaProduk = row.querySelector('.product-input').value;
-        const jumlah = row.querySelector('.jumlah-input').value;
-        const type = row.querySelector('.col-type input').value; // Assuming it's read-only
-        const rak = row.querySelector('.rak-select').value;
-        const packing = row.querySelector('.packing-input').value;
-        const stokTersedia = row.querySelector('.col-stok-tersedia input').value;
-        const tanggal = tanggalInput.value;
-        const waktu = waktuInput.value;
+        // Fungsi untuk mengumpulkan data dari tabel dan mengirimnya
+        async function collectDataAndSend() {
+            const rows = Array.from(inputTableBody.querySelectorAll('tr'));
+            const dataToSend = rows.map(row => {
+                const tanggal = tanggalInput.value;
+                const waktu = waktuInput.value;
+                const namaProduk = row.querySelector('.product-input').value;
+                const jumlah = row.querySelector('.jumlah-input').value;
+                const type = row.querySelector('.col-type input').value; // Assuming it's read-only
+                const gudang = gudangSelect.value;
+                const rak = row.querySelector('.rak-select').value;
+                const packing = row.querySelector('.packing-input').value;
+                const stokTersedia = row.querySelector('.col-stok-tersedia input').value;
 
-        return [tanggal, waktu, namaProduk, jumlah, type, gudangSelect.value, rak, packing, stokTersedia];
-    }).filter(row => row[2]); // Filter out rows without product name
+                return [tanggal, waktu, namaProduk, jumlah, type, gudang, rak, packing, stokTersedia];
+            }).filter(row => row[2]); // Filter out rows without product name
 
-    if (dataToSend.length === 0) {
-        alert('Tidak ada data untuk dikirim.');
-        return;
-    }
+            if (dataToSend.length === 0) {
+                alert('Tidak ada data untuk dikirim.');
+                return;
+            }
 
-    // Mengirim data ke Google Sheets
-    await sendDataToGoogleSheets(dataToSend);
-}
+            // Mengirim data ke Google Sheets
+            await sendDataToGoogleSheets(dataToSend);
+        }
 
 // Menambahkan event listener untuk tombol Kirim
 document.getElementById('submitButton').addEventListener('click', () => {
     collectDataAndSend();
 });
 
-// Fungsi untuk mengirim data ke Google Sheets
-async function sendDataToGoogleSheets(data) {
-    const spreadsheetId = '1_zcQY0rhRIaMid_XdflPy33xlcpwqzX6-fZxm7OGa6g'; // Ganti dengan ID spreadsheet Anda
-    const range = 'database2!A2:H'; // Sesuaikan rentang sesuai kebutuhan
-    const apiKey = 'AIzaSyCb9GeLx7UcqkvXj3Oy3F6e1B9XAvMLE4A'; // Pastikan ini valid
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}:append?valueInputOption=RAW&key=${apiKey}`;
+        // Fungsi untuk mengirim data ke Google Sheets
+        async function sendDataToGoogleSheets(data) {
+            const spreadsheetId = '1hJVqPsSUdo5wyJ7yVO_Fs-UkHrsQDIhvX4EMejgbAXc'; // Ganti dengan ID spreadsheet Anda
+            const range = 'database!A2:I'; // Sesuaikan rentang sesuai kebutuhan
+            const apiKey = 'AIzaSyCb9GeLx7UcqkvXj3Oy3F6e1B9XAvMLE4A'; // Pastikan ini valid
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}:append?valueInputOption=RAW&key=${apiKey}`;
 
-    try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                values: data
-            }),
-        });
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        values: data
+                    }),
+                });
 
-        console.log('Response Status:', response.status); // Log status respons
-        console.log('Response:', await response.clone().json()); // Log respons JSON
+                console.log('Response Status:', response.status); // Log status respons
+                console.log('Response:', await response.clone().json()); // Log respons JSON
 
-        if (response.ok) {
-            alert('Data berhasil dikirim ke Google Sheets!');
-        } else {
-            const error = await response.json();
-            console.error('Error:', error);
-            alert('Gagal mengirim data ke Google Sheets. ' + (error.message || 'Tidak ada pesan kesalahan.'));
+                if (response.ok) {
+                    alert('Data berhasil dikirim ke Google Sheets!');
+                } else {
+                    const error = await response.json();
+                    console.error('Error:', error);
+                    alert('Gagal mengirim data ke Google Sheets. ' + (error.message || 'Tidak ada pesan kesalahan.'));
+                }
+            } catch (err) {
+                console.error('Fetch Error:', err);
+                alert('Gagal mengirim data ke Google Sheets. ' + err.message);
+            }
         }
-    } catch (err) {
-        console.error('Fetch Error:', err);
-        alert('Gagal mengirim data ke Google Sheets. ' + err.message);
-    }
-}
         
 function handleProductInputKeyDown(e, productInput, packingInput, row) {
             const dropdownContent = productInput.nextElementSibling;
