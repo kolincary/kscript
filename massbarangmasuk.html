@@ -277,25 +277,32 @@ initGudangData();
 // Panggil fungsi ini di bagian akhir script
 initRakData();
 
-document.getElementById('processBulkDataButton').addEventListener('click', () => {
+document.getElementById('processBulkDataButton').addEventListener('click', async () => {
     const bulkDataInput = document.getElementById('bulkData').value;
-    const rows = bulkDataInput.split('\n'); // Pisahkan setiap baris
+    const rows = bulkDataInput.split('\n'); // Split each line
     const productRows = [];
 
     rows.forEach(row => {
-        const parts = row.trim().split(/\s+/); // Pisahkan berdasarkan spasi
+        const parts = row.trim().split(/\s+/); // Split by space
         if (parts.length >= 2) {
-            const namaProduk = parts.slice(0, -1).join(' '); // Ambil semua kecuali yang terakhir sebagai nama produk
-            const jumlah = parts[parts.length - 1]; // Ambil yang terakhir sebagai jumlah
+            const namaProduk = parts.slice(0, -1).join(' '); // All but the last as product name
+            const jumlah = parts[parts.length - 1]; // Last as quantity
             productRows.push({ namaProduk, jumlah });
         }
     });
+
+    // Clear previous rows
+    inputTableBody.innerHTML = '';
+
+    // Fetch packing and stock data
+    await initPackingData();
+    await initStokData();
 
     productRows.forEach(({ namaProduk, jumlah }) => {
         addProductRow(namaProduk, jumlah);
     });
 
-    // Kosongkan textarea setelah pemrosesan
+    // Clear textarea after processing
     document.getElementById('bulkData').value = '';
 });
 
@@ -319,20 +326,14 @@ function addProductRow(namaProduk, jumlah) {
     inputTableBody.appendChild(row);
     updateRowCount();
 
-    // Update packing dan stok secara otomatis
+    // Set up event listener for product input
     const productInput = row.querySelector('.product-input');
     productInput.addEventListener('input', () => {
         const namaProduk = productInput.value.trim();
         updatePackingAndStok(namaProduk, row);
     });
 
-    // Tambahkan event listener untuk tombol hapus
-    row.querySelector('.removeRowButton').addEventListener('click', () => {
-        row.remove();
-        updateRowCount();
-    });
-
-    // Inisialisasi dropdown rak dengan data dari Google Sheets
+    // Initialize dropdown rak with data from Google Sheets
     fetchRakData().then(rakData => {
         const rakSelect = row.querySelector('.rak-select');
         if (rakData && rakData.length) {
@@ -342,47 +343,37 @@ function addProductRow(namaProduk, jumlah) {
                 option.textContent = rak;
                 rakSelect.appendChild(option);
             });
-        } else {
-            console.error('No rak data found');
         }
     });
+
+    // Event listener for removing the row
+    row.querySelector('.removeRowButton').addEventListener('click', () => {
+        row.remove();
+        updateRowCount();
+    });
+
+    // Update packing and stock for the newly added row
+    updatePackingAndStok(namaProduk, row);
 }
 
-// Fungsi untuk memperbarui packing dan stok tersedia
+// Function to update packing and stock
 function updatePackingAndStok(namaProduk, row) {
     const packingRow = packingData.find(([packingNama]) => packingNama.trim().toLowerCase() === namaProduk.trim().toLowerCase());
     const stokRow = stokData.find(([stokNama]) => stokNama.trim().toLowerCase() === namaProduk.trim().toLowerCase());
     
-    const packingInput = row.querySelector('.packing-input');
+ const packingInput = row.querySelector('.packing-input');
     const stokInput = row.querySelector('.col-stok-tersedia input');
 
     if (packingRow) {
-        packingInput.value = packingRow[1]; // Ambil nilai packing dari kolom yang benar
+        packingInput.value = packingRow[1]; // Set packing value
     } else {
-        packingInput.value = ''; // Jika tidak ditemukan, kosongkan
+        packingInput.value = ''; // Clear if not found
     }
 
     if (stokRow) {
-        const stokTersedia = stokRow[1]; // Ambil nilai stok dari kolom yang benar
-        stokInput.value = stokTersedia; // Set nilai stok ke input
+        stokInput.value = stokRow[1]; // Set stock value
     } else {
-        stokInput.value = 0; // Jika tidak ditemukan, set ke 0
-    }
-}
-
-// Fungsi untuk memperbarui stok tersedia
-function updateStokTersedia(namaProduk, row) {
-    console.log(`Mencari stok untuk: ${namaProduk}`); // Debugging
-    const stokRow = stokData.find(([stokNama]) => stokNama.trim().toLowerCase() === namaProduk.trim().toLowerCase());
-    const stokInput = row.querySelector('.col-stok-tersedia input');
-
-    if (stokRow) {
-        const stokTersedia = stokRow[1]; // Ambil nilai stok dari kolom yang benar
-        stokInput.value = stokTersedia; // Set nilai stok ke input
-        console.log(`Stok tersedia: ${stokTersedia}`); // Debugging
-    } else {
-        stokInput.value = 0; // Jika tidak ditemukan, set ke 0
-        console.log(`Stok tidak ditemukan untuk: ${namaProduk}`); // Debugging
+        stokInput.value = 0; // Set to 0 if not found
     }
 }
 
