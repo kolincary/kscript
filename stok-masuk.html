@@ -405,27 +405,29 @@ initRakData();
         initRakData();
     // Fungsi untuk mengirim data ke Google Sheets
     async function sendDataToGoogleSheets(data) {
-        const spreadsheetId = '1_zcQY0rhRIaMid_XdflPy33xlcpwqzX6-fZxm7OGa6g';
-        const range = 'database2!A2:H'; // Ganti dengan nama sheet dan range yang sesuai
-        const apiKey = 'AIzaSyDkmI62UpsCN7gvaEDWs1dfc0WaGprBI20';
-        const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}:append?valueInputOption=RAW&key=${apiKey}`;
+    const spreadsheetId = '1_zcQY0rhRIaMid_XdflPy33xlcpwqzX6-fZxm7OGa6g'; // Ganti dengan ID spreadsheet Anda
+    const range = 'database2!A2:H'; // Sesuaikan rentang sesuai kebutuhan
+    const apiKey = 'AIzaSyCb9GeLx7UcqkvXj3Oy3F6e1B9XAvMLE4A'; // Pastikan ini valid
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}:append?valueInputOption=RAW&key=${apiKey}`;
 
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                values: data
-            }),
-        });
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            values: data
+        }),
+    });
 
-        if (response.ok) {
-            alert('Data berhasil dikirim ke Google Sheets!');
-        } else {
-            alert('Gagal mengirim data ke Google Sheets.');
-        }
+    if (response.ok) {
+        alert('Data berhasil dikirim ke Google Sheets!');
+    } else {
+        const error = await response.json();
+        console.error('Error:', error);
+        alert('Gagal mengirim data ke Google Sheets. ' + error.message);
     }
+}
 
     // Fungsi untuk mengumpulkan data dari tabel dan mengirimnya
 // Fungsi untuk mengumpulkan data dari tabel dan mengirimnya
