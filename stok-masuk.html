@@ -127,6 +127,7 @@
         <div class="flex space-x-4 mb-4 items-center w-full">
             <button id="addRowButton" class="button p-2 bg-blue-500 text-white rounded">Tambah Baris</button>
             <button id="addTenRowsButton" class="button p-2 bg-blue-500 text-white rounded">Tambah 10 Baris</button>
+            <button id="bulkInputButton" class="button p-2 bg-yellow-500 text-white rounded">Input Massal</button>
             <button id="submitButton" class="button p-2 bg-green-500 text-white rounded">Kirim</button>
             <div class="flex-grow"></div>
             <span id="rowCount" class="text-sm font-medium text-gray-700">Row: 0</span>
@@ -168,6 +169,7 @@
         const currentYear = document.getElementById('currentYear');
         const addRowButton = document.getElementById('addRowButton');
         const addTenRowsButton = document.getElementById('addTenRowsButton');
+        const bulkInputButton = document.getElementById('bulkInputButton');
         const inputTableBody = document.getElementById('inputTableBody');
         const rowCount = document.getElementById('rowCount');
         const tanggalInput = document.getElementById('tanggal');
@@ -187,6 +189,10 @@
 
         addTenRowsButton.addEventListener('click', () => {
             addRows(10);
+        });
+
+        bulkInputButton.addEventListener('click', () => {
+            window.location.href = 'massbarangmasuk.html';
         });
 
         async function fetchPackingData() {
