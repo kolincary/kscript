@@ -447,7 +447,30 @@ initRakData();
     }
 
     // Menambahkan event listener untuk tombol Kirim
-    document.getElementById('submitButton').addEventListener('click', collectDataAndSend);
+    document.getElementById('submitButton').addEventListener('click', async () => {
+    const rows = inputTableBody.querySelectorAll('tr');
+    for (const row of rows) {
+        const tanggal = tanggalInput.value;
+        const waktu = waktuInput.value;
+        const namaProduk = row.querySelector('.product-input').value;
+        const jumlah = row.querySelector('.jumlah-input').value;
+        const type = row.querySelector('.col-type input').value; // Asumsikan ini adalah "IN"
+        const gudang = gudangSelect.value;
+        const rak = row.querySelector('.rak-select').value;
+
+        // Mengirim data ke Google Sheets
+        const response = await fetch('https://script.google.com/macros/s/AKfycbxmfmh8KE7L-1_V3SCOOJDFsmBAloYZ6dmCDKLl-J1EIKVHUptBHaARkafhywczVP4S/exec', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ tanggal, waktu, namaProduk, jumlah, type, gudang, rak })
+        });
+
+        const result = await response.text();
+        console.log(result); // Tampilkan hasil di konsol
+    }
+});
         
 function handleProductInputKeyDown(e, productInput, packingInput, row) {
             const dropdownContent = productInput.nextElementSibling;
