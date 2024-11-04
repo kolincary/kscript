@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -6,12 +6,14 @@
     <title>Form Data</title>
 </head>
 <body>
-    <form id="dataForm">
-        <input type="text" id="data1" placeholder="Data 1" required>
-        <input type="text" id="data2" placeholder="Data 2" required>
-        <input type="text" id="data3" placeholder="Data 3" required>
-        <button type="submit">Kirim Data</button>
-    </form>
+    <form 
+  method="POST" 
+  action="YOUR_WEBAPP_URL"
+>
+  <input name="Email" type="email" placeholder="Email" required>
+  <input name="Name" type="text" placeholder="Name" required>
+  <button type="submit">Send</button>
+</form>
 
     <script>
         document.getElementById('dataForm').addEventListener('submit', function(event) {
