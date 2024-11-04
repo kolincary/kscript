@@ -407,7 +407,7 @@ initRakData();
 async function sendDataToGoogleSheets(data) {
     const spreadsheetId = '1_zcQY0rhRIaMid_XdflPy33xlcpwqzX6-fZxm7OGa6g'; // Ganti dengan ID spreadsheet Anda
     const range = 'database2!A2:H'; // Sesuaikan rentang sesuai kebutuhan
-    const apiKey = 'AIzaSyCb9GeLx7UcqkvXj3Oy3F6e1B9XAvMLE4A'; // Pastikan ini valid
+    const apiKey = 'AIzaSyCb9GeLx7UcqkvXj3Oy3F6e1B9XAvMLE4A'; // Gunakan API key Anda
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}:append?valueInputOption=RAW&key=${apiKey}`;
 
     try {
