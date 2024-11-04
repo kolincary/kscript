@@ -321,7 +321,9 @@ initStokData();
 }
 
 // Panggil fungsi untuk menginisialisasi data rak saat halaman dimuat
-initRakData();        function handleProductInputKeyDown(e, productInput, packingInput, row) {
+initRakData();
+
+function handleProductInputKeyDown(e, productInput, packingInput, row) {
             const dropdownContent = productInput.nextElementSibling;
             const items = dropdownContent.querySelectorAll('div');
             let index = Array.from(items).findIndex(item => item.classList.contains('highlighted'));
