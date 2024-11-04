@@ -1,4 +1,4 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -6,26 +6,22 @@
     <title>Form Data</title>
 </head>
 <body>
-    <form 
-  method="POST" 
-  action="https://script.google.com/macros/s/AKfycbyJf_lLLnom2JIbekvDLkF6TTAwKdIiMXTQRGWIav_NTu9mriAVIe9P6ImyzSVGj13yUw/exec"
->
-  <input name="Email" type="email" placeholder="Email" required>
-  <input name="Name" type="text" placeholder="Name" required>
-  <button type="submit">Send</button>
-</form>
+    <form id="dataForm" method="POST" action="https://script.google.com/macros/s/AKfycbyJf_lLLnom2JIbekvDLkF6TTAwKdIiMXTQRGWIav_NTu9mriAVIe9P6ImyzSVGj13yUw/exec">
+        <input id="data1" name="Email" type="email" placeholder="Email" required>
+        <input id="data2" name="Name" type="text" placeholder="Name" required>
+        <button type="submit">Send</button>
+    </form>
 
     <script>
         document.getElementById('dataForm').addEventListener('submit', function(event) {
             event.preventDefault(); // Mencegah pengiriman form standar
             
             const data = {
-                data1: document.getElementById('data1').value,
-                data2: document.getElementById('data2').value,
-                data3: document.getElementById('data3').value
+                Email: document.getElementById('data1').value,
+                Name: document.getElementById('data2').value
             };
 
-            // Ganti URL dengan URL Web App Anda
+            // Mengirim data ke Google Apps Script
             fetch('https://script.google.com/macros/s/AKfycbyJf_lLLnom2JIbekvDLkF6TTAwKdIiMXTQRGWIav_NTu9mriAVIe9P6ImyzSVGj13yUw/exec', {
                 method: 'POST',
                 headers: {
@@ -33,9 +29,9 @@
                 },
                 body: JSON.stringify(data)
             })
-            .then(response => response.text())
+            .then(response => response.json()) // Mengubah response ke JSON
             .then(result => {
-                alert(result); // Tampilkan pesan sukses
+                alert(result.result); // Tampilkan pesan sukses
             })
             .catch(error => {
                 console.error('Error:', error);
