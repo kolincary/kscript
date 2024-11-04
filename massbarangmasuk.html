@@ -10,17 +10,6 @@
         body {
             font-family: 'Roboto', sans-serif;
         }
-        .square {
-            will-change: transform;
-            transform: translate3d(0%, 0px, 0px);
-            transform-style: preserve-3d;
-            transition: transform 0.3s ease;
-            width: 2600px;
-            left: 23%;
-            max-width: none;
-            display: block;
-            position: absolute;
-        }
         .arrow {
             transition: transform 0.3s ease;
         }
@@ -33,48 +22,70 @@
         .nav-link:hover {
             background-color: rgba(0, 0, 0, 0.1);
         }
-        .section.section-blue {
-            background-color: #005cef; /* New blue color */
-            position: relative;
-            padding: 50px 20px;
-            z-index: -1;
-    	    height: 80%
+        .table-header {
+            background-color: #005cef;
+            color: white;
         }
-        .section.section-blue2 {
-            background-color: #005cef; /* New blue color */
-            position: relative;
-            padding: 50px 20px;
-    	    height: 100%
+        .col-nama-produk { width: 20%; }
+        .col-jumlah { width: 10%; }
+        .col-type { width: 10%; }
+        .col-rak { width: 10%; }
+        .col-packing { width: 20%; }
+        .col-stok-tersedia { width: 10%; }
+        .col-aksi { width: 7%; }
+        .mobile-menu {
+            display: none;
         }
-        .section .wrapper {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .header.color-white.header-light {
-            color: #FFFFFF;
-            font-weight: 300;
-        }
-        .header.color-white.header-light .color-blue-dark {
-            color: #1E40AF; /* Tailwind's blue-900 */
-        }
-        .paragraph.color-white {
-            color: #FFFFFF;
-        }
-        @media (min-width: 2200px) {
-            .section {
-                padding-top: 200px;
-                padding-bottom: 200px;
+        @media (max-width: 768px) {
+            .desktop-menu {
+                display: none;
             }
+            .mobile-menu {
+                display: block;
+            }
+        }
+        .button {
+            width: 150px; /* Set a fixed width for the buttons */
+        }
+        .dropdown {
+            position: relative;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            border: 1px solid #ccc;
+            z-index: 1;
+            max-height: 300px;
+            overflow-y: auto;
+            width: 100%;
+        }
+        .dropdown-content div {
+            padding: 8px;
+            cursor: pointer;
+        }
+        .dropdown-content div:hover, .dropdown-content .highlighted {
+            background-color: #f1f1f1;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #ddd;
+        }
+        .invalid {
+            border-color: red;
         }
     </style>
 </head>
-<body class="bg-white text-black flex flex-col min-h-screen">
+<body class="bg-white text-black">
     <header class="flex justify-between items-center p-6">
         <div class="text-xl font-bold">GUDANG LT.5</div>
-        <nav class="space-x-8">
-            <a href="home.html" class="text-blue-600 nav-link p-2">Home</a>
+        <nav class="space-x-8 desktop-menu">
+            <a href="home.html" class="text-black nav-link p-2">Home</a>
             <a href="stok-barang.html" class="text-black nav-link p-2">Stok Barang</a>
-            <a href="stok-masuk.html" class="text-black nav-link p-2">Stok Masuk</a>
+            <a href="stok-masuk.html" class="text-blue-600 nav-link p-2">Stok Masuk</a>
             <a href="stok-keluar.html" class="text-black nav-link p-2">Stok Keluar</a>
             <a href="riwayat.html" class="text-black nav-link p-2">Riwayat</a>
             <a href="semua-rak.html" class="text-black nav-link p-2">Semua Rak</a>
@@ -82,44 +93,570 @@
             <a href="data-so.html" class="text-black nav-link p-2">Data S.O</a>
             <a href="contact.html" class="text-black nav-link p-2">Contact</a>
         </nav>
-    </header>
-    <hr class="border-t-2 border-black">
-    <div class="relative flex-grow">
-        <img src="https://cdn.prod.website-files.com/5b13df51d0d5fe8211f203da/5b13f381541a8480ba1420db_square.svg" alt="Yellow and red background" class="square absolute top-20">
-    </div>
-    <main class="flex flex-col items-start justify-center h-screen relative pl-20">
-        <div class="text-9xl font-bold leading-none z-10">
-            <p>Hey.</p>
-            <p>We’re <span class="text-black">ok.</span></p>
+        <div class="mobile-menu">
+            <button id="menuButton" class="text-black">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
         </div>
-        <div class="mt-16 z-10">
-            <img src="https://cdn.prod.website-files.com/5b13df51d0d5fe8211f203da/5b13f32811a9ded47d358b1d_arrow-blue-long.svg" alt="Blue arrow pointing down" class="w-32 h-32 arrow cursor-pointer" onclick="scrollToBottom()">
+    </header>
+    <div id="mobileNav" class="hidden flex flex-col space-y-4 p-6">
+        <a href="home.html" class="text-black nav-link p-2">Home</a>
+        <a href="stok-barang.html" class="text-blue-600 nav-link p-2">Stok Barang</a>
+        <a href="stok-masuk.html" class="text-black nav-link p-2">Stok Masuk</a>
+        <a href="stok-keluar.html" class="text-black nav-link p-2">Stok Keluar</a>
+        <a href="riwayat.html" class="text-black nav-link p-2">Riwayat</a>
+        <a href="semua-rak.html" class="text-black nav-link p-2">Semua Rak</a>
+        <a href="input-sku.html" class="text-black nav-link p-2">Input SKU</a>
+        <a href="data-so.html" class="text-black nav-link p-2">Data S.O</a>
+        <a href="contact.html" class="text-black nav-link p-2">Contact</a>
+    </div>
+    <hr class="border-t-2 border-black">
+    <main class="flex flex-col items-start justify-start h-screen relative pl-20 pr-20 mt-8">
+        <div class="w-full max-w-md mb-4">
+            <label for="tanggal" class="block text-sm font-medium text-gray-700">Tanggal</label>
+            <input type="text" id="tanggal" class="w-full p-2 border border-gray-300 rounded mb-4" placeholder="dd-mm-yyyy" onfocus="(this.type='date')" onblur="(this.type='text')">
+            
+            <label for="waktu" class="block text-sm font-medium text-gray-700">Waktu</label>
+            <input type="time" id="waktu" class="w-full p-2 border border-gray-300 rounded mb-4">
+            
+            <label for="gudang" class="block text-sm font-medium text-gray-700">Gudang</label>
+            <select id="gudang" class="w-full p-2 border border-gray-300 rounded mb-4">
+                <!-- Options will be populated here -->
+            </select>
+<div class="w-full max-w-md mb-4">
+    <label for="bulkData" class="block text-sm font-medium text-gray-700">Paste Data Massal</label>
+    <textarea id="bulkData" class="w-full p-2 border border-gray-300 rounded mb-4" rows="5" placeholder="Paste data di sini..."></textarea>
+    <button id="processBulkDataButton" class="button p-2 bg-yellow-500 text-white rounded">Proses Data</button>
+</div>
+        </div>
+        <div class="flex space-x-4 mb-4 items-center w-full">
+            <button id="submitButton" class="button p-2 bg-green-500 text-white rounded">Kirim</button>
+            <div class="flex-grow"></div>
+            <span id="rowCount" class="text-sm font-medium text-gray-700">Row: 0</span>
+        </div>
+        <div class="w-full">
+            <table class="min-w-full bg-white">
+                <thead class="table-header">
+                    <tr>
+                        <th class="col-nama-produk p-4 text-left">Nama Produk</th>
+                        <th class="col-jumlah p-4 text-left">Jumlah</th>
+                        <th class="col-type p-4 text-left">Type</th>
+                        <th class="col-rak p-4 text-left">Rak</th>
+                        <th class="col-packing p-4 text-left">Packing</th>
+                        <th class="col-stok-tersedia p-4 text-left">Stok Tersedia</th>
+                        <th class="col-aksi p-4 text-left">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="inputTableBody">
+                    <!-- Input rows will be added here -->
+                </tbody>
+            </table>
         </div>
     </main>
-    <div id="about" class="section section-blue is-home">
-        </div>
-    </div>
-    </div>
-    <div id="about" class="section section-blue2 is-home">
-        </div>
-    </div>
+    <footer class="w-full text-center py-4 border-t mt-8">
+        Copyright &copy; <span id="currentYear"></span> Johan Gilbeth
+    </footer>
     <script>
-        window.addEventListener('scroll', function() {
-            const square = document.querySelector('.square');
-            const scrollY = window.scrollY;
-            const translateX = Math.min(scrollY / 2, 200);
-            const translateY = Math.min(scrollY / 2, 200);
-            square.style.transform = `translate3d(${translateX}px, ${translateY}px, 0px)`;
-        });
+        const apiKey = 'AIzaSyCb9GeLx7UcqkvXj3Oy3F6e1B9XAvMLE4A';
+        const spreadsheetId = '1hJVqPsSUdo5wyJ7yVO_Fs-UkHrsQDIhvX4EMejgbAXc';
+        const packingRange = 'datapacking!A2:D';
+        const stokRange = 'datastok!A2:D'; // Ganti dengan nama sheet dan range yang sesuai
+        const gudangRange = 'datagudang!A2:A';
+	const rakRange = 'inputrak!A2:A';
+        const packingUrl = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${packingRange}?key=${apiKey}`;
+        const stokUrl = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${stokRange}?key=${apiKey}`;
+        const gudangUrl = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${gudangRange}?key=${apiKey}`;
+	const rakUrl = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${rakRange}?key=${apiKey}`;
 
-        function scrollToBottom() {
-            window.scrollTo({
-                top: document.body.scrollHeight,
-                behavior: 'smooth'
-            });
+        const currentYear = document.getElementById('currentYear');
+        const inputTableBody = document.getElementById('inputTableBody');
+        const rowCount = document.getElementById('rowCount');
+        const tanggalInput = document.getElementById('tanggal');
+        const waktuInput = document.getElementById('waktu');
+        const gudangSelect = document.getElementById('gudang');
+
+        let productOptions = [];
+        let packingData = [];
+        let rakData = []; // Array untuk menyimpan data rak
+        let stokData = [];
+
+        currentYear.textContent = new Date().getFullYear();
+
+        async function fetchPackingData() {
+            const response = await fetch(packingUrl);
+            const data = await response.json();
+            return data.values;
         }
 
-        document.getElementById('currentYear').textContent = new Date().getFullYear();
+        async function fetchStokData() {
+            const response = await fetch(stokUrl);
+            const data = await response.json();
+            console.log('Stok Data:', data.values); // Tambahkan log ini
+            return data.values;
+        }
+
+        async function fetchGudangData() {
+    const response = await fetch(gudangUrl);
+    const data = await response.json();
+    console.log('Gudang Data:', data.values); // Tambahkan log ini
+    return data.values;
+}
+
+async function initPackingData() {
+    packingData = await fetchPackingData();
+    console.log('Packing Data:', packingData); // Memeriksa data packing
+}
+
+async function initStokData() {
+    stokData = await fetchStokData();
+    console.log('Stok Data:', stokData); // Memeriksa data stok
+}
+
+        async function initGudangData() {
+    const gudangData = await fetchGudangData();
+    
+    // Tambahkan opsi default
+    const defaultOption = document.createElement('option');
+    defaultOption.value = "";
+    defaultOption.textContent = "Pilih Data Gudang"; // Teks default
+    defaultOption.disabled = true; // Nonaktifkan opsi ini
+    defaultOption.selected = true; // Pilih opsi ini secara default
+    gudangSelect.appendChild(defaultOption);
+
+    if (gudangData && gudangData.length) {
+        gudangData.forEach(([gudang]) => {
+            const option = document.createElement('option');
+            option.value = gudang;
+            option.textContent = gudang;
+            gudangSelect.appendChild(option);
+        });
+    } else {
+        console.error('No gudang data found');
+    }
+}
+
+// Panggil fungsi ini di bagian akhir script
+initGudangData();
+
+        async function fetchRakData() {
+    const response = await fetch(rakUrl);
+    const data = await response.json();
+    console.log('Rak Data:', data.values); // Tambahkan log ini untuk memeriksa data
+    return data.values;
+}
+
+        async function initRakData() {
+    const rakData = await fetchRakData();
+
+    // Tambahkan opsi default
+    const defaultOption = document.createElement('option');
+    defaultOption.value = "";
+    defaultOption.textContent = "Pilih Rak"; // Teks default
+    defaultOption.disabled = true; // Nonaktifkan opsi ini
+    defaultOption.selected = true; // Pilih opsi ini secara default
+
+    // Ambil semua dropdown rak yang ada di tabel
+    const rakSelects = document.querySelectorAll('.rak-select');
+    
+    rakSelects.forEach(rakSelect => {
+        rakSelect.appendChild(defaultOption.cloneNode(true)); // Tambahkan opsi default ke setiap dropdown
+
+        if (rakData && rakData.length) {
+            rakData.forEach(([rak]) => {
+                const option = document.createElement('option');
+                option.value = rak;
+                option.textContent = rak;
+                rakSelect.appendChild(option);
+            });
+        } else {
+            console.error('No rak data found');
+        }
+    });
+}
+
+// Panggil fungsi ini di bagian akhir script
+initRakData();
+
+document.getElementById('processBulkDataButton').addEventListener('click', () => {
+    const bulkDataInput = document.getElementById('bulkData').value;
+    const rows = bulkDataInput.split('\n'); // Pisahkan setiap baris
+    const productRows = [];
+
+    rows.forEach(row => {
+        const parts = row.trim().split(/\s+/); // Pisahkan berdasarkan spasi
+        if (parts.length >= 2) {
+            const namaProduk = parts.slice(0, -1).join(' '); // Ambil semua kecuali yang terakhir sebagai nama produk
+            const jumlah = parts[parts.length - 1]; // Ambil yang terakhir sebagai jumlah
+            productRows.push({ namaProduk, jumlah });
+        }
+    });
+
+    productRows.forEach(({ namaProduk, jumlah }) => {
+        addProductRow(namaProduk, jumlah);
+    });
+
+    // Kosongkan textarea setelah pemrosesan
+    document.getElementById('bulkData').value = '';
+});
+
+function addProductRow(namaProduk, jumlah) {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+        <td class="col-nama-produk p-4">
+            <input type="text" class="w-full p-2 border border-gray-300 rounded product-input" value="${namaProduk}">
+        </td>
+        <td class="col-jumlah p-4"><input type="number" class="w-full p-2 border border-gray-300 rounded" value="${jumlah}"></td>
+        <td class="col-type p-4"><input type="text" class="w-full p-2 border border-gray-300 rounded bg-gray-100" value="IN" readonly></td>
+        <td class="col-rak p-4">
+            <select class="rak-select w-full p-2 border border-gray-300 rounded">
+                <option value="" disabled selected>Pilih Rak</option>
+            </select>
+        </td>
+        <td class="col-packing p-4"><input type="text" class="w-full p-2 border border-gray-300 rounded packing-input" readonly></td>
+        <td class="col-stok-tersedia p-4"><input type="number" class="w-full p-2 border border-gray-300 rounded" readonly></td>
+        <td class="col-aksi p-4"><button class="p-2 bg-red-500 text-white rounded removeRowButton">Hapus</button></td>
+    `;
+    inputTableBody.appendChild(row);
+    updateRowCount();
+
+    // Update packing dan stok secara otomatis
+    const productInput = row.querySelector('.product-input');
+    productInput.addEventListener('input', () => {
+        const namaProduk = productInput.value.trim();
+        updatePackingAndStok(namaProduk, row);
+    });
+
+    // Tambahkan event listener untuk tombol hapus
+    row.querySelector('.removeRowButton').addEventListener('click', () => {
+        row.remove();
+        updateRowCount();
+    });
+
+    // Inisialisasi dropdown rak dengan data dari Google Sheets
+    fetchRakData().then(rakData => {
+        const rakSelect = row.querySelector('.rak-select');
+        if (rakData && rakData.length) {
+            rakData.forEach(([rak]) => {
+                const option = document.createElement('option');
+                option.value = rak;
+                option.textContent = rak;
+                rakSelect.appendChild(option);
+            });
+        } else {
+            console.error('No rak data found');
+        }
+    });
+}
+
+// Fungsi untuk memperbarui packing dan stok tersedia
+function updatePackingAndStok(namaProduk, row) {
+    const packingRow = packingData.find(([packingNama]) => packingNama.trim().toLowerCase() === namaProduk.trim().toLowerCase());
+    const stokRow = stokData.find(([stokNama]) => stokNama.trim().toLowerCase() === namaProduk.trim().toLowerCase());
+    
+    const packingInput = row.querySelector('.packing-input');
+    const stokInput = row.querySelector('.col-stok-tersedia input');
+
+    if (packingRow) {
+        packingInput.value = packingRow[1]; // Ambil nilai packing dari kolom yang benar
+    } else {
+        packingInput.value = ''; // Jika tidak ditemukan, kosongkan
+    }
+
+    if (stokRow) {
+        const stokTersedia = stokRow[1]; // Ambil nilai stok dari kolom yang benar
+        stokInput.value = stokTersedia; // Set nilai stok ke input
+    } else {
+        stokInput.value = 0; // Jika tidak ditemukan, set ke 0
+    }
+}
+
+// Fungsi untuk memperbarui stok tersedia
+function updateStokTersedia(namaProduk, row) {
+    console.log(`Mencari stok untuk: ${namaProduk}`); // Debugging
+    const stokRow = stokData.find(([stokNama]) => stokNama.trim().toLowerCase() === namaProduk.trim().toLowerCase());
+    const stokInput = row.querySelector('.col-stok-tersedia input');
+
+    if (stokRow) {
+        const stokTersedia = stokRow[1]; // Ambil nilai stok dari kolom yang benar
+        stokInput.value = stokTersedia; // Set nilai stok ke input
+        console.log(`Stok tersedia: ${stokTersedia}`); // Debugging
+    } else {
+        stokInput.value = 0; // Jika tidak ditemukan, set ke 0
+        console.log(`Stok tidak ditemukan untuk: ${namaProduk}`); // Debugging
+    }
+}
+
+        function addRows(count) {
+    for (let i = 0; i < count; i++) {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td class="col-nama-produk p-4">
+                <div class="dropdown">
+                    <input type="text" class="w-full p-2 border border-gray-300 rounded product-input">
+                    <div class="dropdown-content product-dropdown-content"></div>
+                </div>
+            </td>
+            <td class="col-jumlah p-4"><input type="number" class="w-full p-2 border border-gray-300 rounded jumlah-input"></td>
+            <td class="col-type p-4"><input type="text" class="w-full p-2 border border-gray-300 rounded bg-gray-100" value="IN" readonly></td>
+            <td class="col-rak p-4">
+                <select class="rak-select w-full p-2 border border-gray-300 rounded">
+                    <option value="" disabled selected>Pilih Rak</option> <!-- Opsi default -->
+                </select>
+            </td>
+            <td class="col-packing p-4"><input type="text" class="w-full p-2 border border-gray-300 rounded packing-input"></td>
+            <td class="col-stok-tersedia p-4"><input type="number" class="w-full p-2 border border-gray-300 rounded"></td>
+            <td class="col-aksi p-4"><button class="p-2 bg-red-500 text-white rounded removeRowButton">Hapus</button></td>
+        `;
+        inputTableBody.appendChild(row);
+
+        // Ambil elemen dropdown rak
+        const rakSelect = row.querySelector('.rak-select');
+
+        // Inisialisasi dropdown rak dengan data dari Google Sheets
+        fetchRakData().then(rakData => {
+            if (rakData && rakData.length) {
+                rakData.forEach(([rak]) => {
+                    const option = document.createElement('option');
+                    option.value = rak;
+                    option.textContent = rak;
+                    rakSelect.appendChild(option);
+                });
+            } else {
+                console.error('No rak data found');
+            }
+        });
+
+        const productInput = row.querySelector('.product-input');
+        const jumlahInput = row.querySelector('.jumlah-input');
+        const packingInput = row.querySelector('.packing-input');
+        const productDropdownContent = row.querySelector('.product-dropdown-content');
+
+        // Menambahkan event listener untuk input produk
+        productInput.addEventListener('input', () => {
+            const query = productInput.value.trim().toLowerCase();
+            productDropdownContent.innerHTML = '';
+            const filteredOptions = packingData.filter(([namaProduk]) => namaProduk.toLowerCase().includes(query));
+
+            filteredOptions.forEach(([namaProduk, packing]) => {
+                const div = document.createElement('div');
+                div.textContent = namaProduk;
+                div.addEventListener('click', () => {
+                    productInput.value = namaProduk;
+                    packingInput.value = packing; // Set packing value when product is selected
+                    
+                    // Update stok tersedia
+                    updateStokTersedia(namaProduk, row);
+                    
+                    productDropdownContent.innerHTML = ''; // Clear dropdown
+                    productDropdownContent.style.display = 'none'; // Hide dropdown after selection
+                });
+                productDropdownContent.appendChild(div);
+            });
+
+            productDropdownContent.style.display = filteredOptions.length ? 'block' : 'none';
+
+            // Highlight the first option if available
+            if (filteredOptions.length > 0) {
+                const firstOption = productDropdownContent.firstChild;
+                firstOption.classList.add('highlighted');
+            }
+        });
+
+        // Tambahkan event listener untuk menangani perubahan input
+        productInput.addEventListener('change', () => {
+            const namaProduk = productInput.value.trim();
+            updateStokTersedia(namaProduk , row);
+        });
+
+        // Fungsi untuk memperbarui stok tersedia
+        function updateStokTersedia(namaProduk, row) {
+    const stokRow = stokData.find(([stokNama]) => stokNama.trim().toLowerCase() === namaProduk.trim().toLowerCase());
+    const stokInput = row.querySelector('.col-stok-tersedia input');
+
+    console.log(`Mencari stok untuk: ${namaProduk}`); // Memeriksa nama produk yang dicari
+
+    if (stokRow) {
+        const stokTersedia = stokRow[1]; // Ambil nilai stok dari kolom yang benar
+        stokInput.value = stokTersedia; // Set nilai stok ke input
+        console.log(`Stok tersedia: ${stokTersedia}`); // Memeriksa stok yang ditemukan
+    } else {
+        stokInput.value = 0; // Jika tidak ditemukan, set ke 0
+        console.log(`Stok tidak ditemukan untuk: ${namaProduk}`); // Memeriksa jika stok tidak ditemukan
+    }
+}
+
+        // Panggil fungsi untuk menginisialisasi data saat halaman dimuat
+        initPackingData();
+        initStokData();
+
+        // Menambahkan event listener keydown
+        productInput.addEventListener('keydown', (e) => handleProductInputKeyDown(e, productInput, packingInput, row));
+        
+        // Listener untuk input jumlah
+        jumlahInput.addEventListener('keydown', (e) => handleJumlahInputKeyDown(e, jumlahInput, row));
+
+        row.querySelector('.removeRowButton').addEventListener('click', () => {
+            row.remove();
+            updateRowCount();
+        });
+    }
+    updateRowCount();
+}
+
+        // Panggil fungsi untuk menginisialisasi data rak saat halaman dimuat
+        initRakData();
+
+function handleProductInputKeyDown(e, productInput, packingInput, row) {
+            const dropdownContent = productInput.nextElementSibling;
+            const items = dropdownContent.querySelectorAll('div');
+            let index = Array.from(items).findIndex(item => item.classList.contains('highlighted'));
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (index < items.length - 1) {
+                    index++;
+                } else {
+                    index = 0;
+                }
+                items.forEach(item => item.classList.remove('highlighted'));
+                items[index].classList.add('highlighted');
+                items[index].scrollIntoView({ block: 'nearest' });
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (index > 0) {
+                    index--;
+                } else {
+                    index = items.length - 1;
+                }
+                items.forEach(item => item.classList.remove('highlighted'));
+                items[index].classList.add('highlighted');
+                items[index].scrollIntoView({ block: 'nearest' });
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                if (index >= 0) {
+                    productInput.value = items[index].textContent;
+                    packingInput.value = packingData.find(([namaProduk]) => namaProduk === items[index].textContent)[1];
+                    dropdownContent.innerHTML = '';
+                    dropdownContent.style.display = 'none';
+                } else {
+                    productInput.classList.add('invalid');
+                    return;
+                }
+                const nextRow = row.nextElementSibling;
+                if (nextRow) {
+                    const nextInput = nextRow.querySelector('.product-input');
+                    if (nextInput) {
+                        nextInput.focus();
+                    }
+                }
+            } else if (e.key === 'Tab') {
+                if (index >= 0) {
+                    productInput.value = items[index].textContent;
+                    packingInput.value = packingData.find(([namaProduk]) => namaProduk === items[index].textContent)[1];
+                    dropdownContent.innerHTML = '';
+                    dropdownContent.style.display = 'none';
+                }
+            }
+        }
+
+        function handleJumlahInputKeyDown(e, jumlahInput, row) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const nextRow = row.nextElementSibling;
+                if (nextRow) {
+                    const nextInput = nextRow.querySelector('.jumlah-input');
+                    if (nextInput) {
+                        nextInput.focus();
+                    }
+                }
+            } else if (e.key === 'Tab') {
+                const nextInput = row.querySelector('.col-type input');
+                if (nextInput) {
+                    nextInput.focus();
+                }
+            }
+        }
+
+        function handleRakInputKeyDown(e, rakInput, dropdownContent, row) {
+            const items = dropdownContent.querySelectorAll('div');
+            let index = Array.from(items).findIndex(item => item.classList.contains('highlighted'));
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (index < items.length - 1) {
+                    index++;
+                } else {
+                    index = 0;
+                }
+                items.forEach(item => item.classList.remove('highlighted'));
+                items[index].classList.add('highlighted');
+                items[index].scrollIntoView({ block: 'nearest' });
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (index > 0) {
+                    index--;
+                } else {
+                    index = items.length - 1;
+                }
+                items.forEach(item => item.classList.remove('highlighted'));
+                items[index].classList.add('highlighted');
+                items[index].scrollIntoView({ block: 'nearest' });
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                if (index >= 0) {
+                    rakInput.value = items[index].textContent;
+                    dropdownContent.innerHTML = '';
+                    dropdownContent.style.display = 'none';
+                } else {
+                    rakInput.classList.add('invalid');
+                    return;
+                }
+                const nextRow = row.nextElementSibling;
+                if (nextRow) {
+                    const nextInput = nextRow.querySelector('.rak-input');
+                    if (nextInput) {
+                        nextInput.focus();
+                    }
+                }
+            } else if (e.key === 'Tab') {
+                if (index >= 0) {
+                    rakInput.value = items[index].textContent;
+                    dropdownContent.innerHTML = '';
+                    dropdownContent.style.display = 'none';
+                }
+            }
+        }
+
+        function updateRowCount() {
+            const rowCountValue = inputTableBody.querySelectorAll('tr').length;
+            rowCount.textContent = `Row: ${rowCountValue}`;
+        }
+
+        function setCurrentDateTime() {
+            const today = new Date();
+            const day = String(today.getDate()).padStart(2, '0');
+            const month = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+            const year = today.getFullYear();
+            const hours = String(today.getHours()).padStart(2, '0');
+            const minutes = String(today.getMinutes()).padStart(2, '0');
+            tanggalInput.value = `${day}-${month}-${year}`;
+            waktuInput.value = `${ hours}:${minutes}`;
+        }
+
+        // Set the current date and time on page load
+        setCurrentDateTime();
+        // Initialize packing data
+        initPackingData();
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (event) => {
+            const isClickInside = event.target.closest('.rak-input') || event.target.closest('.rak-dropdown-content');
+            if (!isClickInside) {
+                document.querySelectorAll('.rak-dropdown-content').forEach(dropdown => {
+                    dropdown.style.display = 'none';
+                });
+            }
+        });
     </script>
 </body>
 </html>
