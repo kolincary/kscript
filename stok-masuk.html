@@ -159,9 +159,11 @@
         const packingRange = 'datapacking!A2:D';
         const stokRange = 'datastok!A2:D'; // Ganti dengan nama sheet dan range yang sesuai
         const gudangRange = 'datagudang!A2:A';
+	const rakRange = 'inputrak!A2:A';
         const packingUrl = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${packingRange}?key=${apiKey}`;
         const stokUrl = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${stokRange}?key=${apiKey}`;
         const gudangUrl = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${gudangRange}?key=${apiKey}`;
+	const rakUrl = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${rakRange}?key=${apiKey}`;
 
         const currentYear = document.getElementById('currentYear');
         const addRowButton = document.getElementById('addRowButton');
@@ -242,117 +244,156 @@
 initGudangData();
 
         async function fetchRakData() {
-            const response = await fetch(packingUrl); // Ganti url dengan packingUrl
-            const data = await response.json();
-            rakData = data.values.map(row => row[0]); // Ambil data dari kolom A
-        }
+    const response = await fetch(rakUrl);
+    const data = await response.json();
+    console.log('Rak Data:', data.values); // Tambahkan log ini untuk memeriksa data
+    return data.values;
+}
 
         async function initRakData() {
-            await fetchRakData();
+    const rakData = await fetchRakData();
+
+    // Tambahkan opsi default
+    const defaultOption = document.createElement('option');
+    defaultOption.value = "";
+    defaultOption.textContent = "Pilih Rak"; // Teks default
+    defaultOption.disabled = true; // Nonaktifkan opsi ini
+    defaultOption.selected = true; // Pilih opsi ini secara default
+
+    // Ambil semua dropdown rak yang ada di tabel
+    const rakSelects = document.querySelectorAll('.rak-select');
+    
+    rakSelects.forEach(rakSelect => {
+        rakSelect.appendChild(defaultOption.cloneNode(true)); // Tambahkan opsi default ke setiap dropdown
+
+        if (rakData && rakData.length) {
+            rakData.forEach(([rak]) => {
+                const option = document.createElement('option');
+                option.value = rak;
+                option.textContent = rak;
+                rakSelect.appendChild(option);
+            });
+        } else {
+            console.error('No rak data found');
         }
+    });
+}
+
+// Panggil fungsi ini di bagian akhir script
+initRakData();
 
         function addRows(count) {
-            for (let i = 0; i < count; i++) {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td class="col-nama-produk p-4">
-                        <div class="dropdown">
-                            <input type="text" class="w-full p-2 border border-gray-300 rounded product-input">
-                            <div class="dropdown-content product-dropdown-content"></div>
-                        </div>
-                    </td>
-                    <td class="col-jumlah p-4"><input type="number" class="w-full p-2 border border-gray-300 rounded jumlah-input"></td>
-                    <td class="col-type p-4"><input type="text" class="w-full p-2 border border-gray-300 rounded bg-gray-100" value="IN" readonly></td>
-                    <td class="col-type p-4">
-                        <select class="w-full p-2 border border-gray-300 rounded type-select">
-                            <option value="" disabled selected>Pilih Tipe</option>
-                            <option value="UTAMA">UTAMA</option>
-                            <option value="ECER-M">ECER-M</option>
-                            <option value="ECER-N">ECER-N</option>
-                            <option value="ECER-O">ECER-O</option>
-                            <option value="BLOK-I">BLOK-I</option>
-                            <option value="LANTAI 4">LANTAI 4</option>
-                        </select>
-                    </td>
-                    <td class="col-packing p-4"><input type="text" class="w-full p-2 border border-gray-300 rounded packing-input"></td>
-                    <td class="col-stok-tersedia p-4"><input type="number" class="w-full p-2 border border-gray-300 rounded"></td>
-                    <td class="col-aksi p-4"><button class="p-2 bg-red-500 text-white rounded removeRowButton">Hapus</button></td>
-                `;
-                inputTableBody.appendChild(row);
+    for (let i = 0; i < count; i++) {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td class="col-nama-produk p-4">
+                <div class="dropdown">
+                    <input type="text" class="w-full p-2 border border-gray-300 rounded product-input">
+                    <div class="dropdown-content product-dropdown-content"></div>
+                </div>
+            </td>
+            <td class="col-jumlah p-4"><input type="number" class="w-full p-2 border border-gray-300 rounded jumlah-input"></td>
+            <td class="col-type p-4"><input type="text" class="w-full p-2 border border-gray-300 rounded bg-gray-100" value="IN" readonly></td>
+            <td class="col-rak p-4">
+                <select class="rak-select w-full p-2 border border-gray-300 rounded">
+                    <option value="" disabled selected>Pilih Rak</option> <!-- Opsi default -->
+                </select>
+            </td>
+            <td class="col-packing p-4"><input type="text" class="w-full p-2 border border-gray-300 rounded packing-input"></td>
+            <td class="col-stok-tersedia p-4"><input type="number" class="w-full p-2 border border-gray-300 rounded"></td>
+            <td class="col-aksi p-4"><button class="p-2 bg-red-500 text-white rounded removeRowButton">Hapus</button></td>
+        `;
+        inputTableBody.appendChild(row);
 
-                const productInput = row.querySelector('.product-input');
-                const jumlahInput = row.querySelector('.jumlah-input');
-                const rakSelect = row.querySelector('.rak-select'); // Ambil elemen dropdown rak
-                const packingInput = row.querySelector('.packing-input');
-                const productDropdownContent = row.querySelector('.product-dropdown-content');
+        // Ambil elemen dropdown rak
+        const rakSelect = row.querySelector('.rak-select');
 
-                // Menambahkan event listener untuk input produk
-                productInput.addEventListener('input', () => {
-                    const query = productInput.value.trim().toLowerCase();
-                    productDropdownContent.innerHTML = '';
-                    const filteredOptions = packingData.filter(([namaProduk]) => namaProduk.toLowerCase().includes(query));
-
-                    filteredOptions.forEach(([namaProduk, packing]) => {
-                        const div = document.createElement('div');
-                        div.textContent = namaProduk;
-                        div.addEventListener('click', () => {
-                            productInput.value = namaProduk;
-                            packingInput.value = packing; // Set packing value when product is selected
-                            
-                            // Update stok tersedia
-                            updateStokTersedia(namaProduk, row);
-                            
-                            productDropdownContent.innerHTML = ''; // Clear dropdown
-                            productDropdownContent.style.display = 'none'; // Hide dropdown after selection
-                        });
-                        productDropdownContent.appendChild(div);
-                    });
-
-                    productDropdownContent.style.display = filteredOptions.length ? 'block' : 'none';
-
-                    // Highlight the first option if available
-                    if (filteredOptions.length > 0) {
-                        const firstOption = productDropdownContent.firstChild;
-                        firstOption.classList.add('highlighted');
-                    }
+        // Inisialisasi dropdown rak dengan data dari Google Sheets
+        fetchRakData().then(rakData => {
+            if (rakData && rakData.length) {
+                rakData.forEach(([rak]) => {
+                    const option = document.createElement('option');
+                    option.value = rak;
+                    option.textContent = rak;
+                    rakSelect.appendChild(option);
                 });
-
-                // Tambahkan event listener untuk menangani perubahan input
-                productInput.addEventListener('change', () => {
-                    const namaProduk = productInput.value.trim();
-                    updateStokTersedia(namaProduk, row);
-                });
-
-                // Fungsi untuk memperbarui stok tersedia
-                function updateStokTersedia(namaProduk, row) {
-                    const stokRow = stokData.find(([stokNama]) => stokNama.trim().toLowerCase() === namaProduk.trim().toLowerCase());
-                    const stokInput = row.querySelector('.col-stok-tersedia input');
-                    
-                    if (stokRow) {
-                        const stokTersedia = stokRow[1]; // Ambil nilai stok dari kolom yang benar
-                        stokInput.value = stokTersedia; // Set nilai stok ke input
-                    } else {
-                        stokInput.value = 0; // Jika tidak ditemukan, set ke 0
-                    }
-                }
-
-                // Panggil fungsi untuk menginisialisasi data saat halaman dimuat
-                initPackingData();
-                initStokData();
-
-                // Menambahkan event listener keydown
-                productInput.addEventListener('keydown', (e) => handleProductInputKeyDown(e, productInput, packingInput, row));
-                
-                // Listener untuk input jumlah
-                jumlahInput.addEventListener('keydown', (e) => handleJumlahInputKeyDown(e, jumlahInput, row));
-
-                row.querySelector('.removeRowButton').addEventListener('click', () => {
-                    row.remove();
-                    updateRowCount();
-                });
+            } else {
+                console.error('No rak data found');
             }
-            updateRowCount();
+        });
+
+        const productInput = row.querySelector('.product-input');
+        const jumlahInput = row.querySelector('.jumlah-input');
+        const packingInput = row.querySelector('.packing-input');
+        const productDropdownContent = row.querySelector('.product-dropdown-content');
+
+        // Menambahkan event listener untuk input produk
+        productInput.addEventListener('input', () => {
+            const query = productInput.value.trim().toLowerCase();
+            productDropdownContent.innerHTML = '';
+            const filteredOptions = packingData.filter(([namaProduk]) => namaProduk.toLowerCase().includes(query));
+
+            filteredOptions.forEach(([namaProduk, packing]) => {
+                const div = document.createElement('div');
+                div.textContent = namaProduk;
+                div.addEventListener('click', () => {
+                    productInput.value = namaProduk;
+                    packingInput.value = packing; // Set packing value when product is selected
+                    
+                    // Update stok tersedia
+                    updateStokTersedia(namaProduk, row);
+                    
+                    productDropdownContent.innerHTML = ''; // Clear dropdown
+                    productDropdownContent.style.display = 'none'; // Hide dropdown after selection
+                });
+                productDropdownContent.appendChild(div);
+            });
+
+            productDropdownContent.style.display = filteredOptions.length ? 'block' : 'none';
+
+            // Highlight the first option if available
+            if (filteredOptions.length > 0) {
+                const firstOption = productDropdownContent.firstChild;
+                firstOption.classList.add('highlighted');
+            }
+        });
+
+        // Tambahkan event listener untuk menangani perubahan input
+        productInput.addEventListener('change', () => {
+            const namaProduk = productInput.value.trim();
+            updateStokTersedia(namaProduk , row);
+        });
+
+        // Fungsi untuk memperbarui stok tersedia
+        function updateStokTersedia(namaProduk, row) {
+            const stokRow = stokData.find(([stokNama]) => stokNama.trim().toLowerCase() === namaProduk.trim().toLowerCase());
+            const stokInput = row.querySelector('.col-stok-tersedia input');
+            
+            if (stokRow) {
+                const stokTersedia = stokRow[1]; // Ambil nilai stok dari kolom yang benar
+                stokInput.value = stokTersedia; // Set nilai stok ke input
+            } else {
+                stokInput.value = 0; // Jika tidak ditemukan, set ke 0
+            }
         }
+
+        // Panggil fungsi untuk menginisialisasi data saat halaman dimuat
+        initPackingData();
+        initStokData();
+
+        // Menambahkan event listener keydown
+        productInput.addEventListener('keydown', (e) => handleProductInputKeyDown(e, productInput, packingInput, row));
+        
+        // Listener untuk input jumlah
+        jumlahInput.addEventListener('keydown', (e) => handleJumlahInputKeyDown(e, jumlahInput, row));
+
+        row.querySelector('.removeRowButton').addEventListener('click', () => {
+            row.remove();
+            updateRowCount();
+        });
+    }
+    updateRowCount();
+}
 
         // Panggil fungsi untuk menginisialisasi data rak saat halaman dimuat
         initRakData();
