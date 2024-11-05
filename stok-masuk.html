@@ -115,10 +115,10 @@
         <div class="w-full max-w-md mb-4">
             <label for="tanggal" class="block text-sm font-medium text-gray-700">Tanggal</label>
             <input type="text" id="tanggal" class="w-full p-2 border border-gray-300 rounded mb-4" placeholder="dd-mm-yyyy" onfocus="(this.type='date')" onblur="(this.type='text')">
-            
+
             <label for="waktu" class="block text-sm font-medium text-gray-700">Waktu</label>
             <input type="time" id="waktu" class="w-full p-2 border border-gray-300 rounded mb-4">
-            
+
             <label for="gudang" class="block text-sm font-medium text-gray-700">Gudang</label>
             <select id="gudang" class="w-full p-2 border border-gray-300 rounded mb-4">
                 <!-- Options will be populated here -->
@@ -225,7 +225,7 @@
 
         async function initGudangData() {
     const gudangData = await fetchGudangData();
-    
+
     // Tambahkan opsi default
     const defaultOption = document.createElement('option');
     defaultOption.value = "";
@@ -268,7 +268,7 @@ initGudangData();
 
     // Ambil semua dropdown rak yang ada di tabel
     const rakSelects = document.querySelectorAll('.rak-select');
-    
+
     rakSelects.forEach(rakSelect => {
         rakSelect.appendChild(defaultOption.cloneNode(true)); // Tambahkan opsi default ke setiap dropdown
 
@@ -345,10 +345,10 @@ initRakData();
                 div.addEventListener('click', () => {
                     productInput.value = namaProduk;
                     packingInput.value = packing; // Set packing value when product is selected
-                    
+
                     // Update stok tersedia
                     updateStokTersedia(namaProduk, row);
-                    
+
                     productDropdownContent.innerHTML = ''; // Clear dropdown
                     productDropdownContent.style.display = 'none'; // Hide dropdown after selection
                 });
@@ -374,7 +374,7 @@ initRakData();
         function updateStokTersedia(namaProduk, row) {
             const stokRow = stokData.find(([stokNama]) => stokNama.trim().toLowerCase() === namaProduk.trim().toLowerCase());
             const stokInput = row.querySelector('.col-stok-tersedia input');
-            
+
             if (stokRow) {
                 const stokTersedia = stokRow[1]; // Ambil nilai stok dari kolom yang benar
                 stokInput.value = stokTersedia; // Set nilai stok ke input
@@ -389,7 +389,7 @@ initRakData();
 
         // Menambahkan event listener keydown
         productInput.addEventListener('keydown', (e) => handleProductInputKeyDown(e, productInput, packingInput, row));
-        
+
         // Listener untuk input jumlah
         jumlahInput.addEventListener('keydown', (e) => handleJumlahInputKeyDown(e, jumlahInput, row));
 
@@ -404,102 +404,57 @@ initRakData();
         // Panggil fungsi untuk menginisialisasi data rak saat halaman dimuat
         initRakData();
     // Fungsi untuk mengirim data ke Google Sheets
-async function sendDataToGoogleSheets(data) {
-    const spreadsheetId = '1hJVqPsSUdo5wyJ7yVO_Fs-UkHrsQDIhvX4EMejgbAXc'; // Ganti dengan ID spreadsheet Anda
-    const range = 'database!A2:I'; // Sesuaikan rentang sesuai kebutuhan
-    const apiKey = 'AIzaSyATX8JycBmOM_Kni7o4UnR4eoFHq2XT_OM'; // Gunakan API key Anda
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${rakRange}?key=${apiKey}`;
+    async function sendDataToGoogleSheets(data) {
+    const spreadsheetId = '1_zcQY0rhRIaMid_XdflPy33xlcpwqzX6-fZxm7OGa6g'; // Ganti dengan ID spreadsheet Anda
+    const range = 'database2!A2:H'; // Sesuaikan rentang sesuai kebutuhan
+    const apiKey = 'AIzaSyCb9GeLx7UcqkvXj3Oy3F6e1B9XAvMLE4A'; // Pastikan ini valid
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}:append?valueInputOption=RAW&key=${apiKey}`;
 
-    try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                values: data
-            }),
-        });
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            values: data
+        }),
+    });
 
-        if (!response.ok) {
-            const error = await response.json();
-            console.error('Error:', error);
-            alert('Gagal mengirim data ke Google Sheets. ' + (error.message || 'Tidak ada pesan kesalahan.'));
-            return;
-        }
-
+    if (response.ok) {
         alert('Data berhasil dikirim ke Google Sheets!');
-    } catch (err) {
-        console.error('Fetch Error:', err);
-        alert('Gagal mengirim data ke Google Sheets. ' + err.message);
+    } else {
+        const error = await response.json();
+        console.error('Error:', error);
+        alert('Gagal mengirim data ke Google Sheets. ' + error.message);
     }
 }
 
-        // Fungsi untuk mengumpulkan data dari tabel dan mengirimnya
-        async function collectDataAndSend() {
-            const rows = Array.from(inputTableBody.querySelectorAll('tr'));
-            const dataToSend = rows.map(row => {
-                const tanggal = tanggalInput.value;
-                const waktu = waktuInput.value;
-                const namaProduk = row.querySelector('.product-input').value;
-                const jumlah = row.querySelector('.jumlah-input').value;
-                const type = row.querySelector('.col-type input').value; // Assuming it's read-only
-                const gudang = gudangSelect.value;
-                const rak = row.querySelector('.rak-select').value;
-                const packing = row.querySelector('.packing-input').value;
-                const stokTersedia = row.querySelector('.col-stok-tersedia input').value;
+    // Fungsi untuk mengumpulkan data dari tabel dan mengirimnya
+// Fungsi untuk mengumpulkan data dari tabel dan mengirimnya
+async function collectDataAndSend() {
+    const rows = Array.from(inputTableBody.querySelectorAll('tr'));
+    const dataToSend = rows.map(row => {
+        const namaProduk = row.querySelector('.product-input').value;
+        const jumlah = row.querySelector('.jumlah-input').value;
+        const type = row.querySelector('.col-type input').value; // Assuming it's read-only
+        const rak = row.querySelector('.rak-select').value;
+        const packing = row.querySelector('.packing-input').value;
+        const stokTersedia = row.querySelector('.col-stok-tersedia input').value;
+        const tanggal = tanggalInput.value;
+        const waktu = waktuInput.value;
 
-                return [tanggal, waktu, namaProduk, jumlah, type, gudang, rak, packing, stokTersedia];
-            }).filter(row => row[2]); // Filter out rows without product name
+        return [tanggal, waktu, namaProduk, jumlah, type, gudangSelect.value, rak, packing, stokTersedia];
+    });
 
-            if (dataToSend.length === 0) {
-                alert('Tidak ada data untuk dikirim.');
-                return;
-            }
+    // Mengirim data ke Google Sheets
+    await sendDataToGoogleSheets(dataToSend);
+}
 
-            // Mengirim data ke Google Sheets
-            await sendDataToGoogleSheets(dataToSend);
-        }
-
-// Menambahkan event listener untuk tombol Kirim
+    // Menambahkan event listener untuk tombol Kirim
 document.getElementById('submitButton').addEventListener('click', () => {
     collectDataAndSend();
 });
 
-        // Fungsi untuk mengirim data ke Google Sheets
-        async function sendDataToGoogleSheets(data) {
-            const spreadsheetId = '1hJVqPsSUdo5wyJ7yVO_Fs-UkHrsQDIhvX4EMejgbAXc'; // Ganti dengan ID spreadsheet Anda
-            const range = 'database!A2:I'; // Sesuaikan rentang sesuai kebutuhan
-            const apiKey = 'AIzaSyCb9GeLx7UcqkvXj3Oy3F6e1B9XAvMLE4A'; // Pastikan ini valid
-            const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}:append?valueInputOption=RAW&key=${apiKey}`;
-
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        values: data
-                    }),
-                });
-
-                console.log('Response Status:', response.status); // Log status respons
-                console.log('Response:', await response.clone().json()); // Log respons JSON
-
-                if (response.ok) {
-                    alert('Data berhasil dikirim ke Google Sheets!');
-                } else {
-                    const error = await response.json();
-                    console.error('Error:', error);
-                    alert('Gagal mengirim data ke Google Sheets. ' + (error.message || 'Tidak ada pesan kesalahan.'));
-                }
-            } catch (err) {
-                console.error('Fetch Error:', err);
-                alert('Gagal mengirim data ke Google Sheets. ' + err.message);
-            }
-        }
-        
 function handleProductInputKeyDown(e, productInput, packingInput, row) {
             const dropdownContent = productInput.nextElementSibling;
             const items = dropdownContent.querySelectorAll('div');
