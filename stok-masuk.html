@@ -1,610 +1,339 @@
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gudang LT.5</title>
+    <title>PDF Viewer and Data Input</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
     <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-        }
-        .arrow {
-            transition: transform 0.3s ease;
-        }
-        .arrow:hover {
-            transform: translateY(10px);
-        }
-        .nav-link {
-            transition: background-color 0.3s ease;
-        }
-        .nav-link:hover {
-            background-color: rgba(0, 0, 0, 0.1);
-        }
-        .table-header {
-            background-color: #005cef;
-            color: white;
-        }
-        .col-nama-produk { width: 20%; }
-        .col-jumlah { width: 10%; }
-        .col-type { width: 10%; }
-        .col-rak { width: 10%; }
-        .col-packing { width: 20%; }
-        .col-stok-tersedia { width: 10%; }
-        .col-aksi { width: 7%; }
-        .mobile-menu {
-            display: none;
-        }
-        @media (max-width: 768px) {
-            .desktop-menu {
-                display: none;
-            }
-            .mobile-menu {
-                display: block;
-            }
-        }
-        .button {
-            width: 150px; /* Set a fixed width for the buttons */
+        .no-wrap {
+            white-space: nowrap;
         }
         .dropdown {
             position: relative;
+            display: inline-block;
+            width: 100%;
         }
         .dropdown-content {
             display: none;
             position: absolute;
-            background-color: white;
-            border: 1px solid #ccc;
-            z-index: 1;
-            max-height: 300px;
+            background-color: #f9f9f9;
+            min-width: 100%;
+            max-height: 500px;
             overflow-y: auto;
-            width: 100%;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
         }
         .dropdown-content div {
-            padding: 8px;
-            cursor: pointer;
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
         }
-        .dropdown-content div:hover, .dropdown-content .highlighted {
+        .dropdown-content div:hover, .dropdown-content .highlight {
             background-color: #f1f1f1;
         }
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-        th, td {
-            border: 1px solid #ddd;
-        }
-        .invalid {
-            border-color: red;
+        .dropdown.show .dropdown-content {
+            display: block;
         }
     </style>
 </head>
-<body class="bg-white text-black">
-    <header class="flex justify-between items-center p-6">
-        <div class="text-xl font-bold">GUDANG LT.5</div>
-        <nav class="space-x-8 desktop-menu">
-            <a href="home.html" class="text-black nav-link p-2">Home</a>
-            <a href="stok-barang.html" class="text-black nav-link p-2">Stok Barang</a>
-            <a href="stok-masuk.html" class="text-blue-600 nav-link p-2">Stok Masuk</a>
-            <a href="stok-keluar.html" class="text-black nav-link p-2">Stok Keluar</a>
-            <a href="riwayat.html" class="text-black nav-link p-2">Riwayat</a>
-            <a href="semua-rak.html" class="text-black nav-link p-2">Semua Rak</a>
-            <a href="input-sku.html" class="text-black nav-link p-2">Input SKU</a>
-            <a href="data-so.html" class="text-black nav-link p-2">Data S.O</a>
-            <a href="contact.html" class="text-black nav-link p-2">Contact</a>
-        </nav>
-        <div class="mobile-menu">
-            <button id="menuButton" class="text-black">
-                <i class="fas fa-bars text-2xl"></i>
-            </button>
+<body class="font-roboto bg-gray-100 h-screen flex">
+    <div class="container mx-auto p-4 bg-white shadow-lg rounded-lg flex h-full">
+        <!-- Left Side: Data Input -->
+        <div class="w-1/2 p-4 border-r border-gray-200 h-full overflow-auto">
+            <h2 class="text-2xl font-bold mb-4">Input Data</h2>
+            <form id="dataForm">
+                <div class="flex mb-4 items-center justify-between">
+                    <div>
+                        <button type="button" id="addRow" class="bg-blue-500 text-white px-4 py-2 rounded mr-2">Tambah Baris</button>
+                        <button type="button" id="add10Rows" class="bg-blue-500 text-white px-4 py-2 rounded mr-2">Tambah 10 Baris</button>
+                        <button type="button" id="copyData" class="bg-blue-500 text-white px-4 py-2 rounded mr-2">Copy</button>
+                    </div>
+                    <span id="rowCount" class="text-gray-700">Row: 10</span>
+                </div>
+                <table class="w-full mb-4 border-collapse border border-gray-300">
+                    <thead>
+                        <tr>
+                            <th class="border border-gray-300 px-4 py-2 w-2/3">MSKU</th>
+                            <th class="border border-gray-300 px-4 py-2 w-1/6">Biaya</th>
+                            <th class="border border-gray-300 px-4 py-2 w-1/6">Kuantitas</th>
+                            <th class="border border-gray-300 px-4 py-2 w-1/6">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Default 10 rows -->
+                        <script>
+                            for (let i = 0; i < 10; i++) {
+                                document.write(`
+                                    <tr>
+                                        <td class="border border-gray-300 px-4 py-2">
+                                            <div class="dropdown">
+                                                <input type="text" class="w-full p-2 border border-gray-300 rounded msku no-wrap" oninput="showDropdown(this)" onkeydown="navigateDropdown(event, this)">
+                                                <div class="dropdown-content"></div>
+                                            </div>
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2"><input type="text" value="0" class="w-full p-2 border border-gray-300 rounded biaya" readonly></td>
+                                        <td class="border border-gray-300 px-4 py-2"><input type="text" class="w-full p-2 border border-gray-300 rounded kuantitas" onkeydown="navigateKuantitas(event, this)"></td>
+                                        <td class="border border-gray-300 px-4 py-2 text-center"><button type="button" class="bg-red-500 text-white px-2 py-1 rounded deleteRow">Hapus</button></td>
+                                    </tr>
+                                `);
+                            }
+                        </script>
+                    </tbody>
+                </table>
+            </form>
         </div>
-    </header>
-    <div id="mobileNav" class="hidden flex flex-col space-y-4 p-6">
-        <a href="home.html" class="text-black nav-link p-2">Home</a>
-        <a href="stok-barang.html" class="text-blue-600 nav-link p-2">Stok Barang</a>
-        <a href="stok-masuk.html" class="text-black nav-link p-2">Stok Masuk</a>
-        <a href="stok-keluar.html" class="text-black nav-link p-2">Stok Keluar</a>
-        <a href="riwayat.html" class="text-black nav-link p-2">Riwayat</a>
-        <a href="semua-rak.html" class="text-black nav-link p-2">Semua Rak</a>
-        <a href="input-sku.html" class="text-black nav-link p-2">Input SKU</a>
-        <a href="data-so.html" class="text-black nav-link p-2">Data S.O</a>
-        <a href="contact.html" class="text-black nav-link p-2">Contact</a>
+        <!-- Right Side: PDF Viewer -->
+        <div class="w-1/2 p-4 flex flex-col h-full">
+            <h2 class="text-2xl font-bold mb-4">PDF Viewer</h2>
+            <div class="mb-4">
+                <label for="pdfUpload" class="block text-gray-700">Upload PDF</label>
+                <input type="file" id="pdfUpload" class="w-full p-2 border border-gray-300 rounded mt-1" accept="application/pdf">
+            </div>
+            <button id="renderPdfButton" class="bg-blue-500 text-white px-4 py-2 rounded mb-4">Render PDF</button>
+            <div class="flex mb-4">
+                <button id="prevPage" class="bg-gray-300 text-black px-4 py-2 rounded mr-2">Previous</button>
+                <button id="nextPage" class="bg-gray-300 text-black px-4 py-2 rounded">Next</button>
+            </div>
+            <div class="border border-gray-300 rounded overflow-auto flex-grow" id="pdfViewerContainer">
+                <canvas id="pdfViewer" class="w-full"></canvas>
+            </div>
+        </div>
     </div>
-    <hr class="border-t-2 border-black">
-    <main class="flex flex-col items-start justify-start h-screen relative pl-20 pr-20 mt-8">
-        <div class="w-full max-w-md mb-4">
-            <label for="tanggal" class="block text-sm font-medium text-gray-700">Tanggal</label>
-            <input type="text" id="tanggal" class="w-full p-2 border border-gray-300 rounded mb-4" placeholder="dd-mm-yyyy" onfocus="(this.type='date')" onblur="(this.type='text')">
 
-            <label for="waktu" class="block text-sm font-medium text-gray-700">Waktu</label>
-            <input type="time" id="waktu" class="w-full p-2 border border-gray-300 rounded mb-4">
-
-            <label for="gudang" class="block text-sm font-medium text-gray-700">Gudang</label>
-            <select id="gudang" class="w-full p-2 border border-gray-300 rounded mb-4">
-                <!-- Options will be populated here -->
-            </select>
-        </div>
-        <div class="flex space-x-4 mb-4 items-center w-full">
-            <button id="addRowButton" class="button p-2 bg-blue-500 text-white rounded">Tambah Baris</button>
-            <button id="addTenRowsButton" class="button p-2 bg-blue-500 text-white rounded">Tambah 10 Baris</button>
-            <button id="bulkInputButton" class="button p-2 bg-yellow-500 text-white rounded">Input Massal</button>
-            <button id="submitButton" class="button p-2 bg-green-500 text-white rounded">Kirim</button>
-            <div class="flex-grow"></div>
-            <span id="rowCount" class="text-sm font-medium text-gray-700">Row: 0</span>
-        </div>
-        <div class="w-full">
-            <table class="min-w-full bg-white">
-                <thead class="table-header">
-                    <tr>
-                        <th class="col-nama-produk p-4 text-left">Nama Produk</th>
-                        <th class="col-jumlah p-4 text-left">Jumlah</th>
-                        <th class="col-type p-4 text-left">Type</th>
-                        <th class="col-rak p-4 text-left">Rak</th>
-                        <th class="col-packing p-4 text-left">Packing</th>
-                        <th class="col-stok-tersedia p-4 text-left">Stok Tersedia</th>
-                        <th class="col-aksi p-4 text-left">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody id="inputTableBody">
-                    <!-- Input rows will be added here -->
-                </tbody>
-            </table>
-        </div>
-    </main>
-    <footer class="w-full text-center py-4 border-t mt-8">
-        Copyright &copy; <span id="currentYear"></span> Johan Gilbeth
-    </footer>
     <script>
-        const apiKey = 'AIzaSyCb9GeLx7UcqkvXj3Oy3F6e1B9XAvMLE4A';
-        const spreadsheetId = '1hJVqPsSUdo5wyJ7yVO_Fs-UkHrsQDIhvX4EMejgbAXc';
-        const packingRange = 'datapacking!A2:D';
-        const stokRange = 'datastok!A2:D'; // Ganti dengan nama sheet dan range yang sesuai
-        const gudangRange = 'datagudang!A2:A';
-	const rakRange = 'inputrak!A2:A';
-        const packingUrl = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${packingRange}?key=${apiKey}`;
-        const stokUrl = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${stokRange}?key=${apiKey}`;
-        const gudangUrl = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${gudangRange}?key=${apiKey}`;
-	const rakUrl = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${rakRange}?key=${apiKey}`;
+        const pdfjsLib = window['pdfjs-dist/build/pdf'];
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.worker.min.js';
 
-        const currentYear = document.getElementById('currentYear');
-        const addRowButton = document.getElementById('addRowButton');
-        const addTenRowsButton = document.getElementById('addTenRowsButton');
-        const bulkInputButton = document.getElementById('bulkInputButton');
-        const inputTableBody = document.getElementById('inputTableBody');
-        const rowCount = document.getElementById('rowCount');
-        const tanggalInput = document.getElementById('tanggal');
-        const waktuInput = document.getElementById('waktu');
-        const gudangSelect = document.getElementById('gudang');
+        let pdfDoc = null;
+        let currentPage = 1;
+        let pdfFile = null;
 
-        let productOptions = [];
-        let packingData = [];
-        let rakData = []; // Array untuk menyimpan data rak
-        let stokData = [];
+        document.getElementById('pdfUpload').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file && file.type === 'application/pdf') {
+                pdfFile = file;
+            } else {
+                alert('Silakan unggah file PDF yang valid.');
+            }
+        });
 
-        currentYear.textContent = new Date().getFullYear();
+        document.getElementById('renderPdfButton').addEventListener('click', function() {
+            if (pdfFile) {
+                const fileReader = new FileReader();
+                fileReader.onload = function() {
+                    const typedarray = new Uint8Array(this.result);
 
-        addRowButton.addEventListener('click', () => {
+                    pdfjsLib.getDocument(typedarray).promise.then(function(pdf) {
+                        pdfDoc = pdf; // Simpan dokumen PDF
+                        currentPage = 1; // Reset halaman saat ini
+                        renderPage(currentPage); // Render halaman pertama
+                    }).catch(function(error) {
+                        console.error('Error rendering PDF:', error);
+                        alert('Error rendering PDF. Please try again.');
+                    });
+                };
+                fileReader.readAsArrayBuffer(pdfFile);
+            } else {
+                alert('Please upload a PDF file first.');
+            }
+        });
+
+        function renderPage(pageNum) {
+            pdfDoc.getPage(pageNum).then(function(page) {
+                const scale = 1.5;
+                const viewport = page.getViewport({ scale: scale });
+
+                const canvas = document.getElementById('pdfViewer');
+                const context = canvas.getContext('2d');
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                const renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                };
+                page.render(renderContext).promise.then(function() {
+                    // Adjust the container height to fit the canvas
+                    document.getElementById('pdfViewerContainer').style.height = `${canvas.height}px`;
+                });
+            });
+        }
+
+        document.getElementById('prevPage').addEventListener('click', function() {
+            if (currentPage <= 1) return; // Tidak bisa mundur dari halaman pertama
+            currentPage--;
+            renderPage(currentPage);
+        });
+
+        document.getElementById('nextPage').addEventListener('click', function() {
+            if (currentPage >= pdfDoc.numPages) return; // Tidak bisa maju dari halaman terakhir
+            currentPage++;
+            renderPage(currentPage);
+        });
+
+        // Add row functionality
+        document.getElementById('addRow').addEventListener('click', function() {
             addRows(1);
         });
 
-        addTenRowsButton.addEventListener('click', () => {
+        document.getElementById('add10Rows').addEventListener('click', function() {
             addRows(10);
         });
 
-        bulkInputButton.addEventListener('click', () => {
-            window.location.href = 'massbarangmasuk.html';
-        });
-
-        async function fetchPackingData() {
-            const response = await fetch(packingUrl);
-            const data = await response.json();
-            return data.values;
-        }
-
-        async function fetchStokData() {
-            const response = await fetch(stokUrl);
-            const data = await response.json();
-            console.log('Stok Data:', data.values); // Tambahkan log ini
-            return data.values;
-        }
-
-        async function fetchGudangData() {
-    const response = await fetch(gudangUrl);
-    const data = await response.json();
-    console.log('Gudang Data:', data.values); // Tambahkan log ini
-    return data.values;
-}
-
-        async function initPackingData() {
-            packingData = await fetchPackingData();
-        }
-
-        async function initStokData() {
-            stokData = await fetchStokData();
-        }
-
-        async function initGudangData() {
-    const gudangData = await fetchGudangData();
-
-    // Tambahkan opsi default
-    const defaultOption = document.createElement('option');
-    defaultOption.value = "";
-    defaultOption.textContent = "Pilih Data Gudang"; // Teks default
-    defaultOption.disabled = true; // Nonaktifkan opsi ini
-    defaultOption.selected = true; // Pilih opsi ini secara default
-    gudangSelect.appendChild(defaultOption);
-
-    if (gudangData && gudangData.length) {
-        gudangData.forEach(([gudang]) => {
-            const option = document.createElement('option');
-            option.value = gudang;
-            option.textContent = gudang;
-            gudangSelect.appendChild(option);
-        });
-    } else {
-        console.error('No gudang data found');
-    }
-}
-
-// Panggil fungsi ini di bagian akhir script
-initGudangData();
-
-        async function fetchRakData() {
-    const response = await fetch(rakUrl);
-    const data = await response.json();
-    console.log('Rak Data:', data.values); // Tambahkan log ini untuk memeriksa data
-    return data.values;
-}
-
-        async function initRakData() {
-    const rakData = await fetchRakData();
-
-    // Tambahkan opsi default
-    const defaultOption = document.createElement('option');
-    defaultOption.value = "";
-    defaultOption.textContent = "Pilih Rak"; // Teks default
-    defaultOption.disabled = true; // Nonaktifkan opsi ini
-    defaultOption.selected = true; // Pilih opsi ini secara default
-
-    // Ambil semua dropdown rak yang ada di tabel
-    const rakSelects = document.querySelectorAll('.rak-select');
-
-    rakSelects.forEach(rakSelect => {
-        rakSelect.appendChild(defaultOption.cloneNode(true)); // Tambahkan opsi default ke setiap dropdown
-
-        if (rakData && rakData.length) {
-            rakData.forEach(([rak]) => {
-                const option = document.createElement('option');
-                option.value = rak;
-                option.textContent = rak;
-                rakSelect.appendChild(option);
-            });
-        } else {
-            console.error('No rak data found');
-        }
-    });
-}
-
-// Panggil fungsi ini di bagian akhir script
-initRakData();
-
-        function addRows(count) {
-    for (let i = 0; i < count; i++) {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td class="col-nama-produk p-4">
-                <div class="dropdown">
-                    <input type="text" class="w-full p-2 border border-gray-300 rounded product-input">
-                    <div class="dropdown-content product-dropdown-content"></div>
-                </div>
-            </td>
-            <td class="col-jumlah p-4"><input type="number" class="w-full p-2 border border-gray-300 rounded jumlah-input"></td>
-            <td class="col-type p-4"><input type="text" class="w-full p-2 border border-gray-300 rounded bg-gray-100" value="IN" readonly></td>
-            <td class="col-rak p-4">
-                <select class="rak-select w-full p-2 border border-gray-300 rounded">
-                    <option value="" disabled selected>Pilih Rak</option> <!-- Opsi default -->
-                </select>
-            </td>
-            <td class="col-packing p-4"><input type="text" class="w-full p-2 border border-gray-300 rounded packing-input"></td>
-            <td class="col-stok-tersedia p-4"><input type="number" class="w-full p-2 border border-gray-300 rounded"></td>
-            <td class="col-aksi p-4"><button class="p-2 bg-red-500 text-white rounded removeRowButton">Hapus</button></td>
-        `;
-        inputTableBody.appendChild(row);
-
-        // Ambil elemen dropdown rak
-        const rakSelect = row.querySelector('.rak-select');
-
-        // Inisialisasi dropdown rak dengan data dari Google Sheets
-        fetchRakData().then(rakData => {
-            if (rakData && rakData.length) {
-                rakData.forEach(([rak]) => {
-                    const option = document.createElement('option');
-                    option.value = rak;
-                    option.textContent = rak;
-                    rakSelect.appendChild(option);
-                });
-            } else {
-                console.error('No rak data found');
+        function addRows(numRows) {
+            const tableBody = document.getElementById('tableBody');
+            for (let i = 0; i < numRows; i++) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="border border-gray-300 px-4 py-2">
+                        <div class="dropdown">
+                            <input type="text" class="w-full p-2 border border-gray-300 rounded msku no-wrap" oninput="showDropdown(this)" onkeydown="navigateDropdown(event, this)">
+                            <div class="dropdown-content"></div>
+                        </div>
+                    </td>
+                    <td class="border border-gray-300 px-4 py-2"><input type="text" value="0" class="w-full p-2 border border-gray-300 rounded biaya" readonly></td>
+                    <td class="border border-gray-300 px-4 py-2"><input type="text" class="w-full p-2 border border-gray-300 rounded kuantitas" onkeydown="navigateKuantitas(event, this)"></td>
+                    <td class="border border-gray-300 px-4 py-2 text-center"><button type="button" class="bg-red-500 text-white px-2 py-1 rounded deleteRow">Hapus</button></td>
+                `;
+                tableBody.appendChild(row);
             }
-        });
-
-        const productInput = row.querySelector('.product-input');
-        const jumlahInput = row.querySelector('.jumlah-input');
-        const packingInput = row.querySelector('.packing-input');
-        const productDropdownContent = row.querySelector('.product-dropdown-content');
-
-        // Menambahkan event listener untuk input produk
-        productInput.addEventListener('input', () => {
-            const query = productInput.value.trim().toLowerCase();
-            productDropdownContent.innerHTML = '';
-            const filteredOptions = packingData.filter(([namaProduk]) => namaProduk.toLowerCase().includes(query));
-
-            filteredOptions.forEach(([namaProduk, packing]) => {
-                const div = document.createElement('div');
-                div.textContent = namaProduk;
-                div.addEventListener('click', () => {
-                    productInput.value = namaProduk;
-                    packingInput.value = packing; // Set packing value when product is selected
-
-                    // Update stok tersedia
-                    updateStokTersedia(namaProduk, row);
-
-                    productDropdownContent.innerHTML = ''; // Clear dropdown
-                    productDropdownContent.style.display = 'none'; // Hide dropdown after selection
-                });
-                productDropdownContent.appendChild(div);
-            });
-
-            productDropdownContent.style.display = filteredOptions.length ? 'block' : 'none';
-
-            // Highlight the first option if available
-            if (filteredOptions.length > 0) {
-                const firstOption = productDropdownContent.firstChild;
-                firstOption.classList.add('highlighted');
-            }
-        });
-
-        // Tambahkan event listener untuk menangani perubahan input
-        productInput.addEventListener('change', () => {
-            const namaProduk = productInput.value.trim();
-            updateStokTersedia(namaProduk , row);
-        });
-
-        // Fungsi untuk memperbarui stok tersedia
-        function updateStokTersedia(namaProduk, row) {
-            const stokRow = stokData.find(([stokNama]) => stokNama.trim().toLowerCase() === namaProduk.trim().toLowerCase());
-            const stokInput = row.querySelector('.col-stok-tersedia input');
-
-            if (stokRow) {
-                const stokTersedia = stokRow[1]; // Ambil nilai stok dari kolom yang benar
-                stokInput.value = stokTersedia; // Set nilai stok ke input
-            } else {
-                stokInput.value = 0; // Jika tidak ditemukan, set ke 0
-            }
-        }
-
-        // Panggil fungsi untuk menginisialisasi data saat halaman dimuat
-        initPackingData();
-        initStokData();
-
-        // Menambahkan event listener keydown
-        productInput.addEventListener('keydown', (e) => handleProductInputKeyDown(e, productInput, packingInput, row));
-
-        // Listener untuk input jumlah
-        jumlahInput.addEventListener('keydown', (e) => handleJumlahInputKeyDown(e, jumlahInput, row));
-
-        row.querySelector('.removeRowButton').addEventListener('click', () => {
-            row.remove();
             updateRowCount();
-        });
-    }
-    updateRowCount();
-}
-
-        // Panggil fungsi untuk menginisialisasi data rak saat halaman dimuat
-        initRakData();
-    // Fungsi untuk mengirim data ke Google Sheets
-    async function sendDataToGoogleSheets(data) {
-    const spreadsheetId = '1_zcQY0rhRIaMid_XdflPy33xlcpwqzX6-fZxm7OGa6g'; // Ganti dengan ID spreadsheet Anda
-    const range = 'database2!A2:H'; // Sesuaikan rentang sesuai kebutuhan
-    const apiKey = 'AIzaSyCb9GeLx7UcqkvXj3Oy3F6e1B9XAvMLE4A'; // Pastikan ini valid
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}:append?valueInputOption=RAW&key=${apiKey}`;
-
-    const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            values: data
-        }),
-    });
-
-    if (response.ok) {
-        alert('Data berhasil dikirim ke Google Sheets!');
-    } else {
-        const error = await response.json();
-        console.error('Error:', error);
-        alert('Gagal mengirim data ke Google Sheets. ' + error.message);
-    }
-}
-
-    // Fungsi untuk mengumpulkan data dari tabel dan mengirimnya
-// Fungsi untuk mengumpulkan data dari tabel dan mengirimnya
-async function collectDataAndSend() {
-    const rows = Array.from(inputTableBody.querySelectorAll('tr'));
-    const dataToSend = rows.map(row => {
-        const namaProduk = row.querySelector('.product-input').value;
-        const jumlah = row.querySelector('.jumlah-input').value;
-        const type = row.querySelector('.col-type input').value; // Assuming it's read-only
-        const rak = row.querySelector('.rak-select').value;
-        const packing = row.querySelector('.packing-input').value;
-        const stokTersedia = row.querySelector('.col-stok-tersedia input').value;
-        const tanggal = tanggalInput.value;
-        const waktu = waktuInput.value;
-
-        return [tanggal, waktu, namaProduk, jumlah, type, gudangSelect.value, rak, packing, stokTersedia];
-    });
-
-    // Mengirim data ke Google Sheets
-    await sendDataToGoogleSheets(dataToSend);
-}
-
-    // Menambahkan event listener untuk tombol Kirim
-document.getElementById('submitButton').addEventListener('click', () => {
-    collectDataAndSend();
-});
-
-function handleProductInputKeyDown(e, productInput, packingInput, row) {
-            const dropdownContent = productInput.nextElementSibling;
-            const items = dropdownContent.querySelectorAll('div');
-            let index = Array.from(items).findIndex(item => item.classList.contains('highlighted'));
-
-            if (e.key === 'ArrowDown') {
-                e.preventDefault();
-                if (index < items.length - 1) {
-                    index++;
-                } else {
-                    index = 0;
-                }
-                items.forEach(item => item.classList.remove('highlighted'));
-                items[index].classList.add('highlighted');
-                items[index].scrollIntoView({ block: 'nearest' });
-            } else if (e.key === 'ArrowUp') {
-                e.preventDefault();
-                if (index > 0) {
-                    index--;
-                } else {
-                    index = items.length - 1;
-                }
-                items.forEach(item => item.classList.remove('highlighted'));
-                items[index].classList.add('highlighted');
-                items[index].scrollIntoView({ block: 'nearest' });
-            } else if (e.key === 'Enter') {
-                e.preventDefault();
-                if (index >= 0) {
-                    productInput.value = items[index].textContent;
-                    packingInput.value = packingData.find(([namaProduk]) => namaProduk === items[index].textContent)[1];
-                    dropdownContent.innerHTML = '';
-                    dropdownContent.style.display = 'none';
-                } else {
-                    productInput.classList.add('invalid');
-                    return;
-                }
-                const nextRow = row.nextElementSibling;
-                if (nextRow) {
-                    const nextInput = nextRow.querySelector('.product-input');
-                    if (nextInput) {
-                        nextInput.focus();
-                    }
-                }
-            } else if (e.key === 'Tab') {
-                if (index >= 0) {
-                    productInput.value = items[index].textContent;
-                    packingInput.value = packingData.find(([namaProduk]) => namaProduk === items[index].textContent)[1];
-                    dropdownContent.innerHTML = '';
-                    dropdownContent.style.display = 'none';
-                }
-            }
-        }
-
-        function handleJumlahInputKeyDown(e, jumlahInput, row) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                const nextRow = row.nextElementSibling;
-                if (nextRow) {
-                    const nextInput = nextRow.querySelector('.jumlah-input');
-                    if (nextInput) {
-                        nextInput.focus();
-                    }
-                }
-            } else if (e.key === 'Tab') {
-                const nextInput = row.querySelector('.col-type input');
-                if (nextInput) {
-                    nextInput.focus();
-                }
-            }
-        }
-
-        function handleRakInputKeyDown(e, rakInput, dropdownContent, row) {
-            const items = dropdownContent.querySelectorAll('div');
-            let index = Array.from(items).findIndex(item => item.classList.contains('highlighted'));
-
-            if (e.key === 'ArrowDown') {
-                e.preventDefault();
-                if (index < items.length - 1) {
-                    index++;
-                } else {
-                    index = 0;
-                }
-                items.forEach(item => item.classList.remove('highlighted'));
-                items[index].classList.add('highlighted');
-                items[index].scrollIntoView({ block: 'nearest' });
-            } else if (e.key === 'ArrowUp') {
-                e.preventDefault();
-                if (index > 0) {
-                    index--;
-                } else {
-                    index = items.length - 1;
-                }
-                items.forEach(item => item.classList.remove('highlighted'));
-                items[index].classList.add('highlighted');
-                items[index].scrollIntoView({ block: 'nearest' });
-            } else if (e.key === 'Enter') {
-                e.preventDefault();
-                if (index >= 0) {
-                    rakInput.value = items[index].textContent;
-                    dropdownContent.innerHTML = '';
-                    dropdownContent.style.display = 'none';
-                } else {
-                    rakInput.classList.add('invalid');
-                    return;
-                }
-                const nextRow = row.nextElementSibling;
-                if (nextRow) {
-                    const nextInput = nextRow.querySelector('.rak-input');
-                    if (nextInput) {
-                        nextInput.focus();
-                    }
-                }
-            } else if (e.key === 'Tab') {
-                if (index >= 0) {
-                    rakInput.value = items[index].textContent;
-                    dropdownContent.innerHTML = '';
-                    dropdownContent.style.display = 'none';
-                }
-            }
         }
 
         function updateRowCount() {
-            const rowCountValue = inputTableBody.querySelectorAll('tr').length;
-            rowCount.textContent = `Row: ${rowCountValue}`;
+            const rows = document.querySelectorAll('#tableBody tr');
+            let count = rows.length;
+            document.getElementById('rowCount').textContent = `Row: ${count}`;
         }
 
-        function setCurrentDateTime() {
-            const today = new Date();
-            const day = String(today.getDate()).padStart(2, '0');
-            const month = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
-            const year = today.getFullYear();
-            const hours = String(today.getHours()).padStart(2, '0');
-            const minutes = String(today.getMinutes()).padStart(2, '0');
-            tanggalInput.value = `${day}-${month}-${year}`;
-            waktuInput.value = `${ hours}:${minutes}`;
+        // Update row count on input change
+        document.getElementById('tableBody').addEventListener('input', updateRowCount);
+
+        // Delete row functionality
+        document.getElementById('tableBody').addEventListener('click', function(event) {
+            if (event.target.classList.contains('deleteRow')) {
+                event.target.closest('tr').remove();
+                updateRowCount();
+            }
+        });
+
+        // Initial row count update
+        updateRowCount();
+
+        // Google Sheets API
+        const apiKey = 'AIzaSyCb9GeLx7UcqkvXj3Oy3F6e1B9XAvMLE4A';
+        const spreadsheetId = '1Lr7Do1DYOhNqAjoWcUEd1xqH4pHCQxEHxDD1rP4Q-Dc';
+        const stokRange = 'Sheet1!A2:A';
+
+        async function fetchData() {
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${stokRange}?key=${apiKey}`;
+            const response = await fetch(url);
+            const data = await response.json();
+            return data.values.flat();
         }
 
-        // Set the current date and time on page load
-        setCurrentDateTime();
-        // Initialize packing data
-        initPackingData();
+        async function showDropdown(inputElement) {
+            const dropdownContent = inputElement.nextElementSibling;
+            const query = inputElement.value.toLowerCase();
+            const data = await fetchData();
+            const filteredData = data.filter(item => item.toLowerCase().includes(query));
+            dropdownContent.innerHTML = '';
+            filteredData.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.textContent = item;
+                if (index === 0) {
+                    div.classList.add('highlight');
+                }
+                div.addEventListener('click', () => {
+                    inputElement.value = item;
+                    dropdownContent.innerHTML = '';
+                });
+                dropdownContent.appendChild(div);
+            });
+            dropdownContent.parentElement.classList.add('show');
+        }
 
-        // Close dropdown when clicking outside
-        document.addEventListener('click', (event) => {
-            const isClickInside = event.target.closest('.rak-input') || event.target.closest('.rak-dropdown-content');
-            if (!isClickInside) {
-                document.querySelectorAll('.rak-dropdown-content').forEach(dropdown => {
-                    dropdown.style.display = 'none';
+        function navigateDropdown(event, inputElement) {
+            const dropdownContent = inputElement.nextElementSibling;
+            const items = dropdownContent.querySelectorAll('div');
+            let index = Array.from(items).findIndex(item => item.classList.contains('highlight'));
+
+            if (event.key === 'ArrowDown') {
+                index = (index + 1) % items.length;
+                items.forEach(item => item.classList.remove('highlight'));
+                items[index].classList.add('highlight');
+                items[index].scrollIntoView({ block: 'nearest' });
+                event.preventDefault();
+            } else if (event.key === 'ArrowUp') {
+                index = (index - 1 + items.length) % items.length;
+                items.forEach(item => item.classList.remove('highlight'));
+                items[index].classList.add('highlight');
+                items[index].scrollIntoView({ block: 'nearest' });
+                event.preventDefault();
+            } else if (event.key === 'Enter') {
+                if (index >= 0) {
+                    inputElement.value = items[index].textContent;
+                    dropdownContent.innerHTML = '';
+                    const nextRow = inputElement.closest('tr').nextElementSibling;
+                    if (nextRow) {
+                        const nextInput = nextRow.querySelector('.msku');
+                        if (nextInput) {
+                            nextInput.focus();
+                        }
+                    }
+                }
+                event.preventDefault();
+            } else if (event.key === 'Tab') {
+                if (index >= 0) {
+                    inputElement.value = items[index].textContent;
+                    dropdownContent.innerHTML = '';
+                }
+            }
+        }
+
+        function navigateKuantitas(event, inputElement) {
+            if (event.key === 'Enter') {
+                const nextRow = inputElement.closest('tr').nextElementSibling;
+                if (nextRow) {
+                    const nextInput = nextRow.querySelector('.kuantitas');
+                    if (nextInput) {
+                        nextInput.focus();
+                    }
+                }
+                event.preventDefault();
+            }
+        }
+
+        document.addEventListener('click', function(event) {
+            if (!event.target.matches('.msku')) {
+                const dropdowns = document.querySelectorAll('.dropdown');
+                dropdowns.forEach(dropdown => {
+                    dropdown.classList.remove('show');
                 });
             }
+        });
+
+        // Copy data functionality
+        document.getElementById('copyData').addEventListener('click', function() {
+            const rows = document.querySelectorAll('#tableBody tr');
+            let dataToCopy = '';
+            rows.forEach(row => {
+                const msku = row.querySelector('.msku').value.trim();
+                const biaya = row.querySelector('.biaya').value.trim();
+                const kuantitas = row.querySelector('.kuantitas').value.trim();
+                if ((msku || kuantitas) && biaya === '0') {
+                    dataToCopy += `${msku} ${biaya} ${kuantitas}\n`;
+                }
+            });
+            navigator.clipboard.writeText(dataToCopy.trim()).then(() => {
+                alert('Data copied to clipboard');
+            }).catch(err => {
+                console.error('Error copying data: ', err);
+            });
         });
     </script>
 </body>
