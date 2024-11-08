@@ -150,29 +150,29 @@
     }
 
     function tambahBaris() {
-      const formContainer = document.getElementById('form-container');
-      const newRowId = `row${formContainer.children.length + 1}`;
-      const newRow = document.createElement('div');
-      newRow.id = newRowId;
-      newRow.className = 'grid grid-cols-9 gap-0 border border-gray-300';
-      newRow.innerHTML = `
-        <input type="date" id="msku${formContainer.children.length + 1}" name="msku${formContainer.children.length + 1}" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" readonly>
-        <button type="button" onclick="hapusBaris('${newRowId}')" class="text-red-500 hover:text-red-700 hidden delete-icon">
-          <i class="fas fa-trash-alt"></i>
-        </button>
-        <input type="text" id="form${formContainer.children.length + 1}_1" name="form${formContainer.children.length + 1}_1" placeholder="Waktu" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off" readonly>
-        <input type="text" id="form${formContainer.children.length + 1}_2" name="form${formContainer.children.length + 1}_2" placeholder="Nama Produk" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-        <input type="text" id="form${formContainer.children.length + 1}_3" name="form${formContainer.children.length + 1}_3" placeholder="Jumlah" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-        <input type="text" id="form${formContainer.children.length + 1}_4" name="form${formContainer.children.length + 1}_4" placeholder="Type" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-        <input type="text" id="form${formContainer.children.length + 1}_5" name="form${formContainer.children.length + 1}_5" placeholder="Gudang" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-        <input type="text" id="form${formContainer.children.length + 1}_6" name="form${formContainer.children.length + 1}_6" placeholder="Rak" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-        <input type="text" id="form${formContainer.children.length + 1}_7" name="form${formContainer.children.length + 1}_7" placeholder="Packing" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-        <input type="text" id="form${formContainer.children.length + 1}_8" name="form${formContainer.children.length + 1}_8" placeholder="Stok Tersedia" required class="mt-1 block w-full px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-      `;
-      formContainer.appendChild(newRow);
-      updateDates();
-      updateTimes();
-    }
+  const formContainer = document.getElementById('form-container');
+  const newRowId = `row${formContainer.children.length + 1}`;
+  const newRow = document.createElement('div');
+  newRow.id = newRowId;
+  newRow.className = 'grid grid-cols-9 gap-0 border border-gray-300';
+  newRow.innerHTML = `
+    <input type="date" id="msku${formContainer.children.length + 1}" name="msku${formContainer.children.length + 1}" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" readonly>
+    <button type="button" onclick="hapusBaris('${newRowId}')" class="text-red-500 hover:text-red-700 hidden delete-icon">
+      <i class="fas fa-trash-alt"></i>
+    </button>
+    <input type="text" id="form${formContainer.children.length + 1}_1" name="form${formContainer.children.length + 1}_1" placeholder="Waktu" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off" readonly>
+    <input type="text" id="form${formContainer.children.length + 1}_2" name="form${formContainer.children.length + 1}_2" placeholder="Nama Produk" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
+    <input type="text" id="form${formContainer.children.length + 1}_3" name="form${formContainer.children.length + 1}_3" placeholder="Jumlah" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
+    <input type="text" id="form${formContainer.children.length + 1}_4" name="form${formContainer.children.length + 1}_4" placeholder="Type" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
+    <input type="text" id="form${formContainer.children.length + 1}_5" name="form${formContainer.children.length + 1}_5" placeholder="Gudang" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
+    <input type="text" id="form${formContainer.children.length + 1}_6" name="form${formContainer.children.length + 1}_6" placeholder="Rak" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
+    <input type="text" id="form${formContainer.children.length + 1}_7" name="form${formContainer.children.length + 1}_7" placeholder="Packing" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
+    <input type="text" id="form${formContainer.children.length + 1}_8" name="form${formContainer.children.length + 1}_8" placeholder="Stok Tersedia" required class="mt-1 block w-full px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
+  `;
+  formContainer.appendChild(newRow);
+  updateDates();
+  updateTimes();
+}
 
     function updateDates() {
       const firstDate = document.getElementById('msku1').value;
@@ -258,18 +258,18 @@
         </div>
         <form id="formulir" onsubmit="event.preventDefault(); kirimForm();" class="space-y-0">
           <div id="form-container" class="space-y-0">
-            <div id="row1" class="grid grid-cols-9 gap-0 border border-gray-300">
-              <input type="date" id="msku1" name="msku1" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" onchange="updateDates()">
-              <input type="text" id="form1_1" name="form1_1" placeholder="Waktu" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-              <input type="text" id="form1_2" name="form1_2" placeholder="Nama Produk" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-              <input type="text" id="form1_3" name="form1_3" placeholder="Jumlah" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-              <input type="text" id="form1_4" name="form1_4" placeholder="Type" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-              <input type="text" id="form1_5" name="form1_5" placeholder="Gudang" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-              <input type="text" id="form6" name="form6" placeholder="Rak" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-              <input type="text" id="form7" name="form7" placeholder="Packing" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-              <input type="text" id="form8" name="form8" placeholder="Stok Tersedia" required class="mt-1 block w-full px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-            </div>
-          </div>
+  <div id="row1" class="grid grid-cols-9 gap-0 border border-gray-300">
+    <input type="date" id="msku1" name="msku1" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" onchange="updateDates()">
+    <input type="text" id="form1_1" name="form1_1" placeholder="Waktu" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
+    <input type="text" id="form1_2" name="form1_2" placeholder="Nama Produk" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
+    <input type="text" id="form1_3" name="form1_3" placeholder="Jumlah" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
+    <input type="text" id="form1_4" name="form1_4" placeholder="Type" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
+    <input type="text" id="form1_5" name="form1_5" placeholder="Gudang" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
+    <input type="text" id="form1_6" name="form1_6" placeholder="Rak" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
+    <input type="text" id="form1_7" name="form1_7" placeholder="Packing" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
+    <input type="text" id="form1_8" name="form1_8" placeholder="Stok Tersedia" required class="mt-1 block w-full px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
+  </div>
+</div>
         </form>
       </div>
     </div>
