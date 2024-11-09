@@ -34,6 +34,17 @@
 
         window.onload = setCurrentTime;
     </script>
+    <style>
+        /* Hide the up and down arrows in number input fields */
+        input[type=number]::-webkit-outer-spin-button,
+        input[type=number]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
 </head>
 <body class="bg-gray-100 p-6">
     <div class="container mx-auto">
