@@ -1,291 +1,100 @@
-<html lang="id">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Formulir MSKU</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"></link>
-  <style>
-    .popup {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      z-index: 1000;
-      display: none;
-      width: 300px;
-      text-align: center;
-    }
-    .popup.show {
-      display: block;
-    }
-    .popup button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .popup button:hover {
-      background-color: #45a049;
-    }
-  </style>
-  <script>
-    const apiKey = 'AIzaSyCb9GeLx7UcqkvXj3Oy3F6e1B9XAvMLE4A';
-    const spreadsheetId = '1Lr7Do1DYOhNqAjoWcUEd1xqH4pHCQxEHxDD1rP4Q-Dc';
-    const stokRange = 'Sheet1!A2:A';
-    let cachedData = [];
-    let isSubmitting = false;
+    <title>Form Input Table</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"></link>
+    <script>
+        function updateDatesAndTimes() {
+            const firstDate = document.getElementById('first-date').value;
+            const firstTime = document.getElementById('first-time').value;
+            const dateInputs = document.querySelectorAll('.date-input');
+            const timeInputs = document.querySelectorAll('.time-input');
+            
+            dateInputs.forEach((input, index) => {
+                if (index !== 0) {
+                    input.value = firstDate;
+                }
+            });
 
-    document.addEventListener('DOMContentLoaded', function() {
-      if (localStorage.getItem('cachedData')) {
-        cachedData = JSON.parse(localStorage.getItem('cachedData'));
-      } else {
-        fetchData();
-      }
-      setInitialTime();
-    });
-
-    function fetchData() {
-      fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${stokRange}?key=${apiKey}`)
-        .then(response => response.json())
-        .then(data => {
-          cachedData = data.values || [];
-          localStorage.setItem('cachedData', JSON.stringify(cachedData));
-        })
-        .catch(error => {
-          console.error('Error fetching data:', error);
-        });
-    }
-
-    function kirimForm() {
-      if (isSubmitting) return; // Prevent multiple submissions
-
-      isSubmitting = true;
-      var formData = new FormData(document.getElementById("formulir"));
-      fetch("https://script.google.com/macros/s/AKfycbxkCEqWMhaMl-f_CQObAwZi6L9c9lD39CBCnIZaI1K1R1EIHpmF2xlPxDbDJC7F3xrVcw/exec", {
-        method: "POST",
-        body: formData
-      })
-      .then(response => {
-        if (!response.ok) throw new Error('Network response was not ok');
-        return response.json();
-      })
-      .then(data => {
-        showPopup("Data MSKU berhasil dikirim!");
-        resetForm(); // Reset form after successful submission
-        hideDeleteIcons(); // Sembunyikan ikon hapus setelah pengiriman
-        fetchData(); // Refresh data
-        isSubmitting = false; // Reset submission state
-      })
-      .catch(error => {
-        console.error("Terjadi kesalahan:", error.message);
-        showPopup("Data berhasil dikirim, tapi terjadi kesalahan pada respons.");
-        isSubmitting = false; // Reset submission state
-      });
-    }
-
-    function resetForm() {
-      const formContainer = document.getElementById('form-container');
-      formContainer.innerHTML = `
-        <div id="row1" class="grid grid-cols-9 gap-0 border border-gray-300">
-          <input type="date" id="msku1" name="msku1" required class="mt-1 block w-32 px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" onchange="updateDates()">
-          <input type="text" id="form1_1" name="form1_1" placeholder="Waktu" required class="mt-1 block w-15 px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-          <input type="text" id="form1_2" name="form1_2" placeholder="Nama Produk" required class="mt-1 block w-32 px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-          <input type="text" id="form1_3" name="form1_3" placeholder="Jumlah" required class="mt-1 block w-32 px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-          <input type="text" id="form1_4" name="form1_4" placeholder="Type" required class="mt-1 block w-32 px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-          <input type="text" id="form1_5" name="form1_5" placeholder="Gudang" required class="mt-1 block w-32 px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-          <input type="text" id="form1_6" name="form1_6" placeholder="Rak" required class="mt-1 block w-32 px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-          <input type="text" id="form1_7" name="form1_7" placeholder="Packing" required class="mt-1 block w-32 px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-          <input type="text" id="form1_8" name="form1_8" placeholder="Stok Tersedia" required class="mt-1 block w-32 px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-        </div>
-      `;
-      setInitialTime();
-    }
-
-    function showPopup(message) {
-      const popup = document.getElementById('popup');
-      popup.querySelector('p').innerText = message;
-      popup.classList.add('show');
-      document.addEventListener('keydown', handleEnterKey);
-    }
-
-    function closePopup() {
-      const popup = document.getElementById('popup');
-      popup.classList.remove('show');
-      document.removeEventListener('keydown', handleEnterKey);
-    }
-
-    function handleEnterKey(event) {
-      if (event.key === 'Enter') {
-        closePopup();
-      }
-    }
-
-    function hapusBaris(id) {
-      document.getElementById(id).remove();
-      aturUlangBaris(); // Panggil fungsi untuk mengatur ulang baris
-    }
-
-    function aturUlangBaris() {
-      const formContainer = document.getElementById('form-container');
-      const rows = formContainer.children;
-
-      for (let i = 0; i < rows.length; i++) {
-        const inputs = rows[i].querySelectorAll('input');
-        inputs.forEach((input, index) => {
-          input.id = `form${i + 1}_${index + 1}`;
-          input.name = `form${i + 1}_${index + 1}`;
-        });
-        const button = rows[i].querySelector('button');
-        button.setAttribute('onclick', `hapusBaris('row${i + 1}')`);
-        rows[i].id = `row${i + 1}`;
-      }
-    }
-
-function tambahBaris() {
-  const formContainer = document.getElementById('form-container');
-  const newRowId = `row${formContainer.children.length + 1}`;
-  const newRow = document.createElement('div');
-  newRow.id = newRowId;
-  newRow.className = 'grid grid-cols-9 gap-0 border border-gray-300';
-  newRow.innerHTML = `
-    <input type="date" id="msku${formContainer.children.length + 1}" name="msku${formContainer.children.length + 1}" required class="mt-1 block w-32 px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" readonly>
-    <button type="button" onclick="hapusBaris('${newRowId}')" class="text-red-500 hover:text-red-700 hidden delete-icon">
-      <i class="fas fa-trash-alt"></i>
-    </button>
-    <input type="text" id="form${formContainer.children.length + 1}_1" name="form${formContainer.children.length + 1}_1" placeholder="Waktu" required class="mt-1 block w-24 px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-left" autocomplete="off" readonly>
-    <input type="text" id="form${formContainer.children.length + 1}_2" name="form${formContainer.children.length + 1}_2" placeholder="Nama Produk" required class="mt-1 block w-42 px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-    <input type="text" id="form${formContainer.children.length + 1}_3" name="form${formContainer.children.length + 1}_3" placeholder="Jumlah" required class="mt-1 block w-24 px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off"> <!-- Diubah dari w-32 ke w-24 -->
-    <input type="text" id="form${formContainer.children.length + 1}_4" name="form${formContainer.children.length + 1}_4" placeholder="Type" required class="mt-1 block w-32 px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-    <input type="text" id="form${formContainer.children.length + 1}_5" name="form${formContainer.children.length + 1}_5" placeholder="Gudang" required class="mt-1 block w-24 px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off"> <!-- Diubah dari w-32 ke w-24 -->
-    <input type="text" id="form${formContainer.children.length + 1}_6" name="form${formContainer.children.length + 1}_6" placeholder="Rak" required class="mt-1 block w-24 px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off"> <!-- Diubah dari w-32 ke w-24 -->
-    <input type="text" id="form${formContainer.children.length + 1}_7" name="form${formContainer.children.length + 1}_7" placeholder="Packing" required class="mt-1 block w-42 px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-    <input type="text" id="form${formContainer.children.length + 1}_8" name="form${formContainer.children.length + 1}_8" placeholder="Stok Tersedia" required class="mt-1 block w-24 px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off"> <!-- Diubah dari w-32 ke w-24 -->
-  `;
-  formContainer.appendChild(newRow);
-  updateDates();
-  updateTimes();
-}
-
-    function updateDates() {
-      const firstDate = document.getElementById('msku1').value;
-      const dateInputs = document.querySelectorAll('input[type="date"]');
-      dateInputs.forEach((input, index) => {
-        if (index !== 0) {
-          input.value = firstDate;
+            timeInputs.forEach((input, index) => {
+                if (index !== 0) {
+                    input.value = firstTime;
+                }
+            });
         }
-      });
-    }
 
-    function updateTimes() {
-      const firstTime = document.getElementById('form1_1').value;
-      const timeInputs = document.querySelectorAll('input[name^="form"][name$="_1"]');
-      timeInputs.forEach((input, index) => {
-        if (index !== 0) {
-          input.value = firstTime;
+        function setCurrentTime() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const currentTime = `${hours}:${minutes}`;
+            document.getElementById('first-time').value = currentTime;
+            updateDatesAndTimes();
         }
-      });
-    }
 
-    function setInitialTime() {
-      const now = new Date();
-      const hours = String(now.getHours()).padStart(2, '0');
-      const minutes = String(now.getMinutes()).padStart(2, '0');
-      const currentTime = `${hours}:${minutes}`;
-      document.getElementById('form1_1').value = currentTime;
-    }
-
-    function toggleDeleteIcons() {
-      showDeleteIcons = !showDeleteIcons; // Toggle status
-      const deleteButtons = document.querySelectorAll('.delete-icon');
-      deleteButtons.forEach(button => {
-        button.classList.toggle('hidden', !showDeleteIcons); // Tampilkan atau sembunyikan ikon
-      });
-    }
-
-    function hideDeleteIcons() {
-      showDeleteIcons = false; // Set status ke false
-      const deleteButtons = document.querySelectorAll('.delete-icon');
-      deleteButtons.forEach(button => {
-        button.classList.add('hidden'); // Sembunyikan ikon
-      });
-    }
-
-    function goToInbound() {
-      window.location.href = 'inbound.html';
-    }
-  </script>
+        window.onload = setCurrentTime;
+    </script>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-  <div class="bg-white p-8 rounded-lg shadow-lg w-full flex flex-col space-y-8">
-    <div class="flex justify-between items-center">
-      <button onclick="goToInbound()" class="text-xl">
-        <i class="fas fa-arrow-left"></i>
-      </button>
-      <div></div>
-    </div>
-    <div class="flex space-x-8">
-      <div class="w-full">
-        <h1 class="text-2xl font-bold mb-6 text-center">Input MSKU</h1>
-        <div class="flex justify-center space-x-2 mb-4">
-          <button type="button" onclick="tambahBaris()" class="py-2 px-4 bg-green-600 text-white font-semibold rounded-md shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
-            Tambah Baris
-          </button>
-          <button type="button" onclick="toggleDeleteIcons()" class="py-2 px-4 bg-red-600 text-white font-semibold rounded-md shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
-            Delete
-          </button>
-          <button type="button" onclick="kirimForm()" class="py-2 px-4 bg-indigo-600 text-white font-semibold rounded-md shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-            Kirim
-          </button>
+<body class="bg-gray-100 p-6">
+    <div class="container mx-auto">
+        <div class="flex space-x-2 mb-4">
+            <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Tambah Baris</button>
+            <button class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Tambah 10 Baris</button>
+            <button class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">Input Massal</button>
+            <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Kirim</button>
         </div>
-        <div class="grid grid-cols-9 gap-0 text-center font-semibold border border-gray-300">
-  <div class="border-r border-gray-300 p-2 w-32 text-center">Tanggal</div>
-  <div class="border-r border-gray-300 p-2 w-24 text-center">Waktu</div>
-  <div class="border-r border-gray-300 p-2 w-42 text-center">Nama Produk</div>
-  <div class="border-r border-gray-300 p-2 w-24 text-center">Jumlah</div> <!-- Diubah dari w-32 ke w-24 -->
-  <div class="border-r border-gray-300 p-2 w-32 text-center">Type</div>
-  <div class="border-r border-gray-300 p-2 w-24 text-center">Gudang</div> <!-- Diubah dari w-32 ke w-24 -->
-  <div class="border-r border-gray-300 p-2 w-24 text-center">Rak</div> <!-- Diubah dari w-32 ke w-24 -->
-  <div class="border-r border-gray-300 p-2 w-42 text-center">Packing</div>
-  <div class="p-2 w-24 text-center">Stok Tersedia</div> <!-- Diubah dari w-32 ke w-24 -->
-</div>
-        <form id="formulir" onsubmit="event.preventDefault(); kirimForm();" class="space-y-0">
-          <div id="form-container" class="space-y-0">
-  <div id="row1" class="grid grid-cols-9 gap-0 border border-gray-300">
-    <input type="date" id="msku1" name="msku1" required class="mt-1 block w-32 px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" onchange="updateDates()">
-    <input type="text" id="form1_1" name="form1_1" placeholder="Waktu" required class="mt-1 block w-24 px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-left" autocomplete="off">
-    <input type="text" id="form1_2" name="form1_2" placeholder="Nama Produk" required class="mt-1 block w-42 px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-    <input type="text" id="form1_3" name="form1_3" placeholder="Jumlah" required class="mt-1 block w-24 px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off"> <!-- Diubah dari w-32 ke w-24 -->
-    <input type="text" id="form1_4" name="form1_4" placeholder="Type" required class="mt-1 block w-32 px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-    <input type="text" id="form1_5" name="form1_5" placeholder="Gudang" required class="mt-1 block w-24 px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off"> <!-- Diubah dari w-32 ke w-24 -->
-    <input type="text" id="form1_6" name="form1_6" placeholder="Rak" required class="mt-1 block w-24 px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off"> <!-- Diubah dari w-32 ke w-24 -->
-    <input type="text" id="form1_7" name="form1_7" placeholder ="Packing" required class="mt-1 block w-42 px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-    <input type="text" id="form1_8" name="form1_8" placeholder="Stok Tersedia" required class="mt-1 block w-24 px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off"> <!-- Diubah dari w-32 ke w-24 -->
-  </div>
-</div>
-        </form>
-      </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white">
+                <thead>
+                    <tr>
+                        <th class="py-2 px-4 border-b">Tanggal</th>
+                        <th class="py-2 px-4 border-b">Waktu</th>
+                        <th class="py-2 px-4 border-b">Nama Produk</th>
+                        <th class="py-2 px-4 border-b">Jumlah</th>
+                        <th class="py-2 px-4 border-b">Type</th>
+                        <th class="py-2 px-4 border-b">Gudang</th>
+                        <th class="py-2 px-4 border-b">Rak</th>
+                        <th class="py-2 px-4 border-b">Packing</th>
+                        <th class="py-2 px-4 border-b">Stok Tersedia</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="py-2 px-4 border-b"><input type="date" id="first-date" class="w-full border rounded px-2 py-1 date-input" onchange="updateDatesAndTimes()"></td>
+                        <td class="py-2 px-4 border-b"><input type="time" id="first-time" class="w-full border rounded px-2 py-1 time-input" readonly></td>
+                        <td class="py-2 px-4 border-b"><input type="text" class="w-full border rounded px-2 py-1" placeholder="Nama Produk"></td>
+                        <td class="py-2 px-4 border-b"><input type="number" class="w-full border rounded px-2 py-1" placeholder="Jumlah"></td>
+                        <td class="py-2 px-4 border-b"><input type="text" class="w-full border rounded px-2 py-1" placeholder="Type"></td>
+                        <td class="py-2 px-4 border-b"><input type="text" class="w-full border rounded px-2 py-1" placeholder="Gudang"></td>
+                        <td class="py-2 px-4 border-b"><input type="text" class="w-full border rounded px-2 py-1" placeholder="Rak"></td>
+                        <td class="py-2 px-4 border-b"><input type="text" class="w-full border rounded px-2 py-1" placeholder="Packing"></td>
+                        <td class="py-2 px-4 border-b"><input type="number" class="w-full border rounded px-2 py-1" placeholder="Stok Tersedia"></td>
+                    </tr>
+                    <tr>
+                        <td class="py-2 px-4 border-b"><input type="date" class="w-full border rounded px-2 py-1 date-input" readonly></td>
+                        <td class="py-2 px-4 border-b"><input type="time" class="w-full border rounded px-2 py-1 time-input" readonly></td>
+                        <td class="py-2 px-4 border-b"><input type="text" class="w-full border rounded px-2 py-1" placeholder="Nama Produk"></td>
+                        <td class="py-2 px-4 border-b"><input type="number" class="w-full border rounded px-2 py-1" placeholder="Jumlah"></td>
+                        <td class="py-2 px-4 border-b"><input type="text" class="w-full border rounded px-2 py-1" placeholder="Type"></td>
+                        <td class="py-2 px-4 border-b"><input type="text" class="w-full border rounded px-2 py-1" placeholder="Gudang"></td>
+                        <td class="py-2 px-4 border-b"><input type="text" class="w-full border rounded px-2 py-1" placeholder="Rak"></td>
+                        <td class="py-2 px-4 border-b"><input type="text" class="w-full border rounded px-2 py-1" placeholder="Packing"></td>
+                        <td class="py-2 px-4 border-b"><input type="number" class="w-full border rounded px-2 py-1" placeholder="Stok Tersedia"></td>
+                    </tr>
+                    <tr>
+                        <td class="py-2 px-4 border-b"><input type="date" class="w-full border rounded px-2 py-1 date-input" readonly></td>
+                        <td class="py-2 px-4 border-b"><input type="time" class="w-full border rounded px-2 py-1 time-input" readonly></td>
+                        <td class="py-2 px-4 border-b"><input type="text" class="w-full border rounded px-2 py-1" placeholder="Nama Produk"></td>
+                        <td class="py-2 px-4 border-b"><input type="number" class="w-full border rounded px-2 py-1" placeholder="Jumlah"></td>
+                        <td class="py-2 px-4 border-b"><input type="text" class="w-full border rounded px-2 py-1" placeholder="Type"></td>
+                        <td class="py-2 px-4 border-b"><input type="text" class="w-full border rounded px-2 py-1" placeholder="Gudang"></td>
+                        <td class="py-2 px-4 border-b"><input type="text" class="w-full border rounded px-2 py-1" placeholder="Rak"></td>
+                        <td class="py-2 px-4 border-b"><input type="text" class="w-full border rounded px-2 py-1" placeholder="Packing"></td>
+                        <td class="py-2 px-4 border-b"><input type="number" class="w-full border rounded px-2 py-1" placeholder="Stok Tersedia"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
-  </div>
-  <div id="popup" class="popup">
-    <p></p>
-    <button onclick="closePopup()">OK</button>
-</div>
-  <script>
-    // Inisialisasi untuk menampilkan popup jika ada pesan
-    document.addEventListener('DOMContentLoaded', function() {
-      const popup = document.getElementById('popup');
-      if (popup.classList.contains('show')) {
-        popup.classList.remove('show');
-      }
-    });
-  </script>
 </body>
 </html>
