@@ -1,0 +1,237 @@
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulir MSKU</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"></link>
+  <style>
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      display: none;
+      width: 300px;
+      text-align: center;
+    }
+    .popup.show {
+      display: block;
+    }
+    .popup button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .popup button:hover {
+      background-color: #45a049;
+    }
+  </style>
+  <script>
+    let isSubmitting = false;
+
+    function kirimForm() {
+      if (isSubmitting) return; // Prevent multiple submissions
+
+      isSubmitting = true;
+      var formData = new FormData(document.getElementById("formulir"));
+      fetch("https://script.google.com/macros/s/AKfycbxkCEqWMhaMl-f_CQObAwZi6L9c9lD39CBCnIZaI1K1R1EIHpmF2xlPxDbDJC7F3xrVcw/exec", {
+        method: "POST",
+        body: formData
+      })
+      .then(response => {
+        if (!response.ok) throw new Error('Network response was not ok');
+        return response.json();
+      })
+      .then(data => {
+        showPopup("Data MSKU berhasil dikirim!");
+        resetForm(); // Reset form after successful submission
+        hideDeleteIcons(); // Sembunyikan ikon hapus setelah pengiriman
+        isSubmitting = false; // Reset submission state
+      })
+      .catch(error => {
+        console.error("Terjadi kesalahan:", error.message);
+        showPopup("Data berhasil dikirim, tapi terjadi kesalahan pada respons.");
+        isSubmitting = false; // Reset submission state
+      });
+    }
+
+    function resetForm() {
+      const formContainer = document.getElementById('form-container');
+      formContainer.innerHTML = `
+        <div id="row1" class="flex items-center space-x-2">
+          <input type="text" id="msku1" name="msku1" placeholder="MSKU 1" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
+          <button type="button" onclick="hapusBaris('row1')" class="text-red-500 hover:text-red-700 hidden delete-icon">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+        </div>
+        <div id="row2" class="flex items-center space-x-2">
+          <input type="text" id="msku2" name="msku2" placeholder="MSKU 2" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
+          <button type="button" onclick="hapusBaris('row2')" class="text-red-500 hover:text-red-700 hidden delete-icon">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+        </div>
+        <div id="row3" class="flex items-center space-x-2">
+          <input type="text" id="msku3" name="msku3" placeholder="MSKU 3" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
+          <button type="button" onclick="hapusBaris('row3')" class="text-red-500 hover:text-red-700 hidden delete-icon">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+        </div>
+        <div id="row4" class="flex items-center space-x-2">
+          <input type="text" id="msku4" name="msku4" placeholder="MSKU 4" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
+          <button type="button" onclick="hapusBaris('row4')" class="text-red-500 hover:text-red-700 hidden delete-icon">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+        </div>
+      `;
+    }
+
+    function showPopup(message) {
+      const popup = document.getElementById('popup');
+      popup.querySelector('p').innerText = message;
+      popup.classList.add('show');
+      document.addEventListener('keydown', handleEnterKey);
+    }
+
+    function closePopup() {
+      const popup = document.getElementById('popup');
+      popup.classList.remove('show');
+      document.removeEventListener('keydown', handleEnterKey);
+    }
+
+    function handleEnterKey(event) {
+      if (event.key === 'Enter') {
+        closePopup();
+      }
+    }
+
+    function hapusBaris(id) {
+      document.getElementById(id).remove();
+      aturUlangBaris(); // Panggil fungsi untuk mengatur ulang baris
+    }
+
+    function aturUlangBaris() {
+      const formContainer = document.getElementById('form-container');
+      const rows = formContainer.children;
+
+      for (let i = 0; i < rows.length; i++) {
+        const input = rows[i].querySelector('input');
+        input.id = `msku${i + 1}`;
+        input.name = `msku${i + 1}`;
+        const button = rows[i].querySelector('button');
+        button.setAttribute('onclick', `hapusBaris('row${i + 1}')`);
+        rows[i].id = `row${i + 1}`;
+      }
+    }
+
+    function tambahBaris() {
+      const formContainer = document.getElementById('form-container');
+      const newRowId = `row${formContainer.children.length + 1}`;
+      const newRow = document.createElement('div');
+      newRow.id = newRowId;
+      newRow.className = 'flex items-center space-x-2';
+      newRow.innerHTML = `
+        <input type="text" id="msku${formContainer.children.length + 1}" name="msku${formContainer.children.length + 1}" placeholder="MSKU ${formContainer.children.length + 1}" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
+        <button type="button" onclick="hapusBaris('${newRowId}')" class="text-red-500 hover:text-red-700 hidden delete-icon">
+          <i class="fas fa-trash-alt"></i>
+        </button>
+      `;
+      formContainer.appendChild(newRow);
+    }
+
+    function toggleDeleteIcons() {
+      showDeleteIcons = !showDeleteIcons; // Toggle status
+      const deleteButtons = document.querySelectorAll('.delete-icon');
+      deleteButtons.forEach(button => {
+        button.classList.toggle('hidden', !showDeleteIcons); // Tampilkan atau sembunyikan ikon
+      });
+    }
+
+    function hideDeleteIcons() {
+      showDeleteIcons = false; // Set status ke false
+      const deleteButtons = document.querySelectorAll('.delete-icon');
+      deleteButtons.forEach(button => {
+        button.classList.add('hidden'); // Sembunyikan ikon
+      });
+    }
+
+    function goToInbound() {
+      window.location.href = 'inbound.html';
+    }
+  </script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-6xl flex flex-col space-y-8">
+    <div class="flex justify-between items-center">
+      <button onclick="goToInbound()" class="text-xl">
+        <i class="fas fa-arrow-left"></i>
+      </button>
+      <div></div>
+    </div>
+    <div class="flex space-x-8">
+      <div class="w-1/2">
+        <h1 class="text-2xl font-bold mb-6 text-center">Input MSKU</h1>
+        <form id="formulir" onsubmit="event.preventDefault(); kirimForm();" class="space-y-4">
+          <div id="form-container" class="space-y-4">
+            <div id="row1" class="flex items-center space-x-2">
+              <input type="text" id="msku1" name="msku1" placeholder="MSKU 1" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
+              <button type="button" onclick="hapusBaris('row1')" class="text-red-500 hover:text-red-700 hidden delete-icon">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </div>
+            <div id="row2" class="flex items-center space-x-2">
+              <input type="text" id="msku2" name="msku2" placeholder="MSKU 2" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
+              <button type="button" onclick="hapusBaris('row2')" class="text-red-500 hover:text-red-700 hidden delete-icon">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="w-1/2">
+        <h1 class="text-2xl font-bold mb-6 text-center">Input MSKU</h1>
+        <form id="formulir" onsubmit="event.preventDefault(); kirimForm();" class="space-y-4">
+          <div id="form-container2" class="space-y-4">
+            <div id="row3" class="flex items-center space-x-2">
+              <input type="text" id="msku3" name="msku3" placeholder="MSKU 3" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
+              <button type="button" onclick="hapusBaris('row3')" class="text-red-500 hover:text-red-700 hidden delete-icon">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </div>
+            <div id="row4" class="flex items-center space-x-2">
+              <input type="text" id="msku4" name="msku4" placeholder="MSKU 4" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
+              <button type="button" onclick="hapusBaris('row4')" class="text-red-500 hover:text-red-700 hidden delete-icon">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="flex justify-center space-x-2">
+      <button type="button" onclick="tambahBaris()" class="py-2 px-4 bg-green-600 text-white font-semibold rounded-md shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+        Tambah Baris
+      </button>
+      <button type="button" onclick="toggleDeleteIcons()" class="py-2 px-4 bg-red-600 text-white font-semibold rounded-md shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+        Delete
+      </button>
+      <button type="submit" form="formulir" class="py-2 px-4 bg-indigo-600 text-white font-semibold rounded-md shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+        Kirim
+      </button>
+    </div>
+  </div>
+  <div id="popup" class="popup">
+    <p></p>
+    <button onclick="closePopup()">OK</button>
+  </div>
+</body>
+</html>
