@@ -131,7 +131,7 @@
       width: 250px;
     }
     .msku3 {
-      width: 250px;
+      width: 100%;
     }
     .msku4 {
       width: 100px;
@@ -146,7 +146,7 @@
       width: 100px;
     }
     .msku8 {
-      width: 250px;
+      width: 100%;
     }
     .msku9 {
       width: 100px;
@@ -196,7 +196,7 @@
           <tr>
             <td>
               <div class="form-group">
-                <input type="text" id="msku3" name="msku3" class="msku3" required autocomplete="off">
+                <input type="text" id="msku3" name="msku3" class="msku3" required autocomplete="off" style="width: 100%;">
               </div>
             </td>
             <td>
@@ -216,7 +216,7 @@
             </td>
             <td>
               <div class="form-group">
-                <input type="text" id="msku8" name="msku8" class="msku8" required autocomplete="off">
+                <input type="text" id="msku8" name="msku8" class="msku8" required autocomplete="off" style="width: 100%;">
               </div>
             </td>
             <td>
@@ -278,11 +278,11 @@
     const newRow = table.insertRow();
 
     const cells = [
-      { id: 'msku3', class: 'msku3' },
+      { id: 'msku3', class: 'msku3', style: 'width: 100%;' },
       { id: 'msku4', class: 'msku4' },
       { id: 'msku5', class: 'msku5' },
       { id: 'msku7', class: 'msku7' },
-      { id: 'msku8', class: 'msku8' },
+      { id: 'msku8', class: 'msku8', style: 'width: 100%;' },
       { id: 'msku9', class: 'msku9' }
     ];
 
@@ -290,7 +290,7 @@
       const newCell = newRow.insertCell();
       newCell.innerHTML = `
         <div class="form-group">
-          <input type="text" id="${cell.id}" name="${cell.id}" class="${cell.class}" required autocomplete="off">
+          <input type="text" id="${cell.id}" name="${cell.id}" class="${cell.class}" required autocomplete="off" style="${cell.style || ''}">
         </div>
       `;
     });
