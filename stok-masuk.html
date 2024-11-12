@@ -278,22 +278,28 @@
     const newRow = table.insertRow();
 
     const cells = [
-      { id: 'msku3', span: 'md-col-span-2 small-input' },
-      { id: 'msku4', span: 'md-col-span-1' },
-      { id: 'msku5', span: 'md-col-span-1' },
-      { id: 'msku7', span: 'md-col-span-1' },
-      { id: 'msku8', span: 'md-col-span-2 small-input' },
-      { id: 'msku9', span: 'md-col-span-1' }
+      { id: 'msku3', class: 'msku3' },
+      { id: 'msku4', class: 'msku4' },
+      { id: 'msku5', class: 'msku5' },
+      { id: 'msku7', class: 'msku7' },
+      { id: 'msku8', class: 'msku8' },
+      { id: 'msku9', class: 'msku9' }
     ];
 
     cells.forEach(cell => {
       const newCell = newRow.insertCell();
       newCell.innerHTML = `
-        <div class="form-group ${cell.span}">
-          <input type="text" id="${cell.id}" name="${cell.id}" required autocomplete="off">
+        <div class="form-group">
+          <input type="text" id="${cell.id}" name="${cell.id}" class="${cell.class}" required autocomplete="off">
         </div>
       `;
     });
+  }
+
+  function addTwentyRows() {
+    for (let i = 0; i < 20; i++) {
+      addRow();
+    }
   }
 </script>
 </body>
