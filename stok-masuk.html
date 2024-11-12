@@ -2,290 +2,299 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Formulir MSKU</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Input MSKU</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"></link>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    .popup {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      z-index: 1000;
-      display: none;
-      width: 300px;
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f7fafc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background-color: #ffffff;
+      padding: 2rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+      width: 100%;
+    }
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
       text-align: center;
     }
-    .popup.show {
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    .form-group label {
       display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #4a5568;
+      margin-bottom: 0.5rem;
     }
-    .popup button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      background-color: #4CAF50;
-      color: white;
+    .form-group input {
+      padding: 0.5rem;
+      border: 1px solid #cbd5e0;
+      border-radius: 0.375rem;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      font-size: 0.875rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-group input:focus {
+      border-color: #5a67d8;
+      box-shadow: 0 0 0 3px rgba(90, 103, 216, 0.3);
+    }
+    .button-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 1.5rem;
+    }
+    .button-container button {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.5rem 1rem;
       border: none;
-      border-radius: 5px;
+      border-radius: 0.375rem;
+      background-color: #5a67d8;
+      color: #ffffff;
+      font-size: 0.875rem;
+      font-weight: 500;
       cursor: pointer;
+      transition: background-color 0.2s;
+      margin-right: 0.5rem;
     }
-    .popup button:hover {
-      background-color: #45a049;
+    .button-container button:last-child {
+      margin-right: 0;
+    }
+    .button-container button:hover {
+      background-color: #434190;
+    }
+    .button-container button:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(90, 103, 216, 0.3);
+    }
+    .button-container button i {
+      margin-right: 0.5rem;
+    }
+    .grid {
+      display: grid;
+      gap: 1rem;
+    }
+    .grid-cols-1 {
+      grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+    .md-grid-cols-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .md-grid-cols-9 {
+      grid-template-columns: repeat(9, minmax(0, 1fr));
+    }
+    .md-col-span-2 {
+      grid-column: span 2 / span 2;
+    }
+    .md-col-span-1 {
+      grid-column: span 1 / span 1;
+    }
+    .small-input {
+      max-width: 300px;
+    }
+    .spacer {
+      margin-top: 2rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    table, th, td {
+      border: 1px solid #cbd5e0;
+    }
+    th, td {
+      padding: 0.5rem;
+      text-align: center;
+    }
+    th {
+      background-color: #f7fafc;
+      font-weight: 700;
+    }
+    .msku1 {
+      width: 250px;
+    }
+    .msku2 {
+      width: 250px;
+    }
+    .msku3 {
+      width: 250px;
+    }
+    .msku4 {
+      width: 100px;
+    }
+    .msku5 {
+      width: 100px;
+    }
+    .msku6 {
+      width: 250px;
+    }
+    .msku7 {
+      width: 100px;
+    }
+    .msku8 {
+      width: 250px;
+    }
+    .msku9 {
+      width: 100px;
     }
   </style>
-  <script>
-    const apiKey = 'AIzaSyCb9GeLx7UcqkvXj3Oy3F6e1B9XAvMLE4A';
-    const spreadsheetId = '1Lr7Do1DYOhNqAjoWcUEd1xqH4pHCQxEHxDD1rP4Q-Dc';
-    const stokRange = 'Sheet1!A2:A';
-    let cachedData = [];
-    let isSubmitting = false;
+</head>
+<body>
+  <div class="container">
+    <h2>Form Input MSKU</h2>
+    <form id="mskuForm" autocomplete="off">
+      <div class="form-group">
+        <label for="msku1">MSKU 1:</label>
+        <input type="text" id="msku1" name="msku1" class="msku1" required autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label for="msku2">MSKU 2:</label>
+        <input type="text" id="msku2" name="msku2" class="msku2" required autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label for="msku6">MSKU 6:</label>
+        <input type="text" id="msku6" name="msku6" class="msku6" required autocomplete="off">
+      </div>
+      <div class="button-container">
+        <button type="button" onclick="addRow()">
+          <i class="fas fa-plus"></i>Tambah Baris
+        </button>
+        <button type="button" onclick="addTwentyRows()">
+          <i class="fas fa-plus"></i>Tambah 20 Baris
+        </button>
+        <button type="button" onclick="submitForm()">
+          <i class="fas fa-paper-plane"></i>Submit
+        </button>
+      </div>
+      <div class="spacer"></div>
+      <table id="mskuTable">
+        <thead>
+          <tr>
+            <th>MSKU 3</th>
+            <th>MSKU 4</th>
+            <th>MSKU 5</th>
+            <th>MSKU 7</th>
+            <th>MSKU 8</th>
+            <th>MSKU 9</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="form-group">
+                <input type="text" id="msku3" name="msku3" class="msku3" required autocomplete="off">
+              </div>
+            </td>
+            <td>
+              <div class="form-group">
+                <input type="text" id="msku4" name="msku4" class="msku4" required autocomplete="off">
+              </div>
+            </td>
+            <td>
+              <div class="form-group">
+                <input type="text" id="msku5" name="msku5" class="msku5" required autocomplete="off">
+              </div>
+            </td>
+            <td>
+              <div class="form-group">
+                <input type="text" id="msku7" name="msku7" class="msku7" required autocomplete="off">
+              </div>
+            </td>
+            <td>
+              <div class="form-group">
+                <input type="text" id="msku8" name="msku8" class="msku8" required autocomplete="off">
+              </div>
+            </td>
+            <td>
+              <div class="form-group">
+                <input type="text" id="msku9" name="msku9" class="msku9" required autocomplete="off">
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </form>
+  </div>
 
-    document.addEventListener('DOMContentLoaded', function() {
-      if (localStorage.getItem('cachedData')) {
-        cachedData = JSON.parse(localStorage.getItem('cachedData'));
+<script>
+  function submitForm() {
+    const table = document.getElementById("mskuTable");
+    const rows = table.getElementsByTagName('tr');  // Ambil semua baris dalam tabel
+    const formData = new FormData();
+
+    // Menambahkan data MSKU 1, 2, dan 6 secara manual untuk pengiriman
+    const msku1 = document.getElementById('msku1').value;
+    const msku2 = document.getElementById('msku2').value;
+    const msku6 = document.getElementById('msku6').value;
+
+    // Menambahkan MSKU 1, 2, dan 6 ke dalam FormData
+    formData.append('msku1', msku1);
+    formData.append('msku2', msku2);
+    formData.append('msku6', msku6);
+
+    // Ambil data dari setiap baris dan tambahkan ke formData
+    for (let i = 1; i < rows.length; i++) {  // Mulai dari 1 untuk melewati header
+      const cells = rows[i].getElementsByTagName('td');
+      formData.append('msku3_' + i, cells[0].querySelector('input').value);
+      formData.append('msku4_' + i, cells[1].querySelector('input').value);
+      formData.append('msku5_' + i, cells[2].querySelector('input').value);
+      formData.append('msku7_' + i, cells[3].querySelector('input').value);
+      formData.append('msku8_' + i, cells[4].querySelector('input').value);
+      formData.append('msku9_' + i, cells[5].querySelector('input').value);
+    }
+
+    // Mengirim data ke Google Apps Script
+    fetch('https://script.google.com/macros/s/AKfycbx0MkQ64-NASueTViCYLqsC1wAJiRmZrpJoJzX1eb3kETBB0CYXpVDZhVVNm5qxwcCm/exec', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.result === 'success') {
+        alert('Data berhasil dikirim!');
       } else {
-        fetchData();
+        alert('Gagal mengirim data.');
       }
-      setInitialTime();
-    });
+    })
+    .catch(error => console.error('Error:', error));
+  }
 
-    function fetchData() {
-      fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${stokRange}?key=${apiKey}`)
-        .then(response => response.json())
-        .then(data => {
-          cachedData = data.values || [];
-          localStorage.setItem('cachedData', JSON.stringify(cachedData));
-        })
-        .catch(error => {
-          console.error('Error fetching data:', error);
-        });
-    }
+  function addRow() {
+    const table = document.getElementById("mskuTable").getElementsByTagName('tbody')[0];
+    const newRow = table.insertRow();
 
-    function kirimForm() {
-      if (isSubmitting) return; // Prevent multiple submissions
+    const cells = [
+      { id: 'msku3', span: 'md-col-span-2 small-input' },
+      { id: 'msku4', span: 'md-col-span-1' },
+      { id: 'msku5', span: 'md-col-span-1' },
+      { id: 'msku7', span: 'md-col-span-1' },
+      { id: 'msku8', span: 'md-col-span-2 small-input' },
+      { id: 'msku9', span: 'md-col-span-1' }
+    ];
 
-      isSubmitting = true;
-      var formData = new FormData(document.getElementById("formulir"));
-      fetch("https://script.google.com/macros/s/AKfycbxkCEqWMhaMl-f_CQObAwZi6L9c9lD39CBCnIZaI1K1R1EIHpmF2xlPxDbDJC7F3xrVcw/exec", {
-        method: "POST",
-        body: formData
-      })
-      .then(response => {
-        if (!response.ok) throw new Error('Network response was not ok');
-        return response.json();
-      })
-      .then(data => {
-        showPopup("Data MSKU berhasil dikirim!");
-        resetForm(); // Reset form after successful submission
-        hideDeleteIcons(); // Sembunyikan ikon hapus setelah pengiriman
-        fetchData(); // Refresh data
-        isSubmitting = false; // Reset submission state
-      })
-      .catch(error => {
-        console.error("Terjadi kesalahan:", error.message);
-        showPopup("Data berhasil dikirim, tapi terjadi kesalahan pada respons.");
-        isSubmitting = false; // Reset submission state
-      });
-    }
-
-    function resetForm() {
-      const formContainer = document.getElementById('form-container');
-      formContainer.innerHTML = `
-        <div id="row1" class="grid grid-cols-9 gap-0 border border-gray-300">
-          <input type="date" id="msku1" name="msku1" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" onchange="updateDates()">
-          <input type="text" id="form1_1" name="form1_1" placeholder="Waktu" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-          <input type="text" id="form1_2" name="form1_2" placeholder="Nama Produk" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-          <input type="text" id="form1_3" name="form1_3" placeholder="Jumlah" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-          <input type="text" id="form1_4" name="form1_4" placeholder="Type" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-          <input type="text" id="form1_5" name="form1_5" placeholder="Gudang" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-          <input type="text" id="form1_6" name="form1_6" placeholder="Rak" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-          <input type="text" id="form1_7" name="form1_7" placeholder="Packing" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-          <input type="text" id="form1_8" name="form1_8" placeholder="Stok Tersedia" required class="mt-1 block w-full px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
+    cells.forEach(cell => {
+      const newCell = newRow.insertCell();
+      newCell.innerHTML = `
+        <div class="form-group ${cell.span}">
+          <input type="text" id="${cell.id}" name="${cell.id}" required autocomplete="off">
         </div>
       `;
-      setInitialTime();
-    }
-
-    function showPopup(message) {
-      const popup = document.getElementById('popup');
-      popup.querySelector('p').innerText = message;
-      popup.classList.add('show');
-      document.addEventListener('keydown', handleEnterKey);
-    }
-
-    function closePopup() {
-      const popup = document.getElementById('popup');
-      popup.classList.remove('show');
-      document.removeEventListener('keydown', handleEnterKey);
-    }
-
-    function handleEnterKey(event) {
-      if (event.key === 'Enter') {
-        closePopup();
-      }
-    }
-
-    function hapusBaris(id) {
-      document.getElementById(id).remove();
-      aturUlangBaris(); // Panggil fungsi untuk mengatur ulang baris
-    }
-
-    function aturUlangBaris() {
-      const formContainer = document.getElementById('form-container');
-      const rows = formContainer.children;
-
-      for (let i = 0; i < rows.length; i++) {
-        const inputs = rows[i].querySelectorAll('input');
-        inputs.forEach((input, index) => {
-          input.id = `form${i + 1}_${index + 1}`;
-          input.name = `form${i + 1}_${index + 1}`;
-        });
-        const button = rows[i].querySelector('button');
-        button.setAttribute('onclick', `hapusBaris('row${i + 1}')`);
-        rows[i].id = `row${i + 1}`;
-      }
-    }
-
-    function tambahBaris() {
-  const formContainer = document.getElementById('form-container');
-  const newRowId = `row${formContainer.children.length + 1}`;
-  const newRow = document.createElement('div');
-  newRow.id = newRowId;
-  newRow.className = 'grid grid-cols-9 gap-0 border border-gray-300';
-  newRow.innerHTML = `
-    <input type="date" id="msku${formContainer.children.length + 1}" name="msku${formContainer.children.length + 1}" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" readonly>
-    <button type="button" onclick="hapusBaris('${newRowId}')" class="text-red-500 hover:text-red-700 hidden delete-icon">
-      <i class="fas fa-trash-alt"></i>
-    </button>
-    <input type="text" id="form${formContainer.children.length + 1}_1" name="form${formContainer.children.length + 1}_1" placeholder="Waktu" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off" readonly>
-    <input type="text" id="form${formContainer.children.length + 1}_2" name="form${formContainer.children.length + 1}_2" placeholder="Nama Produk" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-    <input type="text" id="form${formContainer.children.length + 1}_3" name="form${formContainer.children.length + 1}_3" placeholder="Jumlah" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-    <input type="text" id="form${formContainer.children.length + 1}_4" name="form${formContainer.children.length + 1}_4" placeholder="Type" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-    <input type="text" id="form${formContainer.children.length + 1}_5" name="form${formContainer.children.length + 1}_5" placeholder="Gudang" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-    <input type="text" id="form${formContainer.children.length + 1}_6" name="form${formContainer.children.length + 1}_6" placeholder="Rak" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-    <input type="text" id="form${formContainer.children.length + 1}_7" name="form${formContainer.children.length + 1}_7" placeholder="Packing" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-    <input type="text" id="form${formContainer.children.length + 1}_8" name="form${formContainer.children.length + 1}_8" placeholder="Stok Tersedia" required class="mt-1 block w-full px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-  `;
-  formContainer.appendChild(newRow);
-  updateDates();
-  updateTimes();
-}
-
-    function updateDates() {
-      const firstDate = document.getElementById('msku1').value;
-      const dateInputs = document.querySelectorAll('input[type="date"]');
-      dateInputs.forEach((input, index) => {
-        if (index !== 0) {
-          input.value = firstDate;
-        }
-      });
-    }
-
-    function updateTimes() {
-      const firstTime = document.getElementById('form1_1').value;
-      const timeInputs = document.querySelectorAll('input[name^="form"][name$="_1"]');
-      timeInputs.forEach((input, index) => {
-        if (index !== 0) {
-          input.value = firstTime;
-        }
-      });
-    }
-
-    function setInitialTime() {
-      const now = new Date();
-      const hours = String(now.getHours()).padStart(2, '0');
-      const minutes = String(now.getMinutes()).padStart(2, '0');
-      const currentTime = `${hours}:${minutes}`;
-      document.getElementById('form1_1').value = currentTime;
-    }
-
-    function toggleDeleteIcons() {
-      showDeleteIcons = !showDeleteIcons; // Toggle status
-      const deleteButtons = document.querySelectorAll('.delete-icon');
-      deleteButtons.forEach(button => {
-        button.classList.toggle('hidden', !showDeleteIcons); // Tampilkan atau sembunyikan ikon
-      });
-    }
-
-    function hideDeleteIcons() {
-      showDeleteIcons = false; // Set status ke false
-      const deleteButtons = document.querySelectorAll('.delete-icon');
-      deleteButtons.forEach(button => {
-        button.classList.add('hidden'); // Sembunyikan ikon
-      });
-    }
-
-    function goToInbound() {
-      window.location.href = 'inbound.html';
-    }
-  </script>
-</head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-  <div class="bg-white p-8 rounded-lg shadow-lg w-full flex flex-col space-y-8">
-    <div class="flex justify-between items-center">
-      <button onclick="goToInbound()" class="text-xl">
-        <i class="fas fa-arrow-left"></i>
-      </button>
-      <div></div>
-    </div>
-    <div class="flex space-x-8">
-      <div class="w-full">
-        <h1 class="text-2xl font-bold mb-6 text-center">Input MSKU</h1>
-        <div class="flex justify-center space-x-2 mb-4">
-          <button type="button" onclick="tambahBaris()" class="py-2 px-4 bg-green-600 text-white font-semibold rounded-md shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
-            Tambah Baris
-          </button>
-          <button type="button" onclick="toggleDeleteIcons()" class="py-2 px-4 bg-red-600 text-white font-semibold rounded-md shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
-            Delete
-          </button>
-          <button type="button" onclick="kirimForm()" class="py-2 px-4 bg-indigo-600 text-white font-semibold rounded-md shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-            Kirim
-          </button>
-        </div>
-        <div class="grid grid-cols-9 gap-0 text-center font-semibold border border-gray-300">
-          <div class="border-r border-gray-300 p-2">Tanggal</div>
-          <div class="border-r border-gray-300 p-2">Waktu</div>
-          <div class="border-r border-gray-300 p-2">Nama Produk</div>
-          <div class="border-r border-gray-300 p-2">Jumlah</div>
-          <div class="border-r border-gray-300 p-2">Type</div>
-          <div class="border-r border-gray-300 p-2">Gudang</div>
-          <div class="border-r border-gray-300 p-2">Rak</div>
-          <div class="border-r border-gray-300 p-2">Packing</div>
-          <div class="p-2">Stok Tersedia</div>
-        </div>
-        <form id="formulir" onsubmit="event.preventDefault(); kirimForm();" class="space-y-0">
-          <div id="form-container" class="space-y-0">
-  <div id="row1" class="grid grid-cols-9 gap-0 border border-gray-300">
-    <input type="date" id="msku1" name="msku1" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" onchange="updateDates()">
-    <input type="text" id="form1_1" name="form1_1" placeholder="Waktu" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-    <input type="text" id="form1_2" name="form1_2" placeholder="Nama Produk" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-    <input type="text" id="form1_3" name="form1_3" placeholder="Jumlah" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-    <input type="text" id="form1_4" name="form1_4" placeholder="Type" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-    <input type="text" id="form1_5" name="form1_5" placeholder="Gudang" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-    <input type="text" id="form1_6" name="form1_6" placeholder="Rak" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-    <input type="text" id="form1_7" name="form1_7" placeholder="Packing" required class="mt-1 block w-full px-3 py-2 border-r border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-    <input type="text" id="form1_8" name="form1_8" placeholder="Stok Tersedia" required class="mt-1 block w-full px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="off">
-  </div>
-</div>
-        </form>
-      </div>
-    </div>
-  </div>
-  <div id="popup" class="popup">
-    <p></p>
-    <button onclick="closePopup()">OK</button>
-</div>
-  <script>
-    // Inisialisasi untuk menampilkan popup jika ada pesan
-    document.addEventListener('DOMContentLoaded', function() {
-      const popup = document.getElementById('popup');
-      if (popup.classList.contains('show')) {
-        popup.classList.remove('show');
-      }
     });
-  </script>
+  }
+</script>
 </body>
 </html>
