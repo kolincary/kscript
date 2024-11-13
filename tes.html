@@ -1,111 +1,307 @@
-<html>
+<html lang="id">
 <head>
-    <title>Form Input Table</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"></link>
-    <script>
-        function updateDatesAndTimes() {
-            const firstDate = document.getElementById('first-date').value;
-            const firstTime = document.getElementById('first-time').value;
-            const dateInputs = document.querySelectorAll('.date-input');
-            const timeInputs = document.querySelectorAll('.time-input');
-            
-            dateInputs.forEach((input, index) => {
-                if (index !== 0) {
-                    input.value = firstDate;
-                }
-            });
-
-            timeInputs.forEach((input, index) => {
-                if (index !== 0) {
-                    input.value = firstTime;
-                }
-            });
-        }
-
-        function setCurrentTime() {
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const currentTime = `${hours}:${minutes}`;
-            document.getElementById('first-time').value = currentTime;
-            updateDatesAndTimes();
-        }
-
-        window.onload = setCurrentTime;
-    </script>
-    <style>
-        /* Hide the up and down arrows in number input fields */
-        input[type=number]::-webkit-outer-spin-button,
-        input[type=number]::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        input[type=number] {
-            -moz-appearance: textfield;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Input MSKU</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"></link>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f7fafc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background-color: #ffffff;
+      padding: 2rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+      width: 100%;
+    }
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #4a5568;
+      margin-bottom: 0.5rem;
+    }
+    .form-group input {
+      padding: 0.5rem;
+      border: 1px solid #cbd5e0;
+      border-radius: 0.25rem;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      font-size: 0.875rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-group input:focus {
+      border-color: #5a67d8;
+      box-shadow: 0 0 0 3px rgba(90, 103, 216, 0.3);
+    }
+    .button-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 1.5rem;
+    }
+    .button-container button {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 0.375rem;
+      background-color: #3b82f6;
+      color: #ffffff;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      margin-right: 0.5rem;
+    }
+    .button-container button:last-child {
+      margin-right: 0;
+    }
+    .button-container button:hover {
+      background-color: #336ac4;
+    }
+    .button-container button:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(90, 103, 216, 0.3);
+    }
+    .button-container button i {
+      margin-right: 0.5rem;
+    }
+    .grid {
+      display: grid;
+      gap: 1rem;
+    }
+    .grid-cols-1 {
+      grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+    .md-grid-cols-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .md-grid-cols-9 {
+      grid-template-columns: repeat(9, minmax(0, 1fr));
+    }
+    .md-col-span-2 {
+      grid-column: span 2 / span 2;
+    }
+    .md-col-span-1 {
+      grid-column: span 1 / span 1;
+    }
+    .small-input {
+      max-width: 300px;
+    }
+    .spacer {
+      margin-top: 2rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    table, th, td {
+      border: 1px solid #cbd5e0;
+      color: #ffffff
+    }
+    th, td {
+      padding: 0.5rem;
+      text-align: center;
+    }
+    th {
+      background-color: #005cef;
+      font-weight: 700;
+    }
+    .msku1 {
+      width: 250px;
+    }
+    .msku2 {
+      width: 250px;
+    }
+    .msku3 {
+      width: 100%;
+    }
+    .msku4 {
+      width: 150px;
+    }
+    .msku5 {
+      width: 150px;
+    }
+    .msku6 {
+      width: 250px;
+    }
+    .msku7 {
+      width: 150px;
+    }
+    .msku8 {
+      width: 100%;
+    }
+    .msku9 {
+      width: 150px;
+    }
+  </style>
 </head>
-<body class="bg-gray-100 p-6">
-    <div class="container mx-auto">
-        <div class="flex space-x-2 mb-4">
-            <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Tambah Baris</button>
-            <button class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Tambah 10 Baris</button>
-            <button class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">Input Massal</button>
-            <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Kirim</button>
+<body>
+  <div class="container">
+    <h2>Form Input MSKU</h2>
+    <form id="mskuForm" autocomplete="off">
+      <div class="form-group">
+        <label for="msku1">MSKU 1:</label>
+        <input type="text" id="msku1" name="msku1" class="msku1" required autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label for="msku2">MSKU 2:</label>
+        <input type="text" id="msku2" name="msku2" class="msku2" required autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label for="msku6">MSKU 6:</label>
+        <input type="text" id="msku6" name="msku6" class="msku6" required autocomplete="off">
+      </div>
+      <div class="button-container">
+        <button type="button" onclick="addRow()">
+          <i class="fas fa-plus"></i>Tambah Baris
+        </button>
+        <button type="button" onclick="addTwentyRows()">
+          <i class="fas fa-plus"></i>Tambah 20 Baris
+        </button>
+        <button type="button" onclick="submitForm()">
+          <i class="fas fa-paper-plane"></i>Submit
+        </button>
+      </div>
+      <div class="spacer"></div>
+      <table id="mskuTable">
+        <thead>
+          <tr>
+            <th>MSKU 3</th>
+            <th style="width: 150px;">MSKU 4</th>
+            <th style="width: 150px;">MSKU 5</th>
+            <th style="width: 150px;">MSKU 7</th>
+            <th>MSKU 8</th>
+            <th style="width: 150px;">MSKU 9</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="form-group">
+                <input type="text" id="msku3" name="msku3" class="msku3" required autocomplete="off" style="width: 100%;">
+              </div>
+            </td>
+            <td>
+              <div class="form-group">
+                <input type="text" id="msku4" name="msku4" class="msku4" required autocomplete="off">
+              </div>
+            </td>
+            <td>
+              <div class="form-group">
+                <input type="text" id="msku5" name="msku5" class="msku5" required autocomplete="off">
+              </div>
+            </td>
+            <td>
+              <div class="form-group">
+                <input type="text" id="msku7" name="msku7" class="msku7" required autocomplete="off">
+              </div>
+            </td>
+            <td>
+              <div class="form-group">
+                <input type="text" id="msku8" name="msku8" class="msku8" required autocomplete="off" style="width: 100%;">
+              </div>
+            </td>
+            <td>
+              <div class="form-group">
+                <input type="text" id="msku9" name="msku9" class="msku9" required autocomplete="off">
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </form>
+  </div>
+
+<script>
+  function submitForm() {
+    const table = document.getElementById("mskuTable");
+    const rows = table.getElementsByTagName('tr');  // Ambil semua baris dalam tabel
+    const formData = new FormData();
+
+    // Menambahkan data MSKU 1, 2, dan 6 secara manual untuk pengiriman
+    const msku1 = document.getElementById('msku1').value;
+    const msku2 = document.getElementById('msku2').value;
+    const msku6 = document.getElementById('msku6').value;
+
+    // Menambahkan MSKU 1, 2, dan 6 ke dalam FormData
+    formData.append('msku1', msku1);
+    formData.append('msku2', msku2);
+    formData.append('msku6', msku6);
+
+    // Ambil data dari setiap baris dan tambahkan ke formData
+    for (let i = 1; i < rows.length; i++) {  // Mulai dari 1 untuk melewati header
+      const cells = rows[i].getElementsByTagName('td');
+      formData.append('msku3_' + i, cells[0].querySelector('input').value);
+      formData.append('msku4_' + i, cells[1].querySelector('input').value);
+      formData.append('msku5_' + i, cells[2].querySelector('input').value);
+      formData.append('msku7_' + i, cells[3].querySelector('input').value);
+      formData.append('msku8_' + i, cells[4].querySelector('input').value);
+      formData.append('msku9_' + i, cells[5].querySelector('input').value);
+    }
+
+    // Mengirim data ke Google Apps Script
+    fetch('https://script.google.com/macros/s/AKfycbx0MkQ64-NASueTViCYLqsC1wAJiRmZrpJoJzX1eb3kETBB0CYXpVDZhVVNm5qxwcCm/exec', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.result === 'success') {
+        alert('Data berhasil dikirim!');
+      } else {
+        alert('Gagal mengirim data.');
+      }
+    })
+    .catch(error => console.error('Error:', error));
+  }
+
+  function addRow() {
+    const table = document.getElementById("mskuTable").getElementsByTagName('tbody')[0];
+    const newRow = table.insertRow();
+
+    const cells = [
+      { id: 'msku3', class: 'msku3', style: 'width: 100%;' },
+      { id: 'msku4', class: 'msku4' },
+      { id: 'msku5', class: 'msku5' },
+      { id: 'msku7', class: 'msku7' },
+      { id: 'msku8', class: 'msku8', style: 'width: 100%;' },
+      { id: 'msku9', class: 'msku9' }
+    ];
+
+    cells.forEach(cell => {
+      const newCell = newRow.insertCell();
+      newCell.innerHTML = `
+        <div class="form-group">
+          <input type="text" id="${cell.id}" name="${cell.id}" class="${cell.class}" required autocomplete="off" style="${cell.style || ''}">
         </div>
-        <div class="overflow-x-auto">
-            <table class="min-w-full bg-white">
-                <thead>
-                    <tr>
-                        <th class="py-2 px-4 border-b w-1/12" id="header-tanggal">Tanggal</th>
-                        <th class="py-2 px-4 border-b w-1/12" id="header-waktu">Waktu</th>
-                        <th class="py-2 px-4 border-b w-2/12" id="header-nama-produk">Nama Produk</th>
-                        <th class="py-2 px-4 border-b w-1/12" id="header-jumlah">Jumlah</th>
-                        <th class="py-2 px-4 border-b w-1/12" id="header-type">Type</th>
-                        <th class="py-2 px-4 border-b w-1/12" id="header-gudang">Gudang</th>
-                        <th class="py-2 px-4 border-b w-1/12" id="header-rak">Rak</th>
-                        <th class="py-2 px-4 border-b w-2/12" id="header-packing">Packing</th>
-                        <th class="py-2 px-4 border-b w-1/12" id="header-stok-tersedia">Stok Tersedia</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="py-2 px-4 border-b"><input type="date" id="first-date" class="w-full border rounded px-2 py-1 date-input" onchange="updateDatesAndTimes()"></td>
-                        <td class="py-2 px-4 border-b"><input type="time" id="first-time" class="w-full border rounded px-2 py-1 time-input" readonly></td>
-                        <td class="py-2 px-4 border-b"><input type="text" class="w-full border rounded px-2 py-1" placeholder="Nama Produk"></td>
-                        <td class="py-2 px-4 border-b"><input type="number" class="w-full border rounded px-2 py-1" placeholder="Jumlah"></td>
-                        <td class="py-2 px-4 border-b"><input type="text" class="w-full border rounded px-2 py-1" value="IN" readonly></td>
-                        <td class="py-2 px-4 border-b"><input type="text" class="w-full border rounded px-2 py-1" placeholder="Gudang"></td>
-                        <td class="py-2 px-4 border-b"><input type="text" class="w-full border rounded px-2 py-1" placeholder="Rak"></td>
-                        <td class="py-2 px-4 border-b"><input type="text" class="w-full border rounded px-2 py-1" placeholder="Packing"></td>
-                        <td class="py-2 px-4 border-b"><input type="number" class="w-full border rounded px-2 py-1" placeholder="Stok Tersedia"></td>
-                    </tr>
-                    <tr>
-                        <td class="py-2 px-4 border-b"><input type="date" class="w-full border rounded px-2 py-1 date-input" readonly></td>
-                        <td class="py-2 px-4 border-b"><input type="time" class="w-full border rounded px-2 py-1 time-input" readonly></td>
-                        <td class="py-2 px-4 border-b"><input type="text" class="w-full border rounded px-2 py-1" placeholder="Nama Produk"></td>
-                        <td class="py-2 px-4 border-b"><input type="number" class="w-full border rounded px-2 py-1" placeholder="Jumlah"></td>
-                        <td class="py-2 px-4 border-b"><input type="text" class="w-full border rounded px-2 py-1" value="IN" readonly></td>
-                        <td class="py-2 px-4 border-b"><input type="text" class="w-full border rounded px-2 py-1" placeholder="Gudang"></td>
-                        <td class="py-2 px-4 border-b"><input type="text" class="w-full border rounded px-2 py-1" placeholder="Rak"></td>
-                        <td class="py-2 px-4 border-b"><input type="text" class="w-full border rounded px-2 py-1" placeholder="Packing"></td>
-                        <td class="py-2 px-4 border-b"><input type="number" class="w-full border rounded px-2 py-1" placeholder="Stok Tersedia"></td>
-                    </tr>
-                    <tr>
-                        <td class="py-2 px-4 border-b"><input type="date" class="w-full border rounded px-2 py-1 date-input" readonly></td>
-                        <td class="py-2 px-4 border-b"><input type="time" class="w-full border rounded px-2 py-1 time-input" readonly></td>
-                        <td class="py-2 px-4 border-b"><input type="text" class="w-full border rounded px-2 py-1" placeholder="Nama Produk"></td>
-                        <td class="py-2 px-4 border-b"><input type="number" class="w-full border rounded px-2 py-1" placeholder="Jumlah"></td>
-                        <td class="py-2 px-4 border-b"><input type="text" class="w-full border rounded px-2 py-1" value="IN" readonly></td>
-                        <td class="py-2 px-4 border-b"><input type="text" class="w-full border rounded px-2 py-1" placeholder="Gudang"></td>
-                        <td class="py-2 px-4 border-b"><input type="text" class="w-full border rounded px-2 py-1" placeholder="Rak"></td>
-                        <td class="py-2 px-4 border-b"><input type="text" class="w-full border rounded px-2 py-1" placeholder="Packing"></td>
-                        <td class="py-2 px-4 border-b"><input type="number" class="w-full border rounded px-2 py-1" placeholder="Stok Tersedia"></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+      `;
+    });
+  }
+
+  function addTwentyRows() {
+    for (let i = 0; i < 20; i++) {
+      addRow();
+    }
+  }
+</script>
 </body>
 </html>
