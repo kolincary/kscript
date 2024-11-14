@@ -9,13 +9,6 @@
     <style>
         body {
             font-family: 'Roboto', sans-serif;
-            background-color: #f7fafc;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
         }
         .arrow {
             transition: transform 0.3s ease;
@@ -203,10 +196,65 @@
         .dropdown-item:hover, .dropdown-item.highlighted {
             background-color: #e2e8f0;
         }
+        .table-header {
+            background-color: #005cef;
+            color: white;
+        }
+        .col-nama-produk { width: 20%; }
+        .col-jumlah { width: 10%; }
+        .col-type { width: 10%; }
+        .col-rak { width: 10%; }
+        .col-packing { width: 20%; }
+        .col-stok-tersedia { width: 10%; }
+        .col-aksi { width: 7%; }
+        .mobile-menu {
+            display: none;
+        }
+        @media (max-width: 768px) {
+            .desktop-menu {
+                display: none;
+            }
+            .mobile-menu {
+                display: block;
+            }
+        }
+        .button {
+            width: 150px; /* Set a fixed width for the buttons */
+        }
+        .dropdown {
+            position: relative;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            border: 1px solid #ccc;
+            z-index: 1;
+            max-height: 300px;
+            overflow-y: auto;
+            width: 100%;
+        }
+        .dropdown-content div {
+            padding: 8px;
+            cursor: pointer;
+        }
+        .dropdown-content div:hover, .dropdown-content .highlighted {
+            background-color: #f1f1f1;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #ddd;
+        }
+        .invalid {
+            border-color: red;
+        }
     </style>
 </head>
-<body>
-    <header class="flex justify-between items-center p-6 w-full">
+<body class="bg-white text-black">
+    <header class="flex justify-between items-center p-6">
         <div class="text-xl font-bold">GUDANG LT.5</div>
         <nav class="space-x-8 desktop-menu">
             <a href="home.html" class="text-black nav-link p-2">Home</a>
@@ -236,6 +284,7 @@
         <a href="data-so.html" class="text-black nav-link p-2">Data S.O</a>
         <a href="contact.html" class="text-black nav-link p-2">Contact</a>
     </div>
+<hr class="border-t-2 border-black">
   <div class="container">
     <h2>Form Input MSKU</h2>
     <form id="mskuForm" autocomplete="off">
