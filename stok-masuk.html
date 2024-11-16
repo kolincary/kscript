@@ -25,7 +25,7 @@
         .mobile-menu {
             display: none;
         }
-        @media (max-width: 768px) {
+        @media (max-width: 1500px) {
             .desktop-menu {
                 display: none;
             }
@@ -151,24 +151,31 @@
             width: 250px;
         }
         .msku3 {
+    	    color: #000000; /* Warna teks hitam */
             width: 100%;
         }
         .msku4 {
+    	    color: #000000; /* Warna teks hitam */
             width: 150px;
         }
         .msku5 {
+    	    color: #000000; /* Warna teks hitam */
             width: 150px;
         }
         .msku6 {
+    	    color: #000000; /* Warna teks hitam */
             width: 250px;
         }
         .msku7 {
+    	    color: #000000; /* Warna teks hitam */
             width: 150px;
         }
         .msku8 {
+    	    color: #000000; /* Warna teks hitam */
             width: 100%;
         }
         .msku9 {
+    	    color: #000000; /* Warna teks hitam */
             width: 150px;
         }
         .dropdown-list {
@@ -251,6 +258,10 @@
         .invalid {
             border-color: red;
         }
+        /* Pastikan ini di bawah Tailwind CSS */
+        .max-w-screen-lg {
+            max-width: 1500px; /* Mengubah max-width menjadi 1500px */
+        }
     </style>
 </head>
 <body class="bg-white text-black">
@@ -285,86 +296,88 @@
         <a href="contact.html" class="text-black nav-link p-2">Contact</a>
     </div>
 <hr class="border-t-2 border-black">
-  <div class="container">
+<div class="container max-w-screen-lg mx-auto px-4" style="
+    max-width: 1500px;
+">
     <h2>Form Input MSKU</h2>
     <form id="mskuForm" autocomplete="off">
-      <div class="form-group">
-        <label for="msku1">MSKU 1:</label>
-        <input type="date" id="msku1" name="msku1" class="msku1" required autocomplete="off">
-      </div>
-      <div class="form-group">
-        <label for="msku2">MSKU 2:</label>
-        <input type="text" id="msku2" name="msku2" class="msku2" required autocomplete="off" readonly>
-      </div>
-      <div class="form-group">
-        <label for="msku6">MSKU 6:</label>
-        <select id="msku6" name="msku6" class="msku6" required>
-          <option value="" disabled selected>Pilih Data Gudang</option>
-        </select>
-      </div>
-      <div class="button-container">
-        <button type="button" onclick="addRow()">
-          <i class="fas fa-plus"></i>Tambah Baris
-        </button>
-        <button type="button" onclick="addTwentyRows()">
-          <i class="fas fa-plus"></i>Tambah 20 Baris
-        </button>
-        <button type="button" onclick="submitForm()">
-          <i class="fas fa-paper-plane"></i>Submit
-        </button>
-      </div>
-      <div class="spacer"></div>
-      <table id="mskuTable">
-        <thead>
-          <tr>
-            <th>MSKU 3</th>
-            <th style="width: 150px;">MSKU 4</th>
-            <th style="width: 150px;">MSKU 5</th>
-            <th style="width: 150px;">MSKU 7</th>
-            <th>MSKU 8</th>
-            <th style="width: 150px;">MSKU 9</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <div class="form-group">
-                <input type="text" id="msku3" name="msku3" class="msku3" required autocomplete="off" style="width: 100%;" oninput="filterDropdown(this)">
-                <div class="dropdown-list" id="dropdownList"></div>
-              </div>
-            </td>
-            <td>
-              <div class="form-group">
-                <input type="text" id="msku4" name="msku4" class="msku4" required autocomplete="off">
-              </div>
-            </td>
-            <td>
-              <div class="form-group">
-                <input type="text" id="msku5" name="msku5" class="msku5" value="IN" readonly>
-              </div>
-            </td>
-            <td>
-  <div class="form-group">
-    <select id="msku7" name="msku7" class="msku7" required autocomplete="off">
-      <option value="" disabled selected>Pilih Rak</option> <!-- Opsi default -->
-    </select>
-  </div>
-</td>
-            <td>
-              <div class="form-group">
-                <input type="text" id="msku8" name="msku8" class="msku8" required autocomplete="off" style="width: 100%;">
-              </div>
-            </td>
-            <td>
-              <div class="form-group">
-                <input type="text" id="msku9" name="msku9" class="msku9" required autocomplete="off">
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+        <div class="form-group">
+            <label for="msku1">MSKU 1:</label>
+            <input type="date" id="msku1" name="msku1" class="msku1 w-full" required autocomplete="off">
+        </div>
+        <div class="form-group">
+            <label for="msku2">MSKU 2:</label>
+            <input type="text" id="msku2" name="msku2" class="msku2 w-full" required autocomplete="off" readonly>
+        </div>
+        <div class="form-group">
+            <label for="msku6">MSKU 6:</label>
+            <select id="msku6" name="msku6" class="msku6 w-full" required>
+                <option value="" disabled selected>Pilih Data Gudang</option>
+            </select>
+        </div>
+        <div class="button-container">
+            <button type="button" onclick="addRow()">
+                <i class="fas fa-plus"></i>Tambah Baris
+            </button>
+            <button type="button" onclick="addTwentyRows()">
+                <i class="fas fa-plus"></i>Tambah 20 Baris
+            </button>
+            <button type="button" onclick="submitForm()">
+                <i class="fas fa-paper-plane"></i>Submit
+            </button>
+        </div>
+        <div class="spacer"></div>
+        <table id="mskuTable">
+            <thead>
+                <tr>
+                    <th>MSKU 3</th>
+                    <th style="width: 150px;">MSKU 4</th>
+                    <th style="width: 150px;">MSKU 5</th>
+                    <th style="width: 150px;">MSKU 7</th>
+                    <th>MSKU 8</th>
+                    <th style="width: 150px;">MSKU 9</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="form-group">
+                            <input type="text" id="msku3" name="msku3" class="msku3 w-full" required autocomplete="off" oninput="filterDropdown(this)">
+                            <div class="dropdown-list" id="dropdownList"></div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <input type="text" id="msku4" name="msku4" class="msku4 w-full" required autocomplete="off">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <input type="text" id="msku5" name="msku5" class="msku5 w-full" value="IN" readonly>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <select id="msku7" name="msku7" class="msku7 w-full" required autocomplete="off">
+                                <option value="" disabled selected>Pilih Rak</option>
+                            </select>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <input type="text" id="msku8" name="msku8" class="msku8 w-full" required autocomplete="off">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <input type="text" id="msku9" name="msku9" class="msku9 w-full" required autocomplete="off">
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </form>
-  </div>
+</div>
 
 <script>
         const apiKey = 'AIzaSyCb9GeLx7UcqkvXj3Oy3F6e1B9XAvMLE4A';
@@ -418,28 +431,52 @@
     .catch(error => console.error('Error:', error));
   }
 
-  function addRow() {
+function addRow() {
     const table = document.getElementById("mskuTable").getElementsByTagName('tbody')[0];
     const newRow = table.insertRow();
 
     const cells = [
-      { id: 'msku3', class: 'msku3', style: 'width: 100%;' },
-      { id: 'msku4', class: 'msku4' },
-      { id: 'msku5', class: 'msku5', value: 'IN', readonly: true },
-      { id: 'msku7', class: 'msku7' },
-      { id: 'msku8', class: 'msku8', style: 'width: 100%;' },
-      { id: 'msku9', class: 'msku9' }
+        { id: 'msku3', class: 'msku3', style: 'width: 100%;' }, // Input untuk MSKU 3
+        { id: 'msku4', class: 'msku4' }, // Input untuk MSKU 4
+        { id: 'msku5', class: 'msku5', value: 'IN', readonly: true }, // Input untuk MSKU 5
+        { id: 'msku7', class: 'msku7' }, // Dropdown untuk MSKU 7
+        { id: 'msku8', class: 'msku8' }, // Input untuk MSKU 8
+        { id: 'msku9', class: 'msku9' }  // Input untuk MSKU 9
     ];
 
     cells.forEach(cell => {
-      const newCell = newRow.insertCell();
-      newCell.innerHTML = `
-        <div class="form-group">
-          <input type="text" id="${cell.id}" name="${cell.id}" class="${cell.class}" value="${cell.value || ''}" ${cell.readonly ? 'readonly' : ''} required autocomplete="off" style="${cell.style || ''}" oninput="filterDropdown(this)">
-          <div class="dropdown-list" id="dropdownList"></div>
-        </div>
-      `;
+        const newCell = newRow.insertCell();
+        if (cell.id === 'msku3') {
+            // Jika ini adalah MSKU 3, buat input text dengan dropdown
+            newCell.innerHTML = `
+                <div class="form-group">
+                    <input type="text" id="${cell.id}" name="${cell.id}" class="${cell.class}" required autocomplete="off" oninput="filterDropdown(this)">
+                    <div class="dropdown-list" id="dropdownList"></div>
+                </div>
+            `;
+            fetchPackingData(newCell.querySelector('input')); // Mengisi dropdown MSKU 3
+        } else if (cell.id === 'msku7') {
+            // Jika ini adalah MSKU 7, buat dropdown
+            newCell.innerHTML = `
+                <div class="form-group">
+                    <select id="${cell.id}" name="${cell.id}" class="${cell.class}" required autocomplete="off">
+                        <option value="" disabled selected>Pilih Rak</option>
+                    </select>
+                </div>
+            `;
+            fetchRakData(newCell.querySelector('select')); // Mengisi dropdown MSKU 7
+        } else {
+            // Jika ini bukan MSKU 3 atau MSKU 7, buat input text
+            newCell.innerHTML = `
+                <div class="form-group">
+                    <input type="text" id="${cell.id}" name="${cell.id}" class="${cell.class}" value="${cell.value || ''}" ${cell.readonly ? 'readonly' : ''} required autocomplete="off" style="${cell.style || ''}">
+                </div>
+            `;
+        }
     });
+
+    // Panggil fungsi untuk mengisi dropdown MSKU 3 dengan data
+    fetchPackingData(); // Mengisi dropdown MSKU 3
   }
 
   function addTwentyRows() {
@@ -472,40 +509,39 @@
       .catch(error => console.error('Error fetching data:', error));
   }
 
-function fetchRakData() {
-  fetch(rakUrl)
-    .then(response => response.json())
-    .then(data => {
-      const rakSelects = document.querySelectorAll('select[name="msku7"]'); // Ambil semua dropdown MSKU 7
-      rakSelects.forEach(select => {
-
-// Tambahkan opsi dari data rak
+  function fetchRakData(selectElement) {
+    fetch(rakUrl)
+      .then(response => response.json())
+      .then(data => {
         data.values.forEach(value => {
           const option = document.createElement('option');
           option.value = value[0]; // Ambil nilai dari kolom pertama
           option.textContent = value[0]; // Teks untuk dropdown
-          select.appendChild(option);
+          selectElement.appendChild(option);
         });
-      });
-    })
-    .catch(error => console.error('Error fetching data:', error));
-}
+      })
+      .catch(error => console.error('Error fetching data:', error));
+  }
 
   function fetchPackingData() {
     fetch(packingUrl)
       .then(response => response.json())
       .then(data => {
         const packingData = data.values.map(row => row[0]); // Assuming the relevant data is in the first column
-        const dropdownList = document.getElementById('dropdownList');
-        packingData.forEach(item => {
-          const div = document.createElement('div');
-          div.className = 'dropdown-item';
-          div.textContent = item;
-          div.onclick = () => {
-            document.getElementById('msku3').value = item;
-            dropdownList.classList.remove('active');
-          };
-          dropdownList.appendChild(div);
+        const dropdownLists = document.querySelectorAll('.dropdown-list');
+        dropdownLists.forEach(dropdownList => {
+          dropdownList.innerHTML = ''; // Clear existing items
+          packingData.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'dropdown-item';
+            div.textContent = item;
+            div.onclick = () => {
+              const input = dropdownList.previousElementSibling;
+              input.value = item;
+              dropdownList.classList.remove('active');
+            };
+            dropdownList.appendChild(div);
+          });
         });
       })
       .catch(error => console.error('Error fetching data:', error));
@@ -536,39 +572,41 @@ function fetchRakData() {
   }
 
   document.addEventListener('keydown', function(event) {
-    const dropdownList = document.getElementById('dropdownList');
-    if (dropdownList.classList.contains('active')) {
-      const highlightedItem = dropdownList.querySelector('.highlighted');
-      let newHighlightedItem;
+    const dropdownLists = document.querySelectorAll('.dropdown-list');
+    dropdownLists.forEach(dropdownList => {
+      if (dropdownList.classList.contains('active')) {
+        const highlightedItem = dropdownList.querySelector('.highlighted');
+        let newHighlightedItem;
 
-      if (event.key === 'ArrowDown') {
-        newHighlightedItem = highlightedItem ? highlightedItem.nextElementSibling : dropdownList.firstElementChild;
-        while (newHighlightedItem && newHighlightedItem.style.display === 'none') {
-          newHighlightedItem = newHighlightedItem.nextElementSibling;
+        if (event.key === 'ArrowDown') {
+          newHighlightedItem = highlightedItem ? highlightedItem.nextElementSibling : dropdownList.firstElementChild;
+          while (newHighlightedItem && newHighlightedItem.style.display === 'none') {
+            newHighlightedItem = newHighlightedItem.nextElementSibling;
+          }
+        } else if (event.key === 'ArrowUp') {
+          newHighlightedItem = highlightedItem ? highlightedItem.previousElementSibling : dropdownList.lastElementChild;
+          while (newHighlightedItem && newHighlightedItem.style.display === 'none') {
+            newHighlightedItem = newHighlightedItem.previousElementSibling;
+          }
         }
-      } else if (event.key === 'ArrowUp') {
-        newHighlightedItem = highlightedItem ? highlightedItem.previousElementSibling : dropdownList.lastElementChild;
-        while (newHighlightedItem && newHighlightedItem.style.display === 'none') {
-          newHighlightedItem = newHighlightedItem.previousElementSibling;
+
+        if (newHighlightedItem) {
+          if (highlightedItem) {
+            highlightedItem.classList.remove('highlighted');
+          }
+          newHighlightedItem.classList.add('highlighted');
+          newHighlightedItem.scrollIntoView({ block: 'nearest' });
         }
       }
-
-      if (newHighlightedItem) {
-        if (highlightedItem) {
-          highlightedItem.classList.remove('highlighted');
-        }
-        newHighlightedItem.classList.add('highlighted');
-        newHighlightedItem.scrollIntoView({ block: 'nearest' });
-      }
-    }
+    });
   });
 
   window.onload = function() {
-  updateTime();
-  fetchGudangData();
-  fetchPackingData();
-  fetchRakData(); // Panggil fungsi untuk mengambil data rak
-};
+    updateTime();
+    fetchGudangData();
+    fetchPackingData();
+    fetchRakData(document.querySelector('select[name="msku7"]')); // Panggil fungsi untuk mengambil data rak untuk baris pertama
+  };
 </script>
 </body>
 </html>
