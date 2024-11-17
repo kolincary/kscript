@@ -578,41 +578,46 @@ function addRow() {
     dropdownList.classList.add('active');
   }
 
-  document.addEventListener('keydown', function(event) {
+document.addEventListener('keydown', function(event) {
     const dropdownLists = document.querySelectorAll('.dropdown-list');
     dropdownLists.forEach(dropdownList => {
-      if (dropdownList.classList.contains('active')) {
-        const highlightedItem = dropdownList.querySelector('.highlighted');
-        let newHighlightedItem;
+        if (dropdownList.classList.contains('active')) {
+            const highlightedItem = dropdownList.querySelector('.highlighted');
+            let newHighlightedItem;
 
-        if (event.key === 'ArrowDown') {
-          newHighlightedItem = highlightedItem ? highlightedItem.nextElementSibling : dropdownList.firstElementChild;
-          while (newHighlightedItem && newHighlightedItem.style.display === 'none') {
-            newHighlightedItem = newHighlightedItem.nextElementSibling;
-          }
-          if (!newHighlightedItem) {
-            newHighlightedItem = dropdownList.firstElementChild; // Loop back to the first item
-          }
-        } else if (event.key === 'ArrowUp') {
-          newHighlightedItem = highlightedItem ? highlightedItem.previousElementSibling : dropdownList.lastElementChild;
-          while (newHighlightedItem && newHighlightedItem.style.display === 'none') {
-            newHighlightedItem = newHighlightedItem.previousElementSibling;
-          }
-          if (!newHighlightedItem) {
-            newHighlightedItem = dropdownList.lastElementChild; // Loop back to the last item
-          }
-        }
+            if (event.key === 'ArrowDown') {
+                newHighlightedItem = highlightedItem ? highlightedItem.nextElementSibling : dropdownList.firstElementChild;
+                while (newHighlightedItem && newHighlightedItem.style.display === 'none') {
+                    newHighlightedItem = newHighlightedItem.nextElementSibling;
+                }
+                if (!newHighlightedItem) {
+                    newHighlightedItem = dropdownList.firstElementChild; // Loop back to the first item
+                }
+            } else if (event.key === 'ArrowUp') {
+                newHighlightedItem = highlightedItem ? highlightedItem.previousElementSibling : dropdownList.lastElementChild;
+                while (newHighlightedItem && newHighlightedItem.style.display === 'none') {
+                    newHighlightedItem = newHighlightedItem.previousElementSibling;
+                }
+                if (!newHighlightedItem) {
+                    newHighlightedItem = dropdownList.lastElementChild; // Loop back to the last item
+                }
+            } else if (event.key === 'Enter' && highlightedItem) {
+                highlightedItem.click();
+                event.preventDefault(); // Mencegah form dari submit jika dalam form
+            } else if (event.key === 'Tab' && highlightedItem) {
+                highlightedItem.click();
+            }
 
-        if (newHighlightedItem) {
-          if (highlightedItem) {
-            highlightedItem.classList.remove('highlighted');
-          }
-          newHighlightedItem.classList.add('highlighted');
-          newHighlightedItem.scrollIntoView({ block: 'nearest' });
+            if (newHighlightedItem) {
+                if (highlightedItem) {
+                    highlightedItem.classList.remove('highlighted');
+                }
+                newHighlightedItem.classList.add('highlighted');
+                newHighlightedItem.scrollIntoView({ block: 'nearest' });
+            }
         }
-      }
     });
-  });
+});
 
   window.onload = function() {
     updateTime();
