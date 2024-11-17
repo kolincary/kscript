@@ -554,29 +554,37 @@ function addRow() {
       .catch(error => console.error('Error fetching data:', error));
   }
 
-  function filterDropdown(input) {
+function filterDropdown(input) {
     const filter = input.value.toLowerCase();
     const dropdownList = input.nextElementSibling;
     const items = dropdownList.getElementsByClassName('dropdown-item');
     let firstVisibleItem = null;
 
+    // Reset semua item
     Array.from(items).forEach(item => {
-      if (item.textContent.toLowerCase().includes(filter)) {
-        item.style.display = '';
-        if (!firstVisibleItem) {
-          firstVisibleItem = item;
-        }
-      } else {
-        item.style.display = 'none';
-      }
+        item.style.display = ''; // Tampilkan semua item
+        item.classList.remove('highlighted'); // Hapus highlight dari semua item
     });
 
+    // Menyaring dan menandai item yang cocok
+    Array.from(items).forEach(item => {
+        if (item.textContent.toLowerCase().includes(filter)) {
+            item.style.display = ''; // Tampilkan item yang cocok
+            if (!firstVisibleItem) {
+                firstVisibleItem = item; // Simpan item pertama yang terlihat
+            }
+        } else {
+            item.style.display = 'none'; // Sembunyikan item yang tidak cocok
+        }
+    });
+
+    // Jika ada item yang terlihat, highlight item pertama
     if (firstVisibleItem) {
-      firstVisibleItem.classList.add('highlighted');
+        firstVisibleItem.classList.add('highlighted'); // Highlight item pertama yang cocok
     }
 
-    dropdownList.classList.add('active');
-  }
+    dropdownList.classList.add('active'); // Tampilkan dropdown
+}
 
 document.addEventListener('keydown', function(event) {
     const dropdownLists = document.querySelectorAll('.dropdown-list');
