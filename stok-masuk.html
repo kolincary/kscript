@@ -349,7 +349,7 @@
                 <tr>
                     <td>
                         <div class="form-group">
-                            <input type="text" id="msku3" name="msku3" class="msku3 w-full" required autocomplete="off" oninput="filterDropdown(this)">
+                            <input type="text" id="msku3" name="msku3" class="msku3 w-full" required autocomplete="off" oninput="filterDropdown(this); checkAndFetchPacking(this)">
                             <div class="dropdown-list" id="dropdownList"></div>
                         </div>
                     </td>
@@ -365,7 +365,7 @@
                     </td>
                     <td>
                         <div class="form-group">
-                            <select id="msku7" name="msku7" class="msku7 w-full" required autocomplete="off">
+                            <select id="msku7" name="msku7" class="msku7 w-full" required autocomplete="off" onchange="checkAndFetchPacking(this)">
                                 <option value="" disabled selected>Pilih Rak</option>
                             </select>
                         </div>
@@ -392,6 +392,8 @@
         const packingRange = 'datapacking!A2:D';
         const gudangRange = 'datagudang!A2:A';
 	const rakRange = 'inputrak!A2:A';
+	const packingTotalRange = 'packingtotal!A2:D'; // Misalnya, kita ambil dari A2 sampai D
+	const packingTotalUrl = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${packingTotalRange}?key=${apiKey}`;
         const packingUrl = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${packingRange}?key=${apiKey}`;
         const gudangUrl = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${gudangRange}?key=${apiKey}`;
 	const rakUrl = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${rakRange}?key=${apiKey}`;
@@ -438,53 +440,85 @@
     .catch(error => console.error('Error:', error));
   }
 
+  // Fungsi untuk mengambil packing berdasarkan nama produk dan rak
+  function fetchPackingByProductAndRak(msku3Value, msku7Value, inputMsku8) {
+    fetch(packingTotalUrl)
+      .then(response => response.json())
+      .then(data => {
+        const rows = data.values || [];
+        let foundValue = '';
+
+        // Mencari nilai yang sesuai dengan MSKU 3 dan MSKU 7
+        for (const row of rows) {
+          if (row[0] === msku3Value && row[1] === msku7Value) {
+            foundValue = row[2]; // Ambil nilai dari kolom C (atau kolom yang sesuai)
+            break;
+          }
+        }
+
+        // Mengisi input MSKU 8 jika ditemukan
+        inputMsku8.value = foundValue;
+      })
+      .catch(error => console.error('Error fetching packing data:', error));
+  }
+
+  // Fungsi untuk memeriksa dan mengambil data packing
+  function checkAndFetchPacking(element) {
+    const row = element.closest('tr');
+    const msku3Input = row.querySelector('input[name="msku3"]');
+    const msku7Select = row.querySelector('select[name="msku7"]');
+    const msku8Input = row.querySelector('input[name="msku8"]');
+
+    if (msku3Input.value && msku7Select.value) {
+      fetchPackingByProductAndRak(msku3Input.value, msku7Select.value, msku8Input);
+    }
+  }
+
+  // Modifikasi fungsi addRow
+// Modifikasi fungsi addRow
+// Modifikasi fungsi addRow
 function addRow() {
     const table = document.getElementById("mskuTable").getElementsByTagName('tbody')[0];
     const newRow = table.insertRow();
 
+    // Membuat sel untuk setiap input
     const cells = [
-        { id: 'msku3', class: 'msku3', style: 'width: 100%;' }, // Input untuk MSKU 3
-        { id: 'msku4', class: 'msku4' }, // Input untuk MSKU 4
-        { id: 'msku5', class: 'msku5', value: 'IN', readonly: true }, // Input untuk MSKU 5
-        { id: 'msku7', class: 'msku7' }, // Dropdown untuk MSKU 7
-        { id: 'msku8', class: 'msku8' }, // Input untuk MSKU 8
-        { id: 'msku9', class: 'msku9' }  // Input untuk MSKU 9
+        { id: 'msku3', class: 'msku3', type: 'text', required: true, readonly: false, value: '', isDropdown: true },
+        { id: 'msku4', class: 'msku4', type: 'number', required: true, readonly: false, value: '' },
+        { id: 'msku5', class: 'msku5', type: 'text', required: true, readonly: true, value: 'IN' },
+        { id: 'msku7', class: 'msku7', type: 'select', required: true, readonly: false, value: '' },
+        { id: 'msku8', class: 'msku8', type: 'text', required: true, readonly: false, value: '' },
+        { id: 'msku9', class: 'msku9', type: 'text', required: true, readonly: false, value: '' }
     ];
 
     cells.forEach(cell => {
         const newCell = newRow.insertCell();
-        if (cell.id === 'msku3') {
-            // Jika ini adalah MSKU 3, buat input text dengan dropdown
+        newCell.classList.add('form-group'); // Menambahkan kelas form-group ke setiap sel
+
+        if (cell.isDropdown) {
+            // Untuk input MSKU 3
             newCell.innerHTML = `
-                <div class="form-group">
-                    <input type="text" id="${cell.id}" name="${cell.id}" class="${cell.class}" required autocomplete="off" oninput="filterDropdown(this)">
-                    <div class="dropdown-list" id="dropdownList"></div>
-                </div>
+                <input type="${cell.type}" id="${cell.id}_${table.rows.length}" name="${cell.id}" class="${cell.class} w-full" required="${cell.required}" autocomplete="off" oninput="filterDropdown(this); checkAndFetchPacking(this)">
+                <div class="dropdown-list"></div>
             `;
-            fetchPackingData(newCell.querySelector('input')); // Mengisi dropdown MSKU 3
+            // Panggil fungsi untuk mengisi dropdown MSKU 3 dengan data
+            fetchPackingData(); // Mengisi dropdown MSKU 3
         } else if (cell.id === 'msku7') {
-            // Jika ini adalah MSKU 7, buat dropdown
+            // Untuk dropdown rak MSKU 7
             newCell.innerHTML = `
-                <div class="form-group">
-                    <select id="${cell.id}" name="${cell.id}" class="${cell.class}" required autocomplete="off">
-                        <option value="" disabled selected>Pilih Rak</option>
-                    </select>
-                </div>
+                <select id="${cell.id}_${table.rows.length}" name="${cell.id}" class="${cell.class} w-full" required="${cell.required}" autocomplete="off" onchange="checkAndFetchPacking(this)">
+                    <option value="" disabled selected>Pilih Rak</option>
+                </select>
             `;
-            fetchRakData(newCell.querySelector('select')); // Mengisi dropdown MSKU 7
         } else {
-            // Jika ini bukan MSKU 3 atau MSKU 7, buat input text
-            newCell.innerHTML = `
-                <div class="form-group">
-                    <input type="text" id="${cell.id}" name="${cell.id}" class="${cell.class}" value="${cell.value || ''}" ${cell.readonly ? 'readonly' : ''} required autocomplete="off" style="${cell.style || ''}">
-                </div>
-            `;
+            // Untuk input lainnya
+            newCell.innerHTML = `<input type="${cell.type}" id="${cell.id}_${table.rows.length}" name="${cell.id}" class="${cell.class} w-full" value="${cell.value}" ${cell.readonly ? 'readonly' : ''} required="${cell.required}">`;
         }
     });
 
-    // Panggil fungsi untuk mengisi dropdown MSKU 3 dengan data
-    fetchPackingData(); // Mengisi dropdown MSKU 3
-  }
+    // Panggil fungsi untuk mengisi dropdown MSKU 7 jika diperlukan
+    fetchRakData(newRow.querySelector('.msku7')); // Panggil fungsi untuk mengisi dropdown rak
+}
 
   function addTwentyRows() {
     for (let i = 0; i < 20; i++) {
@@ -516,18 +550,19 @@ function addRow() {
       .catch(error => console.error('Error fetching data:', error));
   }
 
+  // Tambahkan fungsi untuk mengambil data rak
   function fetchRakData(selectElement) {
     fetch(rakUrl)
       .then(response => response.json())
       .then(data => {
         data.values.forEach(value => {
           const option = document.createElement('option');
-          option.value = value[0]; // Ambil nilai dari kolom pertama
-          option.textContent = value[0]; // Teks untuk dropdown
+          option.value = value[0];
+          option.textContent = value[0];
           selectElement.appendChild(option);
         });
       })
-      .catch(error => console.error('Error fetching data:', error));
+      .catch(error => console.error('Error fetching rak data:', error));
   }
 
   function fetchPackingData() {
@@ -546,6 +581,7 @@ function addRow() {
               const input = dropdownList.previousElementSibling;
               input.value = item;
               dropdownList.classList.remove('active');
+              checkAndFetchPacking(input); // Panggil fungsi untuk memeriksa dan mengambil data packing
             };
             dropdownList.appendChild(div);
           });
@@ -554,7 +590,7 @@ function addRow() {
       .catch(error => console.error('Error fetching data:', error));
   }
 
-function filterDropdown(input) {
+  function filterDropdown(input) {
     const filter = input.value.toLowerCase();
     const dropdownList = input.nextElementSibling;
     const items = dropdownList.getElementsByClassName('dropdown-item');
@@ -562,70 +598,70 @@ function filterDropdown(input) {
 
     // Reset semua item
     Array.from(items).forEach(item => {
-        item.style.display = ''; // Tampilkan semua item
-        item.classList.remove('highlighted'); // Hapus highlight dari semua item
+      item.style.display = ''; // Tampilkan semua item
+      item.classList.remove('highlighted'); // Hapus highlight dari semua item
     });
 
     // Menyaring dan menandai item yang cocok
     Array.from(items).forEach(item => {
-        if (item.textContent.toLowerCase().includes(filter)) {
-            item.style.display = ''; // Tampilkan item yang cocok
-            if (!firstVisibleItem) {
-                firstVisibleItem = item; // Simpan item pertama yang terlihat
-            }
-        } else {
-            item.style.display = 'none'; // Sembunyikan item yang tidak cocok
+      if (item.textContent.toLowerCase().includes(filter)) {
+        item.style.display = ''; // Tampilkan item yang cocok
+        if (!firstVisibleItem) {
+          firstVisibleItem = item; // Simpan item pertama yang terlihat
         }
+      } else {
+        item.style.display = 'none'; // Sembunyikan item yang tidak cocok
+      }
     });
 
     // Jika ada item yang terlihat, highlight item pertama
     if (firstVisibleItem) {
-        firstVisibleItem.classList.add('highlighted'); // Highlight item pertama yang cocok
+      firstVisibleItem.classList.add('highlighted'); // Highlight item pertama yang cocok
     }
 
     dropdownList.classList.add('active'); // Tampilkan dropdown
-}
+  }
 
-document.addEventListener('keydown', function(event) {
+  document.addEventListener('keydown', function(event) {
     const dropdownLists = document.querySelectorAll('.dropdown-list');
     dropdownLists.forEach(dropdownList => {
-        if (dropdownList.classList.contains('active')) {
-            const highlightedItem = dropdownList.querySelector('.highlighted');
-            let newHighlightedItem;
+      if (dropdownList.classList.contains('active')) {
+        const highlightedItem = dropdownList.querySelector('.highlighted');
+        let newHighlightedItem;
 
-            if (event.key === 'ArrowDown') {
-                newHighlightedItem = highlightedItem ? highlightedItem.nextElementSibling : dropdownList.firstElementChild;
-                while (newHighlightedItem && newHighlightedItem.style.display === 'none') {
-                    newHighlightedItem = newHighlightedItem.nextElementSibling;
-                }
-                if (!newHighlightedItem) {
-                    newHighlightedItem = dropdownList.firstElementChild; // Loop back to the first item
-                }
-            } else if (event.key === 'ArrowUp') {
-                newHighlightedItem = highlightedItem ? highlightedItem.previousElementSibling : dropdownList.lastElementChild;
-                while (newHighlightedItem && newHighlightedItem.style.display === 'none') {
-                    newHighlightedItem = newHighlightedItem.previousElementSibling;
-                }
-                if (!newHighlightedItem) {
-                    newHighlightedItem = dropdownList.lastElementChild; // Loop back to the last item
-                }
-            } else if (event.key === 'Enter' && highlightedItem) {
-                highlightedItem.click();
-                event.preventDefault(); // Mencegah form dari submit jika dalam form
-            } else if (event.key === 'Tab' && highlightedItem) {
-                highlightedItem.click();
-            }
-
-            if (newHighlightedItem) {
-                if (highlightedItem) {
-                    highlightedItem.classList.remove('highlighted');
-                }
-                newHighlightedItem.classList.add('highlighted');
-                newHighlightedItem.scrollIntoView({ block: 'nearest' });
-            }
+        if (event.key === 'ArrowDown') {
+          newHighlightedItem = highlightedItem ? highlightedItem.nextElementSibling : dropdownList.firstElementChild;
+          while (newHighlightedItem && newHighlightedItem.style.display === 'none') {
+            newHighlightedItem = newHighlightedItem.nextElementSibling;
+          }
+          if (!newHighlightedItem) {
+            newHighlightedItem = dropdownList.firstElementChild; // Loop back to the first item
+          }
+        } else if (event.key === 'ArrowUp') {
+          newHighlightedItem = highlightedItem ? highlightedItem.previousElementSibling : dropdownList.lastElementChild;
+          while (newHighlightedItem && newHighlightedItem.style.display === 'none') {
+            newHighlightedItem = newHighlightedItem.previousElementSibling;
+          }
+          if (!newHighlightedItem) {
+            newHighlightedItem = dropdownList.lastElementChild; // Loop back to the last item
+          }
+        } else if (event.key === 'Enter' && highlightedItem) {
+          highlightedItem.click();
+          event.preventDefault(); // Mencegah form dari submit jika dalam form
+        } else if (event.key === 'Tab' && highlightedItem) {
+          highlightedItem.click();
         }
+
+        if (newHighlightedItem) {
+          if (highlightedItem) {
+            highlightedItem.classList.remove('highlighted');
+          }
+          newHighlightedItem.classList.add('highlighted');
+          newHighlightedItem.scrollIntoView({ block: 'nearest' });
+        }
+      }
     });
-});
+  });
 
   window.onload = function() {
     updateTime();
