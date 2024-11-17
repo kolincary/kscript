@@ -267,7 +267,7 @@
 <body class="bg-white text-black">
     <header class="flex justify-between items-center p-6">
         <div class="text-xl font-bold">GUDANG LT.5</div>
-        <nav class="space-x-8 desktop-menu">
+        <nav class="space-x-8">
             <a href="home.html" class="text-black nav-link p-2">Home</a>
             <a href="stok-barang.html" class="text-black nav-link p-2">Stok Barang</a>
             <a href="stok-masuk.html" class="text-blue-600 nav-link p-2">Stok Masuk</a>
@@ -301,20 +301,20 @@
 ">
     <h2>Form Input MSKU</h2>
     <form id="mskuForm" autocomplete="off">
-        <div class="form-group">
-            <label for="msku1">MSKU 1:</label>
-            <input type="date" id="msku1" name="msku1" class="msku1 w-full" required autocomplete="off">
-        </div>
-        <div class="form-group">
-            <label for="msku2">MSKU 2:</label>
-            <input type="text" id="msku2" name="msku2" class="msku2 w-full" required autocomplete="off" readonly>
-        </div>
-        <div class="form-group">
-            <label for="msku6">MSKU 6:</label>
-            <select id="msku6" name="msku6" class="msku6 w-full" required>
-                <option value="" disabled selected>Pilih Data Gudang</option>
-            </select>
-        </div>
+<div class="form-group">
+    <label for="msku1">MSKU 1:</label>
+    <input type="date" id="msku1" name="msku1" class="msku1" required autocomplete="off">
+</div>
+<div class="form-group">
+    <label for="msku2">MSKU 2:</label>
+    <input type="text" id="msku2" name="msku2" class="msku2" required autocomplete="off" readonly>
+</div>
+<div class="form-group">
+    <label for="msku6">MSKU 6:</label>
+    <select id="msku6" name="msku6" class="msku6" required>
+        <option value="" disabled selected>Pilih Data Gudang</option>
+    </select>
+</div>
         <div class="button-container">
             <button type="button" onclick="addRow()">
                 <i class="fas fa-plus"></i>Tambah Baris
