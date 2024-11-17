@@ -157,6 +157,12 @@
         .msku4 {
     	    color: #000000; /* Warna teks hitam */
             width: 150px;
+            -moz-appearance: textfield; /* Firefox */
+        }
+        .msku4::-webkit-outer-spin-button,
+        .msku4::-webkit-inner-spin-button {
+            -webkit-appearance: none; /* Chrome, Safari, Edge */
+            margin: 0;
         }
         .msku5 {
     	    color: #000000; /* Warna teks hitam */
@@ -191,6 +197,7 @@
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
             z-index: 10;
             display: none;
+            text-align: left; /* Menambahkan text-align: left untuk meratakan teks ke kiri */
         }
         .dropdown-list.active {
             display: block;
@@ -348,7 +355,7 @@
                     </td>
                     <td>
                         <div class="form-group">
-                            <input type="text" id="msku4" name="msku4" class="msku4 w-full" required autocomplete="off">
+                            <input type="number" id="msku4" name="msku4" class="msku4 w-full" required autocomplete="off">
                         </div>
                     </td>
                     <td>
@@ -583,10 +590,16 @@ function addRow() {
           while (newHighlightedItem && newHighlightedItem.style.display === 'none') {
             newHighlightedItem = newHighlightedItem.nextElementSibling;
           }
+          if (!newHighlightedItem) {
+            newHighlightedItem = dropdownList.firstElementChild; // Loop back to the first item
+          }
         } else if (event.key === 'ArrowUp') {
           newHighlightedItem = highlightedItem ? highlightedItem.previousElementSibling : dropdownList.lastElementChild;
           while (newHighlightedItem && newHighlightedItem.style.display === 'none') {
             newHighlightedItem = newHighlightedItem.previousElementSibling;
+          }
+          if (!newHighlightedItem) {
+            newHighlightedItem = dropdownList.lastElementChild; // Loop back to the last item
           }
         }
 
