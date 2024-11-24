@@ -179,10 +179,12 @@
         .msku8 {
     	    color: #000000; /* Warna teks hitam */
             width: 100%;
+            pointer-events: none; /* Disable pointer events */
         }
         .msku9 {
     	    color: #000000; /* Warna teks hitam */
             width: 150px;
+            pointer-events: none; /* Disable pointer events */
         }
         .dropdown-list {
             position: absolute;
@@ -372,12 +374,12 @@
     </td>
             <td>
                 <div class="form-group">
-                    <input type="text" id="msku8" name="msku8" class="msku8 w-full" required autocomplete="off" oninput="checkAndFetchPacking(this)">
+                    <input type="text" id="msku8" name="msku8" class="msku8 w-full" required autocomplete="off" oninput="checkAndFetchPacking(this)" readonly>
                 </div>
             </td>
             <td>
                 <div class="form-group">
-    <input type="text" id="msku9" name="msku9" class="msku9 w-full" required autocomplete="off" oninput="filterDropdown(this); checkAndFetchPackingnew(this)">
+    <input type="text" id="msku9" name="msku9" class="msku9 w-full" required autocomplete="off" oninput="filterDropdown(this); checkAndFetchPackingnew(this)" readonly>
                 </div>
             </td>
         </tr>
@@ -442,115 +444,114 @@
     .catch(error => console.error('Error:', error));
   }
 
-function fetchPackingForMsku8(msku3Value, msku7Value, inputMsku8) {
+  function fetchPackingForMsku8(msku3Value, msku7Value, inputMsku8) {
     fetch(packingTotalUrl)
-        .then(response => response.json())
-        .then(data => {
-            const rows = data.values || [];
-            let foundValue8 = '';
+      .then(response => response.json())
+      .then(data => {
+        const rows = data.values || [];
+        let foundValue8 = '';
 
-            // Mencari nilai yang sesuai dengan MSKU 3 dan MSKU 7
-            for (const row of rows) {
-                // Pastikan untuk memeriksa apakah row memiliki cukup data
-                if (row.length > 2 && row[0] === msku3Value && row[1] === msku7Value) {
-                    foundValue8 = row[2]; // Ambil nilai dari kolom C untuk MSKU 8
-                    break;
-                }
-            }
+        // Mencari nilai yang sesuai dengan MSKU 3 dan MSKU 7
+        for (const row of rows) {
+          // Pastikan untuk memeriksa apakah row memiliki cukup data
+          if (row.length > 2 && row[0] === msku3Value && row[1] === msku7Value) {
+            foundValue8 = row[2]; // Ambil nilai dari kolom C untuk MSKU 8
+            break;
+          }
+        }
 
-            // Mengisi input jika ditemukan
-            if (inputMsku8) inputMsku8.value = foundValue8;
-        })
-        .catch(error => console.error('Error fetching packing data for MSKU 8:', error));
-}
+        // Mengisi input jika ditemukan
+        if (inputMsku8) inputMsku8.value = foundValue8;
+      })
+      .catch(error => console.error('Error fetching packing data for MSKU 8:', error));
+  }
 
-function fetchPackingForMsku9(msku3Value, msku7Value, inputMsku9) {
+  function fetchPackingForMsku9(msku3Value, msku7Value, inputMsku9) {
     fetch(stokTotalUrl)
-        .then(response => response.json())
-        .then(data => {
-            console.log("Data fetched for MSKU 9:", data); // Tambahkan log ini
-            const rows = data.values || [];
-            let foundValue9 = '';
+      .then(response => response.json())
+      .then(data => {
+        console.log("Data fetched for MSKU 9:", data); // Tambahkan log ini
+        const rows = data.values || [];
+        let foundValue9 = '';
 
-            for (const row of rows) {
-                if (row.length > 2 && row[0] === msku3Value && row[1] === msku7Value) {
-                    foundValue9 = row[2]; // Ambil nilai dari kolom D untuk MSKU 9
-                    break;
-                }
-            }
+        for (const row of rows) {
+          if (row.length > 2 && row[0] === msku3Value && row[1] === msku7Value) {
+            foundValue9 = row[2]; // Ambil nilai dari kolom D untuk MSKU 9
+            break;
+          }
+        }
 
-            if (inputMsku9) inputMsku9.value = foundValue9;
-        })
-        .catch(error => console.error('Error fetching packing data for MSKU 9:', error));
-}
+        if (inputMsku9) inputMsku9.value = foundValue9;
+      })
+      .catch(error => console.error('Error fetching packing data for MSKU 9:', error));
+  }
 
   // Fungsi untuk memeriksa dan mengambil data packing
-function checkAndFetchPacking(element) {
+  function checkAndFetchPacking(element) {
     const row = element.closest('tr');
     const msku3Input = row.querySelector('input[name="msku3"]');
     const msku7Select = row.querySelector('select[name="msku7"]');
     const msku8Input = row.querySelector('input[name="msku8"]');
-    
-    if (msku3Input.value && msku7Select.value) {
-        fetchPackingForMsku8(msku3Input.value, msku7Select.value, msku8Input); // Hanya untuk MSKU 8
-    }
-}
 
-function checkAndFetchPackingnew(element) {
+    if (msku3Input.value && msku7Select.value) {
+      fetchPackingForMsku8(msku3Input.value, msku7Select.value, msku8Input); // Hanya untuk MSKU 8
+    }
+  }
+
+  function checkAndFetchPackingnew(element) {
     const row = element.closest('tr');
     const msku3Input = row.querySelector('input[name="msku3"]');
     const msku7Select = row.querySelector('select[name="msku7"]');
     const msku9Input = row.querySelector('input[name="msku9"]');
 
     if (msku3Input.value && msku7Select.value) {
-        fetchPackingForMsku9(msku3Input.value, msku7Select.value, msku9Input); // Hanya untuk MSKU 9
+      fetchPackingForMsku9(msku3Input.value, msku7Select.value, msku9Input); // Hanya untuk MSKU 9
     }
-}
+  }
 
-
-// Modifikasi fungsi addRow
-function addRow() {
+  // Modifikasi fungsi addRow
+  function addRow() {
     const table = document.getElementById("mskuTable").getElementsByTagName('tbody')[0];
     const newRow = table.insertRow();
 
     // Membuat sel untuk setiap input
     const cells = [
-        { id: 'msku3', class: 'msku3', type: 'text', required: true, readonly: false, value: '', isDropdown: true },
-        { id: 'msku4', class: 'msku4', type: 'number', required: true, readonly: false, value: '' },
-        { id: 'msku5', class: 'msku5', type: 'text', required: true, readonly: true, value: 'IN' },
-        { id: 'msku7', class: 'msku7', type: 'select', required: true, readonly: false, value: '' },
-        { id: 'msku8', class: 'msku8', type: 'text', required: true, readonly: false, value: '' },
-        { id: 'msku9', class: 'msku9', type: 'text', required: true, readonly: false, value: '' }
+      { id: 'msku3', class: 'msku3', type: 'text', required: true, readonly: false, value: '', isDropdown: true },
+      { id: 'msku4', class: 'msku4', type: 'number', required: true, readonly: false, value: '' },
+      { id: 'msku5', class: 'msku5', type: 'text', required: true, readonly: true, value: 'IN' },
+      { id: 'msku7', class: 'msku7', type: 'select', required: true, readonly: false, value: '' },
+      { id: 'msku8', class: 'msku8', type: 'text', required: true, readonly: true, value: '' },
+      { id: 'msku9', class: 'msku9', type: 'text', required: true, readonly: true, value: '' }
     ];
 
     cells.forEach(cell => {
-        const newCell = newRow.insertCell();
-        newCell.classList.add('form-group'); // Menambahkan kelas form-group ke setiap sel
+      const newCell = newRow.insertCell();
+      newCell.classList.add('form-group'); // Menambahkan kelas form-group ke setiap sel
 
-        if (cell.isDropdown) {
-            // Untuk input MSKU 3
-            newCell.innerHTML = `
-                <input type="${cell.type}" id="${cell.id}_${table.rows.length}" name="${cell.id}" class="${cell.class} w-full" required="${cell.required}" autocomplete="off" oninput="filterDropdown(this); checkAndFetchPacking(this); checkAndFetchPackingnew(this)">
-                <div class="dropdown-list"></div>
-            `;
-            // Panggil fungsi untuk mengisi dropdown MSKU 3 dengan data
-            fetchPackingData(); // Mengisi dropdown MSKU 3
-        } else if (cell.id === 'msku7') {
-            // Untuk dropdown rak MSKU 7
-            newCell.innerHTML = `
-                <select id="${cell.id}_${table.rows.length}" name="${cell.id}" class="${cell.class} w-full" required="${cell.required}" autocomplete="off" onchange="checkAndFetchPacking(this); checkAndFetchPackingnew(this)">
-                    <option value="" disabled selected>Pilih Rak</option>
-                </select>
-            `;
-        } else {
-            // Untuk input lainnya
-            newCell.innerHTML = `<input type="${cell.type}" id="${cell.id}_${table.rows.length}" name="${cell.id}" class="${cell.class} w-full" value="${cell.value}" ${cell.readonly ? 'readonly' : ''} required="${cell.required}">`;
-        }
+      if (cell.isDropdown) {
+        // Untuk input MSKU 3
+        newCell.innerHTML = `
+          <input type="${cell.type}" id="${cell.id}_${table.rows.length}" name="${cell.id}" class="${cell.class} w-full" required="${cell.required}" autocomplete="off" oninput="filterDropdown(this); checkAndFetchPacking(this); checkAndFetchPackingnew(this)">
+          <div class="dropdown-list"></div>
+        `;
+        // Panggil fungsi untuk mengisi dropdown MSKU 3 dengan data
+        fetchPackingData(); // Mengisi dropdown MSKU 3
+      } else if (cell.id === 'msku7') {
+        // Untuk dropdown rak MSKU 7
+        newCell.innerHTML = `
+          <select id="${cell.id}_${table.rows.length}" name="${cell.id}" class="${cell.class} w-full" required="${cell.required}" autocomplete="off" onchange="checkAndFetchPacking(this); checkAndFetchPackingnew(this)">
+            <option value="" disabled selected>Pilih Rak</option>
+          </select>
+        `;
+      } else {
+        // Untuk input lainnya
+        newCell.innerHTML = `<input type="${cell.type}" id="${cell.id}_${table.rows.length}" name="${cell.id}" class="${cell.class} w-full" value="${cell.value}" ${cell.readonly ? 'readonly' : ''} required="${cell.required}">`;
+      }
     });
 
     // Panggil fungsi untuk mengisi dropdown MSKU 7 jika diperlukan
     fetchRakData(newRow.querySelector('.msku7')); // Panggil fungsi untuk mengisi dropdown rak
-}
+  }
 
   function addTwentyRows() {
     for (let i = 0; i < 20; i++) {
@@ -693,6 +694,43 @@ function addRow() {
         }
       }
     });
+  });
+
+  document.addEventListener('keydown', function(event) {
+    const activeElement = document.activeElement;
+    if (event.key === 'Enter') {
+      if (activeElement.classList.contains('msku3')) {
+        event.preventDefault();
+        const currentRow = activeElement.closest('tr');
+        const nextRow = currentRow.nextElementSibling;
+        if (nextRow) {
+          const nextMsku3 = nextRow.querySelector('.msku3');
+          if (nextMsku3) {
+            nextMsku3.focus();
+          }
+        }
+      } else if (activeElement.classList.contains('msku4')) {
+        event.preventDefault();
+        const currentRow = activeElement.closest('tr');
+        const nextRow = currentRow.nextElementSibling;
+        if (nextRow) {
+          const nextMsku4 = nextRow.querySelector('.msku4');
+          if (nextMsku4) {
+            nextMsku4.focus();
+          }
+        }
+      } else if (activeElement.classList.contains('msku7')) {
+        event.preventDefault();
+        const currentRow = activeElement.closest('tr');
+        const nextRow = currentRow.nextElementSibling;
+        if (nextRow) {
+          const nextMsku7 = nextRow.querySelector('.msku7');
+          if (nextMsku7) {
+            nextMsku7.focus();
+          }
+        }
+      }
+    }
   });
 
   window.onload = function() {
