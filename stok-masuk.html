@@ -316,6 +316,21 @@
         .popup-content button:hover {
             background-color: #336ac4;
         }
+        .subdelete-button {
+            display: inline-block;
+            margin-left: 0.5rem;
+            background-color: #e53e3e;
+            color: #ffffff;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .subdelete-button:hover {
+            background-color: #c53030;
+        }
     </style>
 </head>
 <body class="bg-white text-black">
@@ -376,6 +391,9 @@
             <button type="button" onclick="addTwentyRows()">
                 <i class="fas fa-plus"></i>Tambah 20 Baris
             </button>
+            <button type="button" onclick="toggleDeleteButtons()">
+                <i class="fas fa-trash"></i>Delete
+            </button>
             <button type="button" onclick="showPopup()">
                 <i class="fas fa-paper-plane"></i>Submit
             </button>
@@ -389,7 +407,8 @@
             <th style="width: 150px;">MSKU 5</th>
             <th style="width: 150px;">MSKU 7</th>
             <th>MSKU 8</th>
-            <th style="width: 150px;">MSKU 9</th> <!-- Kolom baru untuk MSKU 9 -->
+            <th style="width: 150px;">MSKU 9</th>
+            <th class="col-aksi" style="width: 50px;">Aksi</th> <!-- Kolom baru untuk tombol subdelete -->
         </tr>
     </thead>
     <tbody>
@@ -427,6 +446,9 @@
     <input type="text" id="msku9" name="msku9" class="msku9 w-full" required autocomplete="off" oninput="filterDropdown(this); checkAndFetchPackingnew(this)" readonly>
                 </div>
             </td>
+            <td class="col-aksi">
+                <button type="button" class="subdelete-button" onclick="deleteRow(this)">Delete</button>
+            </td>
         </tr>
     </tbody>
 </table>
@@ -447,7 +469,7 @@
         const spreadsheetId = '1hJVqPsSUdo5wyJ7yVO_Fs-UkHrsQDIhvX4EMejgbAXc';
         const packingRange = 'datapacking!A2:D';
         const gudangRange = 'datagudang!A2:A';
-	const rakRange = 'inputrak!A2:A';
+        const rakRange = 'inputrak!A2:A';
         const packingTotalRange = 'packingtotal!A2:D'; // Misalnya , kita ambil dari A2 sampai D
         const stokTotalRange = 'stoktotal!A2:D'; // Ambil data dari kolom C di sheet stoktotal
         const stokTotalUrl = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${stokTotalRange}?key=${apiKey}`;
@@ -607,7 +629,8 @@
                 { id: 'msku5', class: 'msku5', type: 'text', required: true, readonly: true, value: 'IN' },
                 { id: 'msku7', class: 'msku7', type: 'select', required: true, readonly: false, value: '' },
                 { id: 'msku8', class: 'msku8', type: 'text', required: true, readonly: true, value: '' },
-                { id: 'msku9', class: 'msku9', type: 'text', required: true, readonly: true, value: '' }
+                { id: 'msku9', class: 'msku9', type: 'text', required: true, readonly: true, value: '' },
+                { id: 'aksi', class: 'aksi', type: 'button', required: false, readonly: false, value: 'Delete' }
             ];
 
             cells.forEach(cell => {
@@ -629,6 +652,9 @@
                             <option value="" disabled selected>Pilih Rak</option>
                         </select>
                     `;
+                } else if (cell.id === 'aksi') {
+                    // Untuk tombol subdelete
+                    newCell.innerHTML = `<button type="button" class="subdelete-button" onclick="deleteRow(this)">${cell.value}</button>`;
                 } else {
                     // Untuk input lainnya
                     newCell.innerHTML = `<input type="${cell.type}" id="${cell.id}_${table.rows.length}" name="${cell.id}" class="${cell.class} w-full" value="${cell.value}" ${cell.readonly ? 'readonly' : ''} required="${cell.required}">`;
@@ -818,6 +844,18 @@
                 }
             }
         });
+
+        function toggleDeleteButtons() {
+            const subdeleteButtons = document.querySelectorAll('.subdelete-button');
+            subdeleteButtons.forEach(button => {
+                button.style.display = button.style.display === 'none' ? 'inline-block' : 'none';
+            });
+        }
+
+        function deleteRow(button) {
+            const row = button.closest('tr');
+            row.remove();
+        }
 
         window.onload = function() {
             updateTime();
