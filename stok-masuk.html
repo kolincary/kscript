@@ -388,8 +388,8 @@
             <button type="button" onclick="addRow()">
                 <i class="fas fa-plus"></i>Tambah Baris
             </button>
-            <button type="button" onclick="addTwentyRows()">
-                <i class="fas fa-plus"></i>Tambah 20 Baris
+            <button type="button" onclick="addHundredRows()">
+                <i class="fas fa-plus"></i>Tambah 100 Baris
             </button>
             <button type="button" onclick="toggleDeleteButtons()">
                 <i class="fas fa-trash"></i>Delete
@@ -581,55 +581,55 @@
         }
 
         // Modifikasi fungsi addRow
-function addRow() {
-    const table = document.getElementById("mskuTable").getElementsByTagName('tbody')[0];
-    const newRow = table.insertRow();
+        function addRow() {
+            const table = document.getElementById("mskuTable").getElementsByTagName('tbody')[0];
+            const newRow = table.insertRow();
 
-    // Membuat sel untuk setiap input
-    const cells = [
-        { id: 'msku3', class: 'msku3', type: 'text', required: true, readonly: false, value: '', isDropdown: true },
-        { id: 'msku4', class: 'msku4', type: 'number', required: true, readonly: false, value: '' },
-        { id: 'msku5', class: 'msku5', type: 'text', required: true, readonly: true, value: 'IN' },
-        { id: 'msku7', class: 'msku7', type: 'select', required: true, readonly: false, value: '' },
-        { id: 'msku8', class: 'msku8', type: 'text', required: true, readonly: true, value: '' },
-        { id: 'msku9', class: 'msku9', type: 'text', required: true, readonly: true, value: '' },
-        { id: 'aksi', class: 'aksi', type: 'button', required: false, readonly: false, value: 'Delete' }
-    ];
+            // Membuat sel untuk setiap input
+            const cells = [
+                { id: 'msku3', class: 'msku3', type: 'text', required: true, readonly: false, value: '', isDropdown: true },
+                { id: 'msku4', class: 'msku4', type: 'number', required: true, readonly: false, value: '' },
+                { id: 'msku5', class: 'msku5', type: 'text', required: true, readonly: true, value: 'IN' },
+                { id: 'msku7', class: 'msku7', type: 'select', required: true, readonly: false, value: '' },
+                { id: 'msku8', class: 'msku8', type: 'text', required: true, readonly: true, value: '' },
+                { id: 'msku9', class: 'msku9', type: 'text', required: true, readonly: true, value: '' },
+                { id: 'aksi', class: 'aksi', type: 'button', required: false, readonly: false, value: 'Delete' }
+            ];
 
-    cells.forEach(cell => {
-        const newCell = newRow.insertCell();
-        newCell.classList.add('form-group'); // Menambahkan kelas form-group ke setiap sel
+            cells.forEach(cell => {
+                const newCell = newRow.insertCell();
+                newCell.classList.add('form-group'); // Menambahkan kelas form-group ke setiap sel
 
-        if (cell.isDropdown) {
-            // Untuk input MSKU 3
-            newCell.innerHTML = `
-                <input type="${cell.type}" id="${cell.id}_${table.rows.length}" name="${cell.id}" class="${cell.class} w-full" required="${cell.required}" autocomplete="off" oninput="filterDropdown(this); checkAndFetchPacking(this); checkAndFetchPackingnew(this)">
-                <div class="dropdown-list"></div>
-            `;
-            // Panggil fungsi untuk mengisi dropdown MSKU 3 dengan data
-            fetchPackingData(); // Mengisi dropdown MSKU 3
-        } else if (cell.id === 'msku7') {
-            // Untuk dropdown rak MSKU 7
-            newCell.innerHTML = `
-                <select id="${cell.id}_${table.rows.length}" name="${cell.id}" class="${cell.class} w-full" required="${cell.required}" autocomplete="off" onchange="checkAndFetchPacking(this); checkAndFetchPackingnew(this)">
-                    <option value="" disabled selected>Pilih Rak</option>
-                </select>
-            `;
-        } else if (cell.id === 'aksi') {
-            // Untuk tombol subdelete
-            newCell.innerHTML = `<button type="button" class="subdelete-button" onclick="deleteRow(this)">${cell.value}</button>`;
-        } else {
-            // Untuk input lainnya
-            newCell.innerHTML = `<input type="${cell.type}" id="${cell.id}_${table.rows.length}" name="${cell.id}" class="${cell.class} w-full" value="${cell.value}" ${cell.readonly ? 'readonly' : ''} required="${cell.required}">`;
-        }
-    });
+                if (cell.isDropdown) {
+                    // Untuk input MSKU 3
+                    newCell.innerHTML = `
+                        <input type="${cell.type}" id="${cell.id}_${table.rows.length}" name="${cell.id}" class="${cell.class} w-full" required="${cell.required}" autocomplete="off" oninput="filterDropdown(this); checkAndFetchPacking(this); checkAndFetchPackingnew(this)">
+                        <div class="dropdown-list"></div>
+                    `;
+                    // Panggil fungsi untuk mengisi dropdown MSKU 3 dengan data
+                    fetchPackingData(); // Mengisi dropdown MSKU 3
+                } else if (cell.id === 'msku7') {
+                    // Untuk dropdown rak MSKU 7
+                    newCell.innerHTML = `
+                        <select id="${cell.id}_${table.rows.length}" name="${cell.id}" class="${cell.class} w-full" required="${cell.required}" autocomplete="off" onchange="checkAndFetchPacking(this); checkAndFetchPackingnew(this)">
+                            <option value="" disabled selected>Pilih Rak</option>
+                        </select>
+                    `;
+                } else if (cell.id === 'aksi') {
+                    // Untuk tombol subdelete
+                    newCell.innerHTML = `<button type="button" class="subdelete-button" onclick="deleteRow(this)">${cell.value}</button>`;
+                } else {
+                    // Untuk input lainnya
+                    newCell.innerHTML = `<input type="${cell.type}" id="${cell.id}_${table.rows.length}" name="${cell.id}" class="${cell.class} w-full" value="${cell.value}" ${cell.readonly ? 'readonly' : ''} required="${cell.required}">`;
+                }
+            });
 
             // Panggil fungsi untuk mengisi dropdown MSKU 7 jika diperlukan
             fetchRakData(newRow.querySelector('.msku7')); // Panggil fungsi untuk mengisi dropdown rak
         }
 
-        function addTwentyRows() {
-            for (let i = 0; i < 20; i++) {
+        function addHundredRows() {
+            for (let i = 0; i < 100; i++) {
                 addRow();
             }
         }
