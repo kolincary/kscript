@@ -394,6 +394,9 @@
             <button type="button" onclick="toggleDeleteButtons()">
                 <i class="fas fa-trash"></i>Delete
             </button>
+<button type="button" onclick="updateData()">
+    <i class="fas fa-sync"></i>Update
+</button>
             <button type="button" onclick="showPopup()">
                 <i class="fas fa-paper-plane"></i>Submit
             </button>
@@ -650,20 +653,32 @@
         setInterval(updateTime, 1000);
         window.onload = updateTime;
 
-        function fetchGudangData() {
-            fetch(gudangUrl)
-                .then(response => response.json())
-                .then(data => {
-                    const gudangSelect = document.getElementById('msku6');
-                    data.values.forEach(value => {
-                        const option = document.createElement('option');
-                        option.value = value[0];
-                        option.textContent = value[0];
-                        gudangSelect.appendChild(option);
-                    });
-                })
-                .catch(error => console.error('Error fetching data:', error));
-        }
+function fetchGudangData() {
+    const cachedData = localStorage.getItem('gudangData');
+    if (cachedData) {
+        const data = JSON.parse(cachedData);
+        populateGudangSelect(data);
+    } else {
+        fetch(gudangUrl)
+            .then(response => response.json())
+            .then(data => {
+                localStorage.setItem('gudangData', JSON.stringify(data.values));
+                populateGudangSelect(data.values);
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    }
+}
+
+function populateGudangSelect(data) {
+    const gudangSelect = document.getElementById('msku6');
+    gudangSelect.innerHTML = ''; // Kosongkan select sebelum mengisi
+    data.forEach(value => {
+        const option = document.createElement('option');
+        option.value = value[0];
+        option.textContent = value[0];
+        gudangSelect.appendChild(option);
+    });
+}
 
         // Tambahkan fungsi untuk mengambil data rak
         function fetchRakData(selectElement) {
@@ -821,6 +836,18 @@
                 button.style.display = button.style.display === 'none' ? 'inline-block' : 'none';
             });
         }
+
+function updateData() {
+    // Memanggil data dari Google Sheets
+    fetch(gudangUrl)
+        .then(response => response.json())
+        .then(data => {
+            // Simpan data ke localStorage
+            localStorage.setItem('gudangData', JSON.stringify(data.values));
+            alert('Data berhasil diupdate!');
+        })
+        .catch(error => console.error('Error fetching data:', error));
+}
 
         function deleteRow(button) {
             const row = button.closest('tr');
