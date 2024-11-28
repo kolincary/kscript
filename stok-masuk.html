@@ -441,6 +441,13 @@
         const gudangUrl = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${gudangRange}?key=${apiKey}`;
         const rakUrl = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${rakRange}?key=${apiKey}`;
 
+
+        let gudangDataCache = null;
+        let packingDataCache = null;
+        let rakDataCache = null;
+        let packingTotalDataCache = null;
+        let stokTotalDataCache = null;
+
         function showPopup() {
             document.getElementById('popup').style.display = 'flex';
             document.getElementById('pinInput').focus(); // Fokus pada input PIN saat popup muncul
